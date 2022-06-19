@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/HomeFragment">
+
+    <activity
+        android:id="@+id/MainActivity"
+        android:name="com.teamcastor.haazir.MainActivity"
+        android:label="HomeScreen"
+        tools:layout="@layout/activity_main">
+    </activity>
+
+
+
+    <fragment
+        android:id="@+id/HomeFragment"
+        android:name="com.teamcastor.haazir.HomeFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_HomeFragment_to_Attendance_Fragment"
+            app:destination="@+id/AttendanceFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/AttendanceFragment"
+        android:name="com.teamcastor.haazir.AttendanceFragment"
+        android:label="Attendance"
+        tools:layout="@layout/fragment_attendance">
+    </fragment>
+</navigation>

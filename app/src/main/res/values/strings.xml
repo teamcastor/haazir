@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Haazir</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">Home Screen</string>
+    <string name="next">Next</string>
+
+    <string name="hello_first_fragment">Home Screen</string>
+    <string name="permission_granted">Permission granted successfuly</string>
+    <string name="permission_required">Camera Permission is Required</string>
+    <string name="ok">Ok</string>
+</resources>
