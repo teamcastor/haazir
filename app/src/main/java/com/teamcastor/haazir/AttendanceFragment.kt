@@ -1,13 +1,11 @@
 package com.teamcastor.haazir
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.util.Size
 import android.view.LayoutInflater
@@ -24,39 +22,25 @@ import com.google.mlkit.vision.camera.CameraXSource
 import com.google.mlkit.vision.camera.DetectionTaskCallback
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
-import com.google.mlkit.vision.face.FaceDetectorOptions
 import com.teamcastor.haazir.databinding.FragmentAttendanceBinding
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
-import com.teamcastor.haazir.FaceGraphic.Companion
-
 
 class AttendanceFragment : Fragment() {
     private lateinit var ctx: Context
     private var needUpdateGraphicOverlayImageSourceInfo = false
     private lateinit var binding: FragmentAttendanceBinding
-    private var graphicOverlay: GraphicOverlay? = null
-    private var faceGraphic: FaceGraphic? = null
+    private lateinit var graphicOverlay: GraphicOverlay
     private lateinit var previewView: PreviewView
     private var hasFace = false
-    private var cameraXSource: CameraXSource? = null
+    private lateinit var cameraXSource: CameraXSource
     private var lensFacing = CameraSourceConfig.CAMERA_FACING_FRONT
-    private var faceDetectorOpts = FaceDetectorOptions.Builder()
-        .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-        .setContourMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
-        .build()
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         ctx = context
     }
 
-    @SuppressLint("MissingPermission")
     private fun startCameraXSource() {
-        val faceDetector = FaceDetection.getClient(faceDetectorOpts)
+        val faceDetector = FaceDetection.getClient()
         val detectionTaskCallback = DetectionTaskCallback<List<Face>> { detectionTask ->
             detectionTask
                 .addOnSuccessListener { onFaceDetectionSuccess(it) }
@@ -64,34 +48,27 @@ class AttendanceFragment : Fragment() {
         }
         val builder = CameraSourceConfig.Builder(ctx, faceDetector, detectionTaskCallback)
             .setFacing(lensFacing)
-
+            .setRequestedPreviewSize(720,960)
         cameraXSource = CameraXSource(builder.build(), previewView)
-        cameraXSource?.start()
+        cameraXSource.start()
         needUpdateGraphicOverlayImageSourceInfo = true
-        showSnackbar(binding.root, "No Face Detected",
-            Snackbar.LENGTH_INDEFINITE, null) {}
 
     }
 
     private fun onFaceDetectionSuccess(faces: List<Face>) {
-        graphicOverlay!!.clear()
+        graphicOverlay.clear()
         if (faces.isNotEmpty()) {
-            val size: Size = cameraXSource!!.previewSize!!
-            val inputImage = previewView.bitmap
+            val fullImage: Bitmap? = previewView.bitmap
+            val size: Size = cameraXSource.previewSize!!
             hasFace = true
-            showSnackbar(binding.root, "Face Detected",
-                Snackbar.LENGTH_INDEFINITE, null) {}
-            graphicOverlay!!.setImageSourceInfo(size.height, size.width, true)
+            graphicOverlay.setImageSourceInfo(size.height, size.width, true)
             needUpdateGraphicOverlayImageSourceInfo = false
             for (face in faces) {
-                graphicOverlay!!.add(FaceGraphic(graphicOverlay!!, face))
+                graphicOverlay.add(FaceGraphic(graphicOverlay, face, fullImage))
             }
         }
-        else if (faces.isEmpty()) {
+        else if (faces.isEmpty() and hasFace) {
             hasFace = false
-            showSnackbar(binding.root, "No Face Detected",
-                Snackbar.LENGTH_INDEFINITE, null) {}
-
         }
     }
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -114,26 +91,7 @@ class AttendanceFragment : Fragment() {
         return binding.root
     }
 
-    private fun saveImage(bitmap: Bitmap?) {
-        var outStream: FileOutputStream? = null
-        // Write to SD Card
-        try {
-            val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString() + File.separator +  "Haazir/")
-            dir.mkdirs()
-            val fileName = String.format("%s_%d.jpg", "Image", System.currentTimeMillis())
-            val outFile = File(dir, fileName)
-            outStream = FileOutputStream(outFile)
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
-            outStream.flush()
-            outStream.close()
-            showSnackbar(binding.root, "Image Saved",Snackbar.LENGTH_SHORT, null) {}
-        } catch (e: FileNotFoundException) {
-            Log.i("FileNotFoundError",e.toString())
-        } catch (e: IOException) {
-            Log.i("IOException", e.toString())
-        } finally {
-        }
-    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -146,39 +104,21 @@ class AttendanceFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        if (cameraXSource != null)
-            cameraXSource?.stop()
+        cameraXSource.stop()
     }
 
     override fun onPause() {
         super.onPause()
-        if (cameraXSource != null)
-            cameraXSource?.stop()
+        cameraXSource.stop()
     }
 
-    @SuppressLint("MissingPermission")
     override fun onResume() {
         super.onResume()
-        if (cameraXSource != null)
-            cameraXSource?.start()
+        cameraXSource.start()
     }
 
-    private fun showSnackbar(
-        view: View,
-        msg: String,
-        length: Int,
-        actionMessage: CharSequence?,
-        action: (View) -> Unit
-    ) {
-        val snackbar = Snackbar.make(view, msg, length)
-        if (actionMessage != null) {
-            snackbar.setAction(actionMessage) {
-                action(binding.root)
-            }.show()
-        } else {
-            snackbar.show()
-        }
-    }
+
+
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -205,7 +145,7 @@ class AttendanceFragment : Fragment() {
                 requireActivity(),
                 Manifest.permission.CAMERA
             ) -> {
-                showSnackbar(
+                Utils.showSnackbar(
                     view,
                     getString(R.string.permission_required),
                     Snackbar.LENGTH_INDEFINITE,
@@ -233,5 +173,6 @@ class AttendanceFragment : Fragment() {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
             }.toTypedArray()
+
     }
 }

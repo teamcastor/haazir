@@ -45,7 +45,7 @@ import com.google.common.base.Preconditions
  * coordinate from the image's coordinate system to the view coordinate system.
  *
  */
-class GraphicOverlay(context: Context?, attrs: AttributeSet?) :
+class GraphicOverlay(context: Context, attrs: AttributeSet) :
     View(context, attrs) {
     private val lock = Any()
     private val graphics: MutableList<Graphic> = ArrayList()
