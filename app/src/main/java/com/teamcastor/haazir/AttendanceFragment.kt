@@ -104,17 +104,23 @@ class AttendanceFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        cameraXSource.stop()
+        if (::cameraXSource.isInitialized) {
+            cameraXSource.stop()
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        cameraXSource.stop()
+        if (::cameraXSource.isInitialized) {
+            cameraXSource.stop()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        cameraXSource.start()
+        if (::cameraXSource.isInitialized) {
+            cameraXSource.start()
+        }
     }
 
 
