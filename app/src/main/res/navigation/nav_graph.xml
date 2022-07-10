@@ -9,10 +9,13 @@
         android:id="@+id/MainActivity"
         android:name="com.teamcastor.haazir.MainActivity"
         android:label="HomeScreen"
-        tools:layout="@layout/activity_main">
-    </activity>
+        tools:layout="@layout/activity_main"></activity>
 
 
+    <fragment
+        android:id="@+id/LoginFragment"
+        android:name="com.teamcastor.haazir.ui.login.LoginFragment"
+        tools:layout="@layout/fragment_login" />
 
     <fragment
         android:id="@+id/HomeFragment"
