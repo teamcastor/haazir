@@ -80,13 +80,14 @@ class LoginFragment : Fragment() {
         loginViewModel.loginResult.observe(viewLifecycleOwner,
             Observer { loginResult ->
                 loginResult ?: return@Observer
-                loadingProgressBar.visibility = View.GONE
+                loadingProgressBar.visibility = View.VISIBLE
                 loginResult.success?.let {
                     println("We did reach here")
-                    findNavController().navigate(R.id.HomeFragment)
+                    findNavController().navigate(R.id.action_global_HomeFragment)
                 }
                 loginResult.error?.let {
                     println("but why")
+                    loadingProgressBar.visibility = View.GONE
                     showLoginFailed(it)
                 }
 

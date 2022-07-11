@@ -9,7 +9,7 @@
         android:id="@+id/MainActivity"
         android:name="com.teamcastor.haazir.MainActivity"
         android:label="HomeScreen"
-        tools:layout="@layout/activity_main"></activity>
+        tools:layout="@layout/activity_main" />
 
 
     <fragment
@@ -27,6 +27,18 @@
             android:id="@+id/action_HomeFragment_to_Attendance_Fragment"
             app:destination="@+id/AttendanceFragment" />
     </fragment>
+    <action
+        android:id="@+id/action_global_LoginFragment"
+        app:destination="@id/LoginFragment"
+        app:launchSingleTop="false"
+        app:popUpTo="@+id/nav_graph"
+        app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/action_global_HomeFragment"
+        app:destination="@id/HomeFragment"
+        app:launchSingleTop="false"
+        app:popUpTo="@+id/nav_graph"
+        app:popUpToInclusive="true" />
 
     <fragment
         android:id="@+id/AttendanceFragment"
