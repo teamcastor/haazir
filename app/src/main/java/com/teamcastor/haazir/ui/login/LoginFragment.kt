@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -121,7 +122,6 @@ class LoginFragment : Fragment() {
             false
         }
 
-
         loginButton.setOnClickListener {
             loginViewModel.login(emailEditText.text.toString(), passwordEditText.text.toString())
 
@@ -129,6 +129,11 @@ class LoginFragment : Fragment() {
         registerButton.setOnClickListener {
             loginViewModel.register(emailEditText.text.toString(), passwordEditText.text.toString())
         }
+
+//        val view = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
+//
+//        view.visibility = View.GONE
+
     }
 
     public override fun onStart() {

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.FragmentHomeBinding
 import com.teamcastor.haazir.ui.login.LoginViewModelFactory
@@ -49,6 +50,10 @@ class HomeFragment : Fragment() {
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_HomeFragment_to_Attendance_Fragment)
         }
+
+//        val view = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
+//
+//        view.visibility = View.VISIBLE
 
     }
 
