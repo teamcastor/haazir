@@ -27,6 +27,19 @@
             android:id="@+id/action_HomeFragment_to_Attendance_Fragment"
             app:destination="@+id/AttendanceFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/LeaveFragment"
+        android:name="com.teamcastor.haazir.LeaveFragment"
+        android:label="Leave"
+        tools:layout="@layout/fragment_leave" />
+
+    <fragment
+        android:id="@+id/HistoryFragment"
+        android:name="com.teamcastor.haazir.HistoryFragment"
+        android:label="History"
+        tools:layout="@layout/fragment_history" />
+
     <action
         android:id="@+id/action_global_LoginFragment"
         app:destination="@id/LoginFragment"

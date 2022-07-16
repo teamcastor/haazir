@@ -50,11 +50,6 @@ class HomeFragment : Fragment() {
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_HomeFragment_to_Attendance_Fragment)
         }
-
-//        val view = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
-//
-//        view.visibility = View.VISIBLE
-
     }
 
     private fun observeAuthenticationState() {

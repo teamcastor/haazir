@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/bottom_navigation"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/menu_main" />
+        app:menu="@menu/menu_bottom_bar" />
 
     <include layout="@layout/content_main" />
 
