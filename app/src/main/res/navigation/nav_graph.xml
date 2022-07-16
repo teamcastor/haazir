@@ -15,7 +15,11 @@
     <fragment
         android:id="@+id/LoginFragment"
         android:name="com.teamcastor.haazir.ui.login.LoginFragment"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_global_RegisterFragment"
+            app:destination="@id/registerFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/HomeFragment"
@@ -46,4 +50,9 @@
         android:label="Attendance"
         tools:layout="@layout/fragment_attendance">
     </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.teamcastor.haazir.RegisterFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register" />
 </navigation>

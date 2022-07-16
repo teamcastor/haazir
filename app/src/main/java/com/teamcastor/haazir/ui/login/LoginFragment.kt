@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -38,6 +39,8 @@ class LoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
+
+
     }
 
     override fun onCreateView(
@@ -50,6 +53,8 @@ class LoginFragment : Fragment() {
             false
         )
         return binding.root
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,6 +64,7 @@ class LoginFragment : Fragment() {
         val loadingProgressBar = binding.loading
         val loginButton = binding.login
         val registerButton = binding.register
+
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
 
@@ -68,7 +74,6 @@ class LoginFragment : Fragment() {
                     return@Observer
                 }
                 loginButton.isEnabled = loginFormState.isDataValid
-                registerButton.isEnabled = loginFormState.isDataValid
                 loginFormState.usernameError?.let {
                     emailEditText.error = getString(it)
                 }
@@ -89,6 +94,7 @@ class LoginFragment : Fragment() {
                     println("but why")
                     loadingProgressBar.visibility = View.GONE
                     showLoginFailed(it)
+//                    findNavController().navigate(R.id.action_global_RegisterFragment)
                 }
 
             })
@@ -127,8 +133,12 @@ class LoginFragment : Fragment() {
 
         }
         registerButton.setOnClickListener {
-            loginViewModel.register(emailEditText.text.toString(), passwordEditText.text.toString())
+//           loginViewModel.register(emailEditText.text.toString(), passwordEditText.text.toString())
+
+            findNavController().navigate(R.id.action_global_RegisterFragment)
         }
+
+
     }
 
     public override fun onStart() {

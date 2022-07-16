@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    android:background="@drawable/day_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/day_bg"
     android:paddingLeft="@dimen/fragment_horizontal_margin"
     android:paddingTop="@dimen/fragment_vertical_margin"
     android:paddingRight="@dimen/fragment_horizontal_margin"
@@ -13,98 +13,92 @@
     tools:context="com.teamcastor.haazir.ui.login.LoginFragment">
 
 
-
     <EditText
         android:id="@+id/username"
-        android:textColor="#808080"
-        android:textColorHint="#808080"
-        android:backgroundTint="#808080"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
+        android:backgroundTint="#808080"
         android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/password"
-        />
+        android:textColor="#808080"
+        android:textColorHint="#808080"
+        app:layout_constraintEnd_toEndOf="@id/mailright"
+        app:layout_constraintStart_toStartOf="@+id/mailleft"
+        app:layout_constraintTop_toBottomOf="@+id/mailtop" />
 
     <EditText
         android:id="@+id/password"
-        android:textColor="#808080"
-        android:textColorHint="#808080"
-        android:backgroundTint="#808080"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
+        android:backgroundTint="#808080"
         android:hint="@string/prompt_password"
         android:imeActionLabel="@string/action_sign_in_short"
         android:imeOptions="actionDone"
         android:inputType="textPassword"
         android:selectAllOnFocus="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/login"
-        android:layout_marginVertical="60dp"
-         />
+        android:textColor="#808080"
+        android:textColorHint="#808080"
+        app:layout_constraintEnd_toEndOf="@id/mailright"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/mailleft"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
 
     <TextView
-        android:id="@+id/forgot"
-        android:textColor="#808080"
+        android:id="@+id/fp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password"
-        app:layout_constraintBottom_toTopOf="@+id/login"
-        android:text="forgot password"
-        android:textStyle="bold"/>
+        android:text="forgot password ?"
+        android:textColor="#D89DFF"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/mailright"
+        app:layout_constraintTop_toBottomOf="@+id/password" />
 
     <TextView
         android:id="@+id/login"
-        android:textSize="20dp"
-        android:textAlignment="center"
-        android:gravity="center"
-        android:textColor="#808080"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="#D3D3D3"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
         android:enabled="false"
+        android:gravity="center"
         android:text="@string/action_sign_in_short"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginVertical="120dp"/>
+        android:textAlignment="center"
+        android:textColor="#808080"
+        android:textSize="20dp"
+        android:padding="3dp"
+        app:layout_constraintBottom_toTopOf="@+id/or"
+        app:layout_constraintEnd_toEndOf="@+id/signinright"
+        app:layout_constraintStart_toStartOf="@+id/signinleft"
+        app:layout_constraintTop_toBottomOf="@id/sor" />
 
     <TextView
+        android:id="@+id/or"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/or"
         android:textColor="#808080"
-        app:layout_constraintTop_toBottomOf="@+id/login"
         app:layout_constraintBottom_toTopOf="@+id/register"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="@+id/signinright"
+        app:layout_constraintStart_toStartOf="@id/signinleft"
+        app:layout_constraintTop_toBottomOf="@+id/login" />
+
     <TextView
         android:id="@+id/register"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:background="@drawable/register_button"
+        android:gravity="center"
+        android:text="@string/action_register_short"
+        android:textAlignment="center"
         android:textColor="#808080"
         android:textSize="20dp"
-        android:textAlignment="center"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_gravity="start"
-        android:enabled="false"
-        android:background="@drawable/register_button"
-        android:text="@string/action_register_short"
-        app:layout_constraintTop_toBottomOf="@+id/login"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        android:padding="3dp"
+        app:layout_constraintEnd_toEndOf="@+id/signinright"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintBottom_toTopOf="@+id/end"
+        app:layout_constraintStart_toStartOf="@+id/signinleft"
+        app:layout_constraintTop_toBottomOf="@+id/or" />
 
     <ProgressBar
         android:id="@+id/loading"
@@ -121,4 +115,55 @@
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mailleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.04136253" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mailright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.92214113" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/mailtop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5663475" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/signinleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="0dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/signinright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="0dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="75dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/sor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="182dp" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
