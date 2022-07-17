@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.FragmentHomeBinding
 import com.teamcastor.haazir.ui.login.LoginViewModelFactory
@@ -21,11 +21,9 @@ class HomeFragment : Fragment() {
         const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
     }
 
-
     private var _binding: FragmentHomeBinding? = null
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var savedStateHandle: SavedStateHandle
-
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -40,7 +38,6 @@ class HomeFragment : Fragment() {
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
