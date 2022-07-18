@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -15,10 +17,12 @@ import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.ActivityMainBinding
 import kotlin.system.exitProcess
 
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private val loginViewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,11 +41,23 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.LoginFragment, R.id.AttendanceFragment
+                R.id.LoginFragment, R.id.AttendanceFragment, R.id.registerFragment
                 -> bottomNavigationView.visibility = View.GONE
                 else -> bottomNavigationView.visibility = View.VISIBLE
             }
         }
+        loginViewModel.authenticationState.observe(this) { authenticationState ->
+            when (authenticationState) {
+                LoginViewModel.AuthenticationState.AUTHENTICATED -> {
+                    findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_global_HomeFragment)
+                    println("still authenticated")
+                }
+                else -> {
+                    findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_global_LoginFragment)
+                }
+            }
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

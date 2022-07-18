@@ -43,25 +43,12 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeAuthenticationState()
 
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_HomeFragment_to_Attendance_Fragment)
         }
     }
 
-    private fun observeAuthenticationState() {
-
-        loginViewModel.authenticationState.observe(viewLifecycleOwner) { authenticationState ->
-            when (authenticationState) {
-                LoginViewModel.AuthenticationState.AUTHENTICATED -> {
-                }
-                else -> {
-                    findNavController().navigate(R.id.action_global_LoginFragment)
-                }
-            }
-        }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

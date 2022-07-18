@@ -82,23 +82,6 @@ class LoginFragment : Fragment() {
                 }
             })
 
-        loginViewModel.loginResult.observe(viewLifecycleOwner,
-            Observer { loginResult ->
-                loginResult ?: return@Observer
-                loadingProgressBar.visibility = View.VISIBLE
-                loginResult.success?.let {
-                    println("We did reach here")
-                    findNavController().navigate(R.id.action_global_HomeFragment)
-                }
-                loginResult.error?.let {
-                    println("but why")
-                    loadingProgressBar.visibility = View.GONE
-                    showLoginFailed(it)
-//                    findNavController().navigate(R.id.action_global_RegisterFragment)
-                }
-
-            })
-
         val afterTextChangedListener = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // ignore
@@ -132,8 +115,6 @@ class LoginFragment : Fragment() {
 
         }
         registerButton.setOnClickListener {
-//           loginViewModel.register(emailEditText.text.toString(), passwordEditText.text.toString())
-
             findNavController().navigate(R.id.action_global_RegisterFragment)
         }
 

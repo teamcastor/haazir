@@ -13,7 +13,6 @@ import com.teamcastor.haazir.data.FirebaseUserLiveData
 import com.teamcastor.haazir.data.User
 import com.teamcastor.haazir.ui.login.LoggedInUserView
 import com.teamcastor.haazir.ui.login.LoginFormState
-import com.teamcastor.haazir.ui.login.LoginResult
 import com.teamcastor.haazir.ui.register.RegisterFormState
 import com.teamcastor.haazir.ui.register.RegisterFragment
 
@@ -27,9 +26,6 @@ class LoginViewModel() : ViewModel() {
     val loginFormState: LiveData<LoginFormState> = _loginForm
     private val _registerForm = MutableLiveData<RegisterFormState>()
     val registerFormState: LiveData<RegisterFormState> = _registerForm
-
-    private val _loginResult = MutableLiveData<LoginResult>()
-    val loginResult: LiveData<LoginResult> = _loginResult
 
     enum class AuthenticationState {
         AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
@@ -49,15 +45,8 @@ class LoginViewModel() : ViewModel() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("TAG", "signInWithEmail:success")
-                    _loginResult.value =
-                        LoginResult(success = Firebase.auth.currentUser?.email?.let {
-                            LoggedInUserView(
-                                displayName = it
-                            )
-                        })
                 } else {
                     // If sign in fails, display a message to the user.
-                    _loginResult.value = LoginResult(error = R.string.login_failed)
                     Log.w("TAG", "signInWithEmail:failure", task.exception)
                 }
             }
@@ -68,8 +57,7 @@ class LoginViewModel() : ViewModel() {
             Firebase.auth.createUserWithEmailAndPassword(user.email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val u = Firebase.auth.currentUser
-                        val uid = u?.uid
+                        val uid = Firebase.auth.currentUser?.uid
                         val db =
                             Firebase.database("https://haazir-11bae-default-rtdb.asia-southeast1.firebasedatabase.app/").reference
                         if (uid != null) {
