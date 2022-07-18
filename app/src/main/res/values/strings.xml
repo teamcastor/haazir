@@ -18,6 +18,10 @@
     <string name="welcome">"Welcome!"</string>
     <string name="invalid_email">Not a valid email</string>
     <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_name">Name cannot be empty</string>
+    <string name="invalid_gender">Please select gender</string>
+    <string name="invalid_number">Not a valid phone number</string>
+    <string name="invalid_address">Address cannot be empty</string>
     <string name="login_failed">"Login failed"</string>
     <string name="action_logout">"Logout"</string>
     <!-- TODO: Remove or change this placeholder text -->

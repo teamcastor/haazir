@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:background="@drawable/register_bg"
     android:layout_height="match_parent"
-    tools:context=".RegisterFragment">
+    tools:context="com.teamcastor.haazir.ui.register.RegisterFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/registerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/empid"
+            android:id="@+id/empidlayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
@@ -23,6 +24,7 @@
             app:layout_constraintTop_toBottomOf="@+id/top">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/empid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
@@ -33,7 +35,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/empName"
+            android:id="@+id/empNameLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
@@ -41,9 +43,10 @@
             app:hintTextColor="@color/white"
             android:hint="Name"
             app:layout_constraintStart_toStartOf="@+id/left"
-            app:layout_constraintTop_toBottomOf="@+id/empid">
+            app:layout_constraintTop_toBottomOf="@+id/empidlayout">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/empName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
@@ -54,7 +57,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/gender"
+            android:id="@+id/genderLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="125dp"
             android:layout_height="wrap_content"
@@ -62,7 +65,7 @@
             android:hint="Gender"
             app:hintTextColor="@color/white"
             app:layout_constraintStart_toStartOf="@+id/left"
-            app:layout_constraintTop_toBottomOf="@+id/empName">
+            app:layout_constraintTop_toBottomOf="@+id/empNameLayout">
 
             <AutoCompleteTextView
                 android:id="@+id/genderpicker"
@@ -70,12 +73,12 @@
                 android:layout_height="wrap_content"
                 android:inputType="none"
                 android:layout_weight="1"
-                />
+                app:errorIconDrawable="@null" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/number"
+            android:id="@+id/numberLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
@@ -83,9 +86,10 @@
             app:hintTextColor="@color/white"
             android:hint="Phone Number"
             app:layout_constraintEnd_toStartOf="@+id/right"
-            app:layout_constraintTop_toBottomOf="@+id/empName">
+            app:layout_constraintTop_toBottomOf="@+id/empNameLayout">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
@@ -108,7 +112,7 @@
         <!--            app:layout_constraintTop_toBottomOf="@+id/empName" />-->
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/address"
+            android:id="@+id/addressLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
@@ -116,9 +120,10 @@
             app:hintTextColor="@color/white"
             android:hint="Address"
             app:layout_constraintStart_toStartOf="@+id/left"
-            app:layout_constraintTop_toBottomOf="@+id/gender">
+            app:layout_constraintTop_toBottomOf="@+id/genderLayout">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
@@ -129,18 +134,20 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/password"
+            android:id="@+id/passwordLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="7sp"
+            android:layout_marginEnd="40dp"
             android:hint="Password"
             app:hintTextColor="@color/white"
             app:endIconMode="password_toggle"
             app:layout_constraintStart_toStartOf="@+id/left"
-            app:layout_constraintTop_toBottomOf="@+id/address">
+            app:layout_constraintTop_toBottomOf="@+id/addressLayout">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
@@ -151,11 +158,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
+            android:id="@+id/register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#F8F0E3"
             android:text="Scan/Register"
-            app:layout_constraintTop_toBottomOf="@+id/password"
+            android:enabled="false"
+            app:layout_constraintTop_toBottomOf="@+id/passwordLayout"
             app:layout_constraintStart_toStartOf="@+id/left"
             app:layout_constraintEnd_toStartOf="@+id/right"
             android:layout_marginTop="7dp"/>

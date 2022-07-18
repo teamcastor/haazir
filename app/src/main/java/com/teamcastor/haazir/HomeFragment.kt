@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.FragmentHomeBinding
-import com.teamcastor.haazir.ui.login.LoginViewModelFactory
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -23,7 +23,7 @@ class HomeFragment : Fragment() {
 
 
     private var _binding: FragmentHomeBinding? = null
-    private lateinit var loginViewModel: LoginViewModel
+    private val loginViewModel: LoginViewModel by activityViewModels()
     private lateinit var savedStateHandle: SavedStateHandle
 
 
@@ -37,8 +37,6 @@ class HomeFragment : Fragment() {
     ): View {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
         return binding.root
 
     }

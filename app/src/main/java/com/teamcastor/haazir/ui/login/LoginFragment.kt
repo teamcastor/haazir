@@ -23,10 +23,12 @@ import com.google.firebase.ktx.Firebase
 import com.teamcastor.haazir.R
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.FragmentLoginBinding
+import androidx.fragment.app.activityViewModels
+
 
 
 class LoginFragment : Fragment() {
-    private lateinit var loginViewModel: LoginViewModel
+    private val loginViewModel: LoginViewModel by activityViewModels()
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: FragmentLoginBinding
     private lateinit var ctx: Context
@@ -65,9 +67,6 @@ class LoginFragment : Fragment() {
         val loadingProgressBar = binding.loading
         val loginButton = binding.login
         val registerButton = binding.register
-
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
 
         loginViewModel.loginFormState.observe(viewLifecycleOwner,
             Observer { loginFormState ->
