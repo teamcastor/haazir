@@ -12,19 +12,15 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.teamcastor.haazir.R
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.FragmentLoginBinding
-import androidx.fragment.app.activityViewModels
-
 
 
 class LoginFragment : Fragment() {
@@ -82,6 +78,18 @@ class LoginFragment : Fragment() {
                 }
             })
 
+        loginViewModel.loginResult.observe(viewLifecycleOwner,
+            Observer { loginResult ->
+                loginResult ?: return@Observer
+                loginResult.success?.let {
+                    loadingProgressBar.visibility = View.GONE
+                }
+                loginResult.error?.let {
+                    loadingProgressBar.visibility = View.GONE
+                    showLoginFailed(it)
+                }
+            })
+
         val afterTextChangedListener = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // ignore
@@ -102,6 +110,7 @@ class LoginFragment : Fragment() {
         passwordEditText.addTextChangedListener(afterTextChangedListener)
         passwordEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                loadingProgressBar.visibility = View.VISIBLE
                 loginViewModel.login(
                     emailEditText.text.toString(),
                     passwordEditText.text.toString()
@@ -111,6 +120,7 @@ class LoginFragment : Fragment() {
         }
 
         loginButton.setOnClickListener {
+            loadingProgressBar.visibility = View.VISIBLE
             loginViewModel.login(emailEditText.text.toString(), passwordEditText.text.toString())
 
         }

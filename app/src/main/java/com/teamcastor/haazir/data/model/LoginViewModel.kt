@@ -13,6 +13,7 @@ import com.teamcastor.haazir.data.FirebaseUserLiveData
 import com.teamcastor.haazir.data.User
 import com.teamcastor.haazir.ui.login.LoggedInUserView
 import com.teamcastor.haazir.ui.login.LoginFormState
+import com.teamcastor.haazir.ui.login.LoginResult
 import com.teamcastor.haazir.ui.register.RegisterFormState
 import com.teamcastor.haazir.ui.register.RegisterFragment
 
@@ -24,6 +25,8 @@ class LoginViewModel() : ViewModel() {
     }
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
+    private val _loginResult = MutableLiveData<LoginResult>()
+    val loginResult: LiveData<LoginResult> = _loginResult
     private val _registerForm = MutableLiveData<RegisterFormState>()
     val registerFormState: LiveData<RegisterFormState> = _registerForm
 
@@ -43,9 +46,16 @@ class LoginViewModel() : ViewModel() {
         Firebase.auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    _loginResult.value =
+                        LoginResult(success = Firebase.auth.currentUser?.email?.let {
+                            LoggedInUserView(
+                                displayName = it
+                            )
+                        })
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("TAG", "signInWithEmail:success")
                 } else {
+                    _loginResult.value = LoginResult(error = R.string.login_failed)
                     // If sign in fails, display a message to the user.
                     Log.w("TAG", "signInWithEmail:failure", task.exception)
                 }

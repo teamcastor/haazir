@@ -6,9 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -50,7 +48,6 @@ class MainActivity : AppCompatActivity() {
             when (authenticationState) {
                 LoginViewModel.AuthenticationState.AUTHENTICATED -> {
                     findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_global_HomeFragment)
-                    println("still authenticated")
                 }
                 else -> {
                     findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_global_LoginFragment)
