@@ -22,6 +22,7 @@ class LoginViewModel() : ViewModel() {
         fun logout() {
             Firebase.auth.signOut()
         }
+        const val TAG: String = "LoginViewModel"
     }
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
@@ -43,23 +44,28 @@ class LoginViewModel() : ViewModel() {
     }
 
     fun login(email: String, password: String) {
-        Firebase.auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    _loginResult.value =
-                        LoginResult(success = Firebase.auth.currentUser?.email?.let {
-                            LoggedInUserView(
-                                displayName = it
-                            )
-                        })
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d("TAG", "signInWithEmail:success")
-                } else {
-                    _loginResult.value = LoginResult(error = R.string.login_failed)
-                    // If sign in fails, display a message to the user.
-                    Log.w("TAG", "signInWithEmail:failure", task.exception)
+        try {
+            Firebase.auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        _loginResult.value =
+                            LoginResult(success = Firebase.auth.currentUser?.email?.let {
+                                LoggedInUserView(
+                                    displayName = it
+                                )
+                            })
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithEmail:success")
+                    } else {
+                        _loginResult.value = LoginResult(error = R.string.login_failed)
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    }
                 }
-            }
+        } catch (e: Throwable) {
+            _loginResult.value = LoginResult(error = R.string.login_failed)
+            Log.w(TAG,"signInWithEmail:exception", e)
+        }
     }
 
     fun register(user: User, password: String) {
@@ -80,14 +86,14 @@ class LoginViewModel() : ViewModel() {
                                 }
                         }
                         // Sign in success, update UI with the signed-in user's information
-                        Log.d("TAG", "createUserWithEmail:success")
+                        Log.d(TAG, "createUserWithEmail:success")
                     } else {
                         // If sign in fails, display a message to the user.
-                        Log.w("TAG", "createUserWithEmail:failure", task.exception)
+                        Log.w(TAG, "createUserWithEmail:failure", task.exception)
                     }
                 }
         } catch (e: Throwable) {
-            println("Error registering in")
+            Log.w(TAG, "createUserWithEmail:exception", e)
         }
     }
 
