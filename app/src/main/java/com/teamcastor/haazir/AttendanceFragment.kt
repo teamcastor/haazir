@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +25,8 @@ import com.google.mlkit.vision.camera.DetectionTaskCallback
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.teamcastor.haazir.databinding.FragmentAttendanceBinding
+import kotlinx.coroutines.*
+import java.lang.Thread.sleep
 
 class AttendanceFragment : Fragment() {
     private lateinit var ctx: Context
@@ -33,7 +37,7 @@ class AttendanceFragment : Fragment() {
     private var hasFace = false
     private lateinit var cameraXSource: CameraXSource
     private var lensFacing = CameraSourceConfig.CAMERA_FACING_FRONT
-
+    private var bitmap: Bitmap? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
         ctx = context
@@ -41,14 +45,15 @@ class AttendanceFragment : Fragment() {
 
     private fun startCameraXSource() {
         val faceDetector = FaceDetection.getClient()
-        val detectionTaskCallback = DetectionTaskCallback<List<Face>> { detectionTask ->
+        val detectionTaskCallback = DetectionTaskCallback { detectionTask ->
             detectionTask
                 .addOnSuccessListener { onFaceDetectionSuccess(it) }
                 .addOnFailureListener { e -> /* Do nothing */ }
         }
         val builder = CameraSourceConfig.Builder(ctx, faceDetector, detectionTaskCallback)
             .setFacing(lensFacing)
-            .setRequestedPreviewSize(720,960)
+            // CameraX wil decide this according to device capabilites
+            .setRequestedPreviewSize(1080,1920)
         cameraXSource = CameraXSource(builder.build(), previewView)
         cameraXSource.start()
         needUpdateGraphicOverlayImageSourceInfo = true
@@ -58,13 +63,36 @@ class AttendanceFragment : Fragment() {
     private fun onFaceDetectionSuccess(faces: List<Face>) {
         graphicOverlay.clear()
         if (faces.isNotEmpty()) {
-            val fullImage: Bitmap? = previewView.bitmap
             val size: Size = cameraXSource.previewSize!!
             hasFace = true
             graphicOverlay.setImageSourceInfo(size.height, size.width, true)
             needUpdateGraphicOverlayImageSourceInfo = false
-            for (face in faces) {
-                graphicOverlay.add(FaceGraphic(graphicOverlay, face, fullImage))
+            // TODO: The quality is not satisfactory
+            bitmap = previewView.bitmap
+            if (bitmap != null) {
+                for (face in faces) {
+                    graphicOverlay.add(FaceGraphic(graphicOverlay, face, bitmap))
+                    // Confirm we have bounding box of face
+                    rect?.let {
+                        val faceBitmap: Bitmap = Utils.cropFace(it, bitmap!!)
+                        // TODO: This is NOT OK. This should be replaced with coroutineScope
+                        GlobalScope.launch {
+                            val fas = FaceAntiSpoofing(ctx)
+                            val fasl = FaceAntiSpoofing.laplacian(faceBitmap)
+                            println("Laplacian: $fasl")
+                            if (fasl > FaceAntiSpoofing.LAPLACE_FINAL_THRESHOLD) {
+                                val score = fas.antiSpoofing(faceBitmap)
+                                if (score < FaceAntiSpoofing.SPOOF_THRESHOLD) {
+                                    FaceGraphic.selectedColor = Color.GREEN
+                                } else
+                                    FaceGraphic.selectedColor = Color.RED
+                            }
+                            else
+                                FaceGraphic.selectedColor = Color.YELLOW
+                            fas.close()
+                        }
+                    }
+                }
             }
         }
         else if (faces.isEmpty() and hasFace) {
@@ -179,6 +207,7 @@ class AttendanceFragment : Fragment() {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
             }.toTypedArray()
+        var rect: Rect? = null
 
     }
 }

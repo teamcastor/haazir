@@ -2,6 +2,7 @@ package com.teamcastor.haazir
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.graphics.Rect
 import android.os.Environment
 import android.util.Log
 import android.view.View
@@ -10,7 +11,7 @@ import java.io.*
 
 class Utils {
     companion object {
-        private fun getResizedBitmap(bm: Bitmap, newWidth: Int, newHeight: Int): Bitmap? {
+        private fun getResizedBitmap(bm: Bitmap, newWidth: Int, newHeight: Int): Bitmap {
             val width = bm.width
             val height = bm.height
             val scaleWidth = newWidth.toFloat() / width
@@ -22,37 +23,37 @@ class Utils {
 
             // "RECREATE" THE NEW BITMAP
             return Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false
+                bm, 0, 0, width, height, matrix, true
             )
         }
-        fun cropFace(left: Int, top: Int, width: Int, height: Int, img: Bitmap?) {
-            val croppedImage = Bitmap.createBitmap(img!!, left, top, width, height)
-            val resizedBitmap = getResizedBitmap(croppedImage, 112, 112)
-            saveImage(resizedBitmap)
+        fun cropFace(rect: Rect, img: Bitmap): Bitmap {
+            val croppedImage =
+                Bitmap.createBitmap(img, rect.left, rect.top, rect.width(), rect.height())
+            return getResizedBitmap(croppedImage, 256, 256)
         }
 
-        fun saveImage(bitmap: Bitmap?) {
-            var outStream: FileOutputStream? = null
-            // Write to SD Card
-            try {
-                val dir = File(
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                        .toString() + File.separator + "Haazir/"
-                )
-                dir.mkdirs()
-                val fileName = String.format("%s_%d.jpg", "Image", System.currentTimeMillis())
-                val outFile = File(dir, fileName)
-                outStream = FileOutputStream(outFile)
-                bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
-                outStream.flush()
-                outStream.close()
-            } catch (e: FileNotFoundException) {
-                Log.i("FileNotFoundError", e.toString())
-            } catch (e: IOException) {
-                Log.i("IOException", e.toString())
-            } finally {
-            }
-        }
+//        fun saveImage(bitmap: Bitmap?) {
+//            var outStream: FileOutputStream? = null
+//            // Write to SD Card
+//            try {
+//                val dir = File(
+//                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+//                        .toString() + File.separator + "Haazir/"
+//                )
+//                dir.mkdirs()
+//                val fileName = String.format("%s_%d.jpg", "Image", System.currentTimeMillis())
+//                val outFile = File(dir, fileName)
+//                outStream = FileOutputStream(outFile)
+//                bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+//                outStream.flush()
+//                outStream.close()
+//            } catch (e: FileNotFoundException) {
+//                Log.i("FileNotFoundError", e.toString())
+//            } catch (e: IOException) {
+//                Log.i("IOException", e.toString())
+//            } finally {
+//            }
+//        }
 
         fun showSnackbar(
             view: View,

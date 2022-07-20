@@ -1,16 +1,21 @@
 package com.teamcastor.haazir
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.ActivityMainBinding
 import kotlin.system.exitProcess
@@ -21,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private val loginViewModel: LoginViewModel by viewModels()
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +36,8 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        var bottomNavigationView = binding.bottomNavigation
+        setupNavigation()
+        val bottomNavigationView = binding.bottomNavigation
         appBarConfiguration = AppBarConfiguration(navController.graph)
 
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -44,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                 else -> bottomNavigationView.visibility = View.VISIBLE
             }
         }
-        loginViewModel.authenticationState.observe(this) { authenticationState ->
+        loginViewModel.authenticationState.observeForever { authenticationState ->
             when (authenticationState) {
                 LoginViewModel.AuthenticationState.AUTHENTICATED -> {
                     findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_global_HomeFragment)
@@ -83,5 +89,18 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
+    }
+    private fun setupNavigation() {
+        navController = findNavController(R.id.nav_host_fragment_content_main)
+        val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
+        when(Firebase.auth.currentUser) {
+            null -> {
+                navGraph.setStartDestination(R.id.LoginFragment)
+            }
+            else -> {
+                navGraph.setStartDestination(R.id.HomeFragment)
+            }
+        }
+        navController.graph = navGraph
     }
 }

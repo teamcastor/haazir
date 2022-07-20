@@ -25,11 +25,9 @@ import com.google.mlkit.vision.face.Face
  * graphic overlay view.
  */
 class FaceGraphic(overlay: GraphicOverlay, private val face: Face, private val img: Bitmap?) : GraphicOverlay.Graphic(overlay) {
-    private val facePositionPaint: Paint
+    private val facePositionPaint: Paint = Paint()
 
     init {
-        val selectedColor = Color.WHITE
-        facePositionPaint = Paint()
         facePositionPaint.color = selectedColor
         facePositionPaint.style = Paint.Style.STROKE
         facePositionPaint.strokeWidth = 5.0f
@@ -49,6 +47,7 @@ class FaceGraphic(overlay: GraphicOverlay, private val face: Face, private val i
         val bottom = y + scale(face.boundingBox.height() / 2.0f)
 
         // Confirm the face is in the view frame
+        println("at least here")
 
         val rect = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
         canvas?.drawRect(rect, facePositionPaint)
@@ -60,8 +59,12 @@ class FaceGraphic(overlay: GraphicOverlay, private val face: Face, private val i
                 Log.i("TAG", "Face is not in the frame")
 
             } else {
-                Utils.cropFace(rect.left, rect.top, rect.width(), rect.height(), img)
+                AttendanceFragment.rect = rect
             }
         }
+
+    }
+    companion object {
+        var selectedColor = Color.WHITE
     }
 }
