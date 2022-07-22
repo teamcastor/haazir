@@ -133,8 +133,6 @@ class LoginFragment : Fragment() {
 
         }
         registerButton.setOnClickListener {
-//           loginViewModel.register(emailEditText.text.toString(), passwordEditText.text.toString())
-
             findNavController().navigate(R.id.action_global_RegisterFragment)
         }
 
