@@ -1,14 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LeaveFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fra"
+        android:background="@color/white"
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="horizontal">
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/leavetabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:tabIndicatorColor="#b55385"
+        app:tabIndicatorHeight="5dp"
+        app:tabIndicatorAnimationMode="linear"
+        app:tabSelectedTextColor="#b55385"
+        android:background="@drawable/leavebg1"
+        app:layout_constraintStart_toStartOf="@+id/fra"
+        app:layout_constraintEnd_toEndOf="@+id/fra"
+        app:layout_constraintTop_toTopOf="parent">
 
-</FrameLayout>
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Apply"
+            />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Status"/>
+    </com.google.android.material.tabs.TabLayout>
+        <FrameLayout
+            android:id="@+id/frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/leavetabLayout"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
