@@ -22,8 +22,9 @@ class Utils {
             matrix.postScale(scaleWidth, scaleHeight)
 
             // "RECREATE" THE NEW BITMAP
+            // Disable the filter as it smooths out the image
             return Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, true
+                bm, 0, 0, width, height, matrix, false
             )
         }
         fun cropFace(rect: Rect, img: Bitmap): Bitmap {
