@@ -9,23 +9,17 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.FragmentHomeBinding
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
 class HomeFragment : Fragment() {
     companion object {
         const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
     }
 
-
     private var _binding: FragmentHomeBinding? = null
     private val loginViewModel: LoginViewModel by activityViewModels()
     private lateinit var savedStateHandle: SavedStateHandle
-
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -38,7 +32,6 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
