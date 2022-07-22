@@ -24,6 +24,7 @@ import com.google.mlkit.vision.camera.CameraXSource
 import com.google.mlkit.vision.camera.DetectionTaskCallback
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
+import com.google.mlkit.vision.face.FaceDetectorOptions
 import com.teamcastor.haazir.databinding.FragmentAttendanceBinding
 import kotlinx.coroutines.*
 import java.lang.Thread.sleep
@@ -44,7 +45,11 @@ class AttendanceFragment : Fragment() {
     }
 
     private fun startCameraXSource() {
-        val faceDetector = FaceDetection.getClient()
+        val faceDetectopOps = FaceDetectorOptions.Builder()
+            .setMinFaceSize(0.33F)
+            .build()
+
+        val faceDetector = FaceDetection.getClient(faceDetectopOps)
         val detectionTaskCallback = DetectionTaskCallback { detectionTask ->
             detectionTask
                 .addOnSuccessListener { onFaceDetectionSuccess(it) }
