@@ -49,9 +49,9 @@ class FaceAntiSpoofing(context: Context) {
 
     companion object {
         
-        const val SPOOF_THRESHOLD = 0.20
+        const val SPOOF_THRESHOLD = 0.25
         const val LAPLACE_THRESHOLD = 50
-        const val LAPLACE_FINAL_THRESHOLD = 550
+        const val LAPLACE_FINAL_THRESHOLD = 750
 
         fun convertBitmapToByteBuffer(bp: Bitmap) : ByteBuffer {
             val current = System.currentTimeMillis()

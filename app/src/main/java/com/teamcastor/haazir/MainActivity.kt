@@ -95,7 +95,6 @@ class MainActivity : AppCompatActivity() {
         tv1 = findViewById(R.id.textViewlon)
         btn = findViewById(R.id.btnLocation)
 
-
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         btn.setOnClickListener {
             locRequest()
