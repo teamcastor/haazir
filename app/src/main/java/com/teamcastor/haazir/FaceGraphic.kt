@@ -46,22 +46,8 @@ class FaceGraphic(overlay: GraphicOverlay, private val face: Face, private val i
         val right = x + scale(face.boundingBox.width() / 2.0f)
         val bottom = y + scale(face.boundingBox.height() / 2.0f)
 
-        // Confirm the face is in the view frame
-        println("at least here")
-
         val rect = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
         canvas?.drawRect(rect, facePositionPaint)
-
-        if (img != null) {
-            if (rect.left < 0 || rect.top < 0 || rect.left + rect.width() > (img.width) ||
-                rect.top + rect.height() > img.height
-            ) {
-                Log.i("TAG", "Face is not in the frame")
-
-            } else {
-                AttendanceFragment.rect = rect
-            }
-        }
 
     }
     companion object {

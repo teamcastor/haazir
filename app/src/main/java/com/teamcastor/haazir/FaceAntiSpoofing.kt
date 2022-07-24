@@ -13,7 +13,7 @@ import kotlin.math.absoluteValue
 
 
 class FaceAntiSpoofing(context: Context) {
-    // Try to use GPU
+     //Try to use GPU
     private val compatList = CompatibilityList()
     private val options: Model.Options = if (compatList.isDelegateSupportedOnThisDevice) {
         Model.Options.Builder().setDevice(Model.Device.GPU).build()
@@ -25,12 +25,12 @@ class FaceAntiSpoofing(context: Context) {
     fun antiSpoofing(bitmap: Bitmap): Float{
         val current = System.currentTimeMillis()
         val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 256, 256, 3), DataType.FLOAT32)
-        inputFeature0.loadBuffer(convertBitmapToByteBuffer(bitmap))
+        inputFeature0.loadBuffer(Utils.convertBitmapToByteBuffer(bitmap, (256*256*3*4), 256))
         val outputs = model.process(inputFeature0)
         val outputFeature0 = outputs.outputFeature0AsTensorBuffer
         val outputFeature1 = outputs.outputFeature1AsTensorBuffer
         val end = System.currentTimeMillis()
-        Log.v("FAS", "Time-taken for model inference : ${end - current}")
+        Log.v("FAS", "Time taken for FAS model inference : ${end - current}")
         return leafScore(outputFeature0, outputFeature1)
     }
 
@@ -49,28 +49,11 @@ class FaceAntiSpoofing(context: Context) {
 
     companion object {
         
-        const val SPOOF_THRESHOLD = 0.25
+        const val SPOOF_THRESHOLD = 0.2
         const val LAPLACE_THRESHOLD = 50
         const val LAPLACE_FINAL_THRESHOLD = 750
 
-        fun convertBitmapToByteBuffer(bp: Bitmap) : ByteBuffer {
-            val current = System.currentTimeMillis()
-            val imageBuffer = ByteBuffer.allocate(256*256*3*4)
-            imageBuffer.order(ByteOrder.nativeOrder())
-            val intValues = IntArray(256 * 256)
-            bp.getPixels(intValues, 0, bp.width, 0, 0, bp.width, bp.height)
-            // Convert the image to floating point.
-            for (pixel in 0..(65535)) {                                    //
-                    val value = intValues[pixel]
-                    // Normalize to [-1.0,1.0]
-                    imageBuffer.putFloat((value shr 16 and 0xFF) / 255.0f) // Red
-                    imageBuffer.putFloat((value shr 8 and 0xFF) / 255.0f)  // Green
-                    imageBuffer.putFloat((value and 0xFF) / 255.0f)        // Blue
-                }
-            val end = System.currentTimeMillis()
-            Log.v("FAS", "Time-taken for convertBitmapTBB : ${end - current}")
-            return imageBuffer
-        }
+
 
         fun laplacian(bitmap: Bitmap): Int {
             val laplace = arrayOf(intArrayOf(0, 1, 0), intArrayOf(1, -4, 1), intArrayOf(0, 1, 0))

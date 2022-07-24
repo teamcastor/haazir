@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/AttendanceFragment"
+    tools:context="com.teamcastor.haazir.AttendanceFragment">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".AttendanceFragment">
+        android:layout_height="match_parent" >
+    </androidx.camera.view.PreviewView>
 
-        <androidx.camera.view.PreviewView
-            android:id="@+id/viewFinder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <com.teamcastor.haazir.GraphicOverlay
+        android:id="@+id/graphic_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_marginTop="?actionBarSize"
+        android:id="@+id/resultInfo"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:background="@color/white"
+        android:layout_height="wrap_content" />
 
-        <com.teamcastor.haazir.GraphicOverlay
-            android:id="@+id/graphic_overlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-</android.widget.FrameLayout>
+</FrameLayout>

@@ -15,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.FragmentRegisterBinding
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.teamcastor.haazir.R
 import com.teamcastor.haazir.data.User
 

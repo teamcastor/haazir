@@ -10,6 +10,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.teamcastor.haazir.R
 import com.teamcastor.haazir.data.FirebaseUserLiveData
+import com.teamcastor.haazir.data.ScanResult
 import com.teamcastor.haazir.data.User
 import com.teamcastor.haazir.ui.login.LoggedInUserView
 import com.teamcastor.haazir.ui.login.LoginFormState
@@ -27,6 +28,8 @@ class LoginViewModel() : ViewModel() {
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
     private val _loginResult = MutableLiveData<LoginResult>()
+    private val _scanResult = MutableLiveData<ScanResult>()
+    val scanResult: LiveData<ScanResult> = _scanResult
     val loginResult: LiveData<LoginResult> = _loginResult
     private val _registerForm = MutableLiveData<RegisterFormState>()
     val registerFormState: LiveData<RegisterFormState> = _registerForm
@@ -41,6 +44,10 @@ class LoginViewModel() : ViewModel() {
         } else {
             AuthenticationState.UNAUTHENTICATED
         }
+    }
+
+    fun authenticate(isSharp: Boolean, isSpoof: Boolean, isRecognized: Boolean) {
+        _scanResult.value = ScanResult(isSharp, isSpoof, isRecognized)
     }
 
     fun login(email: String, password: String) {
