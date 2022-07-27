@@ -53,6 +53,9 @@ class ViewPagerFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (viewPager!!.currentItem == 0) {
+                // Firstly remove this callback, since requireActivity().onBackPressed() will call this callback
+                // otherwise, leading to infinite loop.
+                this.remove()
                 // If the user is currently looking at the first fragment, allow the system to handle the
                 // Back button. This calls finish() on this activity and pops the back stack.
                 requireActivity().onBackPressed()
