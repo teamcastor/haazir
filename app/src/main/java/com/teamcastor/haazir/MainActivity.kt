@@ -1,6 +1,5 @@
 package com.teamcastor.haazir
 
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -8,11 +7,6 @@ import androidx.activity.viewModels
 import androidx.navigation.NavController
 import android.widget.TextView
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.android.gms.location.*
@@ -33,30 +27,37 @@ import android.os.Bundle
 import android.provider.Settings
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.*
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var navController: NavController
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private val permissionId = 2
 
     private lateinit var str: String
 
-    private lateinit var tv: TextView
-    private lateinit var tv1: TextView
-    private lateinit var btn: Button
+
+
+//    private lateinit var tv: TextView
+//    private lateinit var tv1: TextView
+//    private lateinit var btn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,40 +66,59 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+        binding.toolbar.setTitleTextAppearance(this, R.style.SmarkanTextAppearance)
 
         setupNavigation()
-        val bottomNavigationView = binding.bottomNavigation
-        appBarConfiguration = AppBarConfiguration(navController.graph)
 
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        bottomNavigationView = binding.bottomNavigation
         bottomNavigationView.setupWithNavController(navController)
+
+
+
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.LoginFragment, R.id.AttendanceFragment, R.id.registerFragment
-                -> bottomNavigationView.visibility = View.GONE
-                else -> bottomNavigationView.visibility = View.VISIBLE
+                R.id.viewPagerFragment -> {
+                    bottomNavigationView.visibility = View.GONE
+//                    binding.toolbar.visibility = View.GONE
+                }
+                R.id.AttendanceFragment -> {
+                    bottomNavigationView.visibility = View.GONE
+                }
+                else -> {
+                    bottomNavigationView.visibility = View.VISIBLE
+                    binding.toolbar.visibility = View.VISIBLE
+                }
             }
         }
+        // I don't know what is up with these, they keep throwing NullPointerException
+        // Since they don't work anyway, I'm just gonna comment them out.
+        // Others can fix it properly
+//        tv = findViewById(R.id.textViewlat)
+//        tv1 = findViewById(R.id.textViewlon)
+//        btn = findViewById(R.id.btnLocation)
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+//        btn.setOnClickListener {
+//            locRequest()
+//            getLocation()
+//        }
+
         loginViewModel.authenticationState.observeForever { authenticationState ->
             when (authenticationState) {
                 LoginViewModel.AuthenticationState.AUTHENTICATED -> {
-                    findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_global_HomeFragment)
+                    navController.navigate(R.id.action_global_HomeFragment)
                 }
                 else -> {
-                    findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.action_global_LoginFragment)
+                    navController.navigate(R.id.action_global_ViewPagerFragment)
                 }
             }
-        }
-
-        tv = findViewById(R.id.textViewlat)
-        tv1 = findViewById(R.id.textViewlon)
-        btn = findViewById(R.id.btnLocation)
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        btn.setOnClickListener {
-            locRequest()
-            getLocation()
+            // Need to update start destination
+            setupNavigation()
         }
     }
 
@@ -124,18 +144,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }
-
     private fun setupNavigation() {
-        navController = findNavController(R.id.nav_host_fragment_content_main)
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
+        navController = navHostFragment.navController
         val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
         when (Firebase.auth.currentUser) {
             null -> {
-                navGraph.setStartDestination(R.id.LoginFragment)
+                navGraph.setStartDestination(R.id.viewPagerFragment)
             }
             else -> {
                 navGraph.setStartDestination(R.id.HomeFragment)
@@ -154,15 +170,13 @@ class MainActivity : AppCompatActivity() {
                         val geocoder = Geocoder(this, Locale.getDefault())
                         val list: List<Address> =
                             geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                        binding.apply {
-                            tv.text = "Latitude\n${list[0].latitude}"
-                            tv1.text = "Longitude\n${list[0].longitude}"
+//                            tv.text = "Latitude\n${list[0].latitude}"
+//                            tv1.text = "Longitude\n${list[0].longitude}"
 //                            tvLongitude.text = "Longitude\n${list[0].latitude}"
 //                            tvLongitude.text = "Longitude\n${list[0].longitude}"
 //                            tvCountryName.text = "Country Name\n${list[0].countryName}"
 //                            tvLocality.text = "Locality\n${list[0].locality}"
 //                            tvAddress.text = "Address\n${list[0].getAddressLine(0)}"
-                        }
                     }
                 }
             } else {

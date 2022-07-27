@@ -4,13 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -26,8 +23,11 @@ import com.teamcastor.haazir.databinding.FragmentLoginBinding
 class LoginFragment : Fragment() {
     private val loginViewModel: LoginViewModel by activityViewModels()
     private lateinit var auth: FirebaseAuth
-    private lateinit var binding: FragmentLoginBinding
+    private var _binding: FragmentLoginBinding? = null
     private lateinit var ctx: Context
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -39,14 +39,13 @@ class LoginFragment : Fragment() {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
 
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentLoginBinding.inflate(
+        _binding = FragmentLoginBinding.inflate(
             inflater,
             container,
             false
@@ -58,11 +57,12 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val emailEditText = binding.username
+        val emailEditText = binding.email
+        val emailEditTextLayout = binding.emailLayout
+        val passwordEditTextLayout = binding.passwordLayout
         val passwordEditText = binding.password
         val loadingProgressBar = binding.loading
         val loginButton = binding.login
-        val registerButton = binding.register
 
         loginViewModel.loginFormState.observe(viewLifecycleOwner,
             Observer { loginFormState ->
@@ -70,12 +70,19 @@ class LoginFragment : Fragment() {
                     return@Observer
                 }
                 loginButton.isEnabled = loginFormState.isDataValid
-                loginFormState.usernameError?.let {
-                    emailEditText.error = getString(it)
+                if (loginFormState.passwordError != null) {
+                    passwordEditTextLayout.error = getString(loginFormState.passwordError)
                 }
-                loginFormState.passwordError?.let {
-                    passwordEditText.error = getString(it)
+                else {
+                    passwordEditTextLayout.error = null
                 }
+                if (loginFormState.usernameError != null) {
+                    emailEditTextLayout.error = getString(loginFormState.usernameError)
+                }
+                else {
+                    emailEditTextLayout.error = null
+                }
+
             })
 
         loginViewModel.loginResult.observe(viewLifecycleOwner,
@@ -124,31 +131,16 @@ class LoginFragment : Fragment() {
             loginViewModel.login(emailEditText.text.toString(), passwordEditText.text.toString())
 
         }
-        registerButton.setOnClickListener {
-            findNavController().navigate(R.id.action_global_RegisterFragment)
-        }
 
     }
 
-    public override fun onStart() {
-        super.onStart()
-
-    }
     private fun showLoginFailed(@StringRes errorString: Int) {
         val appContext = context?.applicationContext ?: return
         Toast.makeText(appContext, errorString, Toast.LENGTH_LONG).show()
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
-
-    override fun onStop() {
-        super.onStop()
-        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
-    }
-
-
-
 }

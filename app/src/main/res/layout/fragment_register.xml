@@ -3,68 +3,61 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@drawable/register_bg"
+    android:background="@drawable/ic_register_background"
     android:layout_height="match_parent"
     tools:context="com.teamcastor.haazir.ui.register.RegisterFragment">
 
+    <!--Material guidelines recommends 245dp width, that seems too narrow-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/registerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="320sp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/empidlayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10sp"
-            app:hintTextColor="@color/white"
+            app:startIconDrawable="@drawable/ic_outline_email_24"
             android:hint="Id"
-            app:layout_constraintStart_toStartOf="@+id/left"
             app:layout_constraintTop_toBottomOf="@+id/top">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/empid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
                 android:singleLine="true"
-                android:nextFocusDown="@+id/empName"
-                android:textSize="15dp" />
+                android:nextFocusDown="@+id/empName"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/empNameLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7sp"
-            app:hintTextColor="@color/white"
+            android:layout_marginTop="15sp"
+            app:startIconDrawable="@drawable/ic_outline_person_outline_24"
             android:hint="Name"
-            app:layout_constraintStart_toStartOf="@+id/left"
             app:layout_constraintTop_toBottomOf="@+id/empidlayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/empName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
                 android:singleLine="true"
-                android:nextFocusDown="@+id/number"
-                android:textSize="15dp" />
+                android:nextFocusDown="@+id/number" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/genderLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="125dp"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="130sp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7sp"
+            android:layout_marginTop="15sp"
+            android:layout_marginEnd="15sp"
             android:hint="Gender"
-            app:hintTextColor="@color/white"
-            app:layout_constraintStart_toStartOf="@+id/left"
+            app:layout_constraintRight_toLeftOf="@+id/numberLayout"
             app:layout_constraintTop_toBottomOf="@+id/empNameLayout">
 
             <AutoCompleteTextView
@@ -72,88 +65,64 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:layout_weight="1"
                 app:errorIconDrawable="@null" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/numberLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="220dp"
+            android:layout_width="175sp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7sp"
-            app:hintTextColor="@color/white"
-            android:hint="Phone Number"
-            app:layout_constraintEnd_toStartOf="@+id/right"
-            app:layout_constraintTop_toBottomOf="@+id/empNameLayout">
+            android:layout_marginTop="15sp"
+            android:hint="Phone"
+            app:layout_constraintLeft_toRightOf="@id/genderLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/empNameLayout"
+            app:startIconDrawable="@drawable/ic_outline_phone_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:singleLine="true"
                 android:nextFocusDown="@+id/address"
-                android:textSize="15dp" />
+                android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
-        <!--        <Spinner-->
-        <!--            android:id="@+id/gender"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="40sp"-->
-        <!--            android:layout_marginTop="10sp"-->
-        <!--            android:background="@drawable/register_fields"-->
-        <!--            android:drawSelectorOnTop="true"-->
-        <!--            android:entries="@array/spinnerItems"-->
-        <!--            android:paddingLeft="10sp"-->
-        <!--            android:paddingRight="10sp"-->
-        <!--            app:layout_constraintStart_toStartOf="@+id/left"-->
-        <!--            app:layout_constraintTop_toBottomOf="@+id/empName" />-->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/addressLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7sp"
-            app:hintTextColor="@color/white"
+            android:layout_marginTop="15sp"
+            app:startIconDrawable="@drawable/ic_outline_location_on_24"
             android:hint="Address"
-            app:layout_constraintStart_toStartOf="@+id/left"
             app:layout_constraintTop_toBottomOf="@+id/genderLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
                 android:singleLine="true"
-                android:nextFocusDown="@+id/password"
-                android:textSize="15dp" />
+                android:nextFocusDown="@+id/password"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7sp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginTop="15sp"
             android:hint="Password"
-            app:hintTextColor="@color/white"
+            app:startIconDrawable="@drawable/ic_outline_key_24"
             app:endIconMode="password_toggle"
-            app:layout_constraintStart_toStartOf="@+id/left"
             app:layout_constraintTop_toBottomOf="@+id/addressLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
                 android:inputType="textPassword"
-                android:singleLine="true"
-                android:textSize="15dp" />
+                android:singleLine="true"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -161,34 +130,20 @@
             android:id="@+id/register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#F8F0E3"
             android:text="Scan/Register"
             android:enabled="false"
+            android:layout_marginVertical="30sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/passwordLayout"
-            app:layout_constraintStart_toStartOf="@+id/left"
-            app:layout_constraintEnd_toStartOf="@+id/right"
-            android:layout_marginTop="7dp"/>
+            android:layout_marginTop="30sp"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_end="469dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="20dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="370dp" />
+            app:layout_constraintGuide_end="500sp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

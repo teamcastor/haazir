@@ -13,15 +13,6 @@
 
 
     <fragment
-        android:id="@+id/LoginFragment"
-        android:name="com.teamcastor.haazir.ui.login.LoginFragment"
-        tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_global_RegisterFragment"
-            app:destination="@id/registerFragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/HomeFragment"
         android:name="com.teamcastor.haazir.HomeFragment"
         android:label="@string/first_fragment_label"
@@ -45,14 +36,15 @@
         tools:layout="@layout/fragment_history" />
 
     <action
-        android:id="@+id/action_global_LoginFragment"
-        app:destination="@id/LoginFragment"
+        android:id="@+id/action_global_HomeFragment"
+        app:destination="@id/HomeFragment"
         app:launchSingleTop="false"
         app:popUpTo="@+id/nav_graph"
         app:popUpToInclusive="true" />
+
     <action
-        android:id="@+id/action_global_HomeFragment"
-        app:destination="@id/HomeFragment"
+        android:id="@+id/action_global_ViewPagerFragment"
+        app:destination="@id/viewPagerFragment"
         app:launchSingleTop="false"
         app:popUpTo="@+id/nav_graph"
         app:popUpToInclusive="true" />
@@ -64,8 +56,8 @@
         tools:layout="@layout/fragment_attendance">
     </fragment>
     <fragment
-        android:id="@+id/registerFragment"
-        android:name="com.teamcastor.haazir.ui.register.RegisterFragment"
-        android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        android:id="@+id/viewPagerFragment"
+        android:name="com.teamcastor.haazir.ui.ViewPagerFragment"
+        android:label="fragment_view_pager"
+        tools:layout="@layout/fragment_view_pager" />
 </navigation>

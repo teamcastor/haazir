@@ -22,10 +22,11 @@
         android:theme="@style/Theme.Haazir"
         tools:targetApi="31">
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Haazir.NoActionBar">
+            android:theme="@style/Theme.Haazir">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
