@@ -17,11 +17,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <com.google.android.material.textview.MaterialTextView
-        android:layout_marginTop="?actionBarSize"
         android:id="@+id/resultInfo"
         android:textSize="18sp"
         android:layout_width="wrap_content"
-        android:background="@color/white"
+        android:textColor="@color/white"
+        android:background="@color/black_overlay"
         android:layout_height="wrap_content" />
 
 </FrameLayout>

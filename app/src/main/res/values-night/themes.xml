@@ -2,18 +2,17 @@
     <!-- Base application theme. -->
     <style name="Theme.Haazir" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/light_blue</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/dm_blue</item>
+        <item name="colorPrimaryDark">@color/dm_light_blue</item>
+        <item name="colorPrimaryVariant">@color/dm_blue_variant</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
-        <item name="colorOutline">@color/dark_blue</item>
+        <item name="colorOutline">@color/dm_blue_variant</item>
         <item name="colorSecondaryContainer">@color/slate_grey</item>
-
-        <!-- Status bar color. -->
+        <item name="dividerColor">@color/divider</item>
         <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
     </style>
 </resources>

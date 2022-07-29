@@ -18,7 +18,6 @@
         app:tabIndicatorHeight="5dp"
         app:tabIndicatorAnimationMode="linear"
         app:tabSelectedTextColor="#b55385"
-        android:background="@drawable/leavebg1"
         app:layout_constraintStart_toStartOf="@+id/fra"
         app:layout_constraintEnd_toEndOf="@+id/fra"
         app:layout_constraintTop_toTopOf="parent">

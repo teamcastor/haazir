@@ -20,7 +20,11 @@
 
         <action
             android:id="@+id/action_HomeFragment_to_Attendance_Fragment"
-            app:destination="@+id/AttendanceFragment" />
+            app:destination="@+id/AttendanceFragment"
+            app:enterAnim="@animator/slide_in_left"
+            app:exitAnim="@animator/slide_out_right"
+            app:popEnterAnim="@animator/slide_in_right"
+            app:popExitAnim="@animator/slide_out_left" />
     </fragment>
 
     <fragment

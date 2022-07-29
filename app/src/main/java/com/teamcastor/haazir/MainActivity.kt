@@ -24,6 +24,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.SystemClock.sleep
 import android.provider.Settings
 import android.widget.Button
 import android.widget.Toast
@@ -84,14 +85,19 @@ class MainActivity : AppCompatActivity() {
             when (destination.id) {
                 R.id.viewPagerFragment -> {
                     bottomNavigationView.visibility = View.GONE
-//                    binding.toolbar.visibility = View.GONE
+                    binding.toolbar.visibility = View.GONE
                 }
                 R.id.AttendanceFragment -> {
+//                    bottomNavigationView.visibility = View.GONE
                     bottomNavigationView.visibility = View.GONE
+                    binding.statusCard.visibility = View.VISIBLE
+
                 }
                 else -> {
+                    binding.toolbar.title = null
                     bottomNavigationView.visibility = View.VISIBLE
                     binding.toolbar.visibility = View.VISIBLE
+                    binding.statusCard.visibility = View.GONE
                 }
             }
         }
