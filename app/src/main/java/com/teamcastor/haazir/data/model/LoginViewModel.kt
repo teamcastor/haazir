@@ -56,13 +56,12 @@ class LoginViewModel() : ViewModel() {
         _scanResult.value = ScanResult(isSharp, isSpoof, isRecognized)
     }
 
-    fun findEmail(en: String, password: String) : String {
-        var email = ""
+    fun findEmail(en: String, password: String) {
         db.child("pairsUE").child(en).addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        email = dataSnapshot.value.toString()
+                        val email = dataSnapshot.value.toString()
                         login(email, password)
                     }
                     else {
@@ -75,7 +74,6 @@ class LoginViewModel() : ViewModel() {
                     Log.w(TAG, "getUser:onCancelled")
                 }
             })
-        return email
     }
 
     fun login(email : String, password: String) {
@@ -149,8 +147,8 @@ class LoginViewModel() : ViewModel() {
 
 
     fun loginDataChanged(username: String, password: String) {
-        if (!RegisterFragment.isEmailValid(username)) {
-            _loginForm.value = LoginFormState(usernameError = R.string.invalid_email)
+        if (!RegisterFragment.isEmpNumValid(username)) {
+            _loginForm.value = LoginFormState(usernameError = R.string.invalid_employee_number)
         } else if (!RegisterFragment.isPasswordValid(password)) {
             _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)
         } else {
@@ -159,7 +157,10 @@ class LoginViewModel() : ViewModel() {
     }
 
     fun registerDataChanged(user: User, password: String) {
-        if (!RegisterFragment.isEmailValid(user.email)) {
+        if (!RegisterFragment.isEmpNumValid(user.empNumber)) {
+            _registerForm.value = RegisterFormState(employeeNumberError = R.string.invalid_employee_number)
+        }
+        else if (!RegisterFragment.isEmailValid(user.email)) {
             _registerForm.value = RegisterFormState(emailError = R.string.invalid_email)
         } else if (!RegisterFragment.isNameValid(user.name)) {
             _registerForm.value = RegisterFormState(nameError = R.string.invalid_name)

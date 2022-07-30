@@ -65,6 +65,9 @@ class RegisterFragment : Fragment() {
                 }
                 println("The data is valid: $registerFormState.isDataValid")
                 registerButton.isEnabled = registerFormState.isDataValid
+                registerFormState.employeeNumberError?.let {
+                    employeeNumberEditText.error = getString(it)
+                }
                 registerFormState.emailError?.let {
                     emailEditText.error = getString(it)
                 }
@@ -127,9 +130,12 @@ class RegisterFragment : Fragment() {
         }
     }
     companion object {
+        fun isEmpNumValid(empNum : String): Boolean {
+            return (empNum.isNotEmpty())
+        }
         // A placeholder username validation check
-        fun isEmailValid(username: String): Boolean {
-            return (username.isNotEmpty())
+        fun isEmailValid(email: String): Boolean {
+            return Patterns.EMAIL_ADDRESS.matcher(email).matches()
         }
         fun isNameValid(username: String): Boolean {
             return (username.isNotEmpty())
