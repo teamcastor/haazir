@@ -47,7 +47,8 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val emailEditText = binding.empid
+        val employeeNumberEditText = binding.employeeNumber
+        val emailEditText = binding.email
         val nameEditText = binding.empName
         val genderEditText = binding.genderpicker
         var genderEditTextLayout = binding.genderLayout
@@ -101,6 +102,7 @@ class RegisterFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable) {
                 user = User(
+                    empNumber = employeeNumberEditText.text.toString(),
                     email = emailEditText.text.toString(),
                     phoneNumber = phoneNumberEditText.text.toString(),
                     address = addressEditText.text.toString(),
@@ -127,7 +129,7 @@ class RegisterFragment : Fragment() {
     companion object {
         // A placeholder username validation check
         fun isEmailValid(username: String): Boolean {
-            return Patterns.EMAIL_ADDRESS.matcher(username).matches()
+            return (username.isNotEmpty())
         }
         fun isNameValid(username: String): Boolean {
             return (username.isNotEmpty())

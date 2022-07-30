@@ -17,15 +17,15 @@
         android:layout_gravity="center">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/emailLayout"
+            android:id="@+id/empNumberLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:startIconDrawable="@drawable/ic_outline_email_24"
-            android:hint="Email"
+            app:startIconDrawable="@drawable/ic_outline_person_outline_24"
+            android:hint="Employee Number"
             app:layout_constraintTop_toBottomOf="@+id/top">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/email"
+                android:id="@+id/empNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
@@ -41,7 +41,7 @@
             android:hint="Password"
             app:endIconMode="password_toggle"
             app:startIconDrawable="@drawable/ic_outline_key_24"
-            app:layout_constraintTop_toBottomOf="@+id/emailLayout">
+            app:layout_constraintTop_toBottomOf="@+id/empNumberLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
@@ -86,7 +86,7 @@
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/emailLayout"
+            app:layout_constraintBottom_toTopOf="@id/empNumberLayout"
             app:layout_constraintStart_toStartOf="parent"/>
 
         <androidx.constraintlayout.widget.Guideline

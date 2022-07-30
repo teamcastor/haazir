@@ -11,11 +11,9 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.teamcastor.haazir.R
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.FragmentLoginBinding
 
@@ -57,8 +55,8 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val emailEditText = binding.email
-        val emailEditTextLayout = binding.emailLayout
+        val empNumberEditText = binding.empNumber
+        val empNumberEditTextLayout = binding.empNumberLayout
         val passwordEditTextLayout = binding.passwordLayout
         val passwordEditText = binding.password
         val loadingProgressBar = binding.loading
@@ -77,10 +75,10 @@ class LoginFragment : Fragment() {
                     passwordEditTextLayout.error = null
                 }
                 if (loginFormState.usernameError != null) {
-                    emailEditTextLayout.error = getString(loginFormState.usernameError)
+                    empNumberEditTextLayout.error = getString(loginFormState.usernameError)
                 }
                 else {
-                    emailEditTextLayout.error = null
+                    empNumberEditTextLayout.error = null
                 }
 
             })
@@ -108,18 +106,18 @@ class LoginFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable) {
                 loginViewModel.loginDataChanged(
-                    emailEditText.text.toString(),
+                    empNumberEditText.text.toString(),
                     passwordEditText.text.toString()
                 )
             }
         }
-        emailEditText.addTextChangedListener(afterTextChangedListener)
+        empNumberEditText.addTextChangedListener(afterTextChangedListener)
         passwordEditText.addTextChangedListener(afterTextChangedListener)
         passwordEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 loadingProgressBar.visibility = View.VISIBLE
-                loginViewModel.login(
-                    emailEditText.text.toString(),
+                loginViewModel.findEmail(
+                    empNumberEditText.text.toString(),
                     passwordEditText.text.toString()
                 )
             }
@@ -128,7 +126,7 @@ class LoginFragment : Fragment() {
 
         loginButton.setOnClickListener {
             loadingProgressBar.visibility = View.VISIBLE
-            loginViewModel.login(emailEditText.text.toString(), passwordEditText.text.toString())
+            loginViewModel.findEmail(empNumberEditText.text.toString(), passwordEditText.text.toString())
 
         }
 

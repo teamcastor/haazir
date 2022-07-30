@@ -15,15 +15,33 @@
         android:layout_gravity="center">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/empidlayout"
+            android:id="@+id/employeeNumberLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:startIconDrawable="@drawable/ic_outline_email_24"
-            android:hint="Id"
+            android:hint="Employee Number"
             app:layout_constraintTop_toBottomOf="@+id/top">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/empid"
+                android:id="@+id/employeeNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:nextFocusDown="@+id/empName"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15sp"
+            app:startIconDrawable="@drawable/ic_outline_email_24"
+            android:hint="Email"
+            app:layout_constraintTop_toBottomOf="@+id/employeeNumberLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
@@ -38,7 +56,7 @@
             android:layout_marginTop="15sp"
             app:startIconDrawable="@drawable/ic_outline_person_outline_24"
             android:hint="Name"
-            app:layout_constraintTop_toBottomOf="@+id/empidlayout">
+            app:layout_constraintTop_toBottomOf="@+id/emailLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/empName"
@@ -143,7 +161,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_end="500sp" />
+            app:layout_constraintGuide_percent="0.33" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

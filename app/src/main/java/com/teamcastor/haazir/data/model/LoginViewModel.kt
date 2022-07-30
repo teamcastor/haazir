@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.teamcastor.haazir.R
@@ -18,12 +21,15 @@ import com.teamcastor.haazir.ui.login.LoginResult
 import com.teamcastor.haazir.ui.register.RegisterFormState
 import com.teamcastor.haazir.ui.register.RegisterFragment
 
+
 class LoginViewModel() : ViewModel() {
     companion object {
         fun logout() {
             Firebase.auth.signOut()
         }
         const val TAG: String = "LoginViewModel"
+        val db =
+            Firebase.database("https://haazir-11bae-default-rtdb.asia-southeast1.firebasedatabase.app/").reference
     }
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
@@ -50,7 +56,29 @@ class LoginViewModel() : ViewModel() {
         _scanResult.value = ScanResult(isSharp, isSpoof, isRecognized)
     }
 
-    fun login(email: String, password: String) {
+    fun findEmail(en: String, password: String) : String {
+        var email = ""
+        db.child("pairsUE").child(en).addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        email = dataSnapshot.value.toString()
+                        login(email, password)
+                    }
+                    else {
+                        _loginResult.value = LoginResult(error = R.string.login_failed)
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "This employee number is not registered")
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(TAG, "getUser:onCancelled")
+                }
+            })
+        return email
+    }
+
+    fun login(email : String, password: String) {
         try {
             Firebase.auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
@@ -71,34 +99,49 @@ class LoginViewModel() : ViewModel() {
                 }
         } catch (e: Throwable) {
             _loginResult.value = LoginResult(error = R.string.login_failed)
-            Log.w(TAG,"signInWithEmail:exception", e)
+            Log.w(TAG, "signInWithEmail:exception", e)
         }
     }
 
     fun register(user: User, password: String) {
         try {
-            Firebase.auth.createUserWithEmailAndPassword(user.email, password)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val uid = Firebase.auth.currentUser?.uid
-                        val db =
-                            Firebase.database("https://haazir-11bae-default-rtdb.asia-southeast1.firebasedatabase.app/").reference
-                        if (uid != null) {
-                            db.child("users").child(uid).setValue(user)
-                                .addOnCompleteListener { t ->
-                                    if (t.isSuccessful) {
-                                        println("Registeration data uploaded")
-                                    } else
-                                        println("Registeration failed ${t.exception}")
+            // We have to make sure no other account exists with this Emp Number
+            db.child("pairsUE").addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (!dataSnapshot.hasChild(user.empNumber)) {
+                            Firebase.auth.createUserWithEmailAndPassword(user.email, password)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        val uid = Firebase.auth.currentUser?.uid
+
+                                        if (uid != null) {
+                                            db.child("users").child(uid).setValue(user)
+                                                .addOnCompleteListener { t ->
+                                                    if (t.isSuccessful) {
+                                                        println("Registeration data uploaded")
+                                                    } else
+                                                        println("Registeration failed ${t.exception}")
+                                                }
+                                        }
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Log.d(TAG, "createUserWithEmail:success")
+                                        // Upload email and empNumber pair to pairsUE ref
+                                        db.child("pairsUE").child(user.empNumber).setValue(user.email)
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                                    }
                                 }
                         }
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "createUserWithEmail:success")
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "createUserWithEmail:failure", task.exception)
                     }
-                }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException())
+                    }
+                })
+
+
         } catch (e: Throwable) {
             Log.w(TAG, "createUserWithEmail:exception", e)
         }
