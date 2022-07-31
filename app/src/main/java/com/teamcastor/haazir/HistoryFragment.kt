@@ -8,13 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
+import com.teamcastor.haazir.databinding.FragmentHistoryBinding
+import com.teamcastor.haazir.databinding.FragmentHistoryListBinding
 import com.teamcastor.haazir.placeholder.PlaceholderContent
 
 /**
  * A fragment representing a list of Items.
  */
 class HistoryFragment : Fragment() {
-
+    private var _bindingH: FragmentHistoryBinding? = null
+    private val bindingH get() = _bindingH!!
+    private var _bindingHL: FragmentHistoryListBinding? = null
+    private val bindingHL get() = _bindingHL!!
     private var columnCount = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,20 +34,23 @@ class HistoryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_history_list, container, false)
-
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = MyAttendanceDetailRecyclerViewAdapter(PlaceholderContent.ITEMS)
+    ): View {
+        _bindingHL = FragmentHistoryListBinding.inflate(inflater, container, false)
+        // Set the adapte
+        bindingHL.list.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                LinearLayoutManager.VERTICAL
+            )
+        )
+        with(bindingHL.list) {
+            layoutManager = when {
+                columnCount <= 1 -> LinearLayoutManager(context)
+                else -> GridLayoutManager(context, columnCount)
             }
+            adapter = MyAttendanceDetailRecyclerViewAdapter(PlaceholderContent.ITEMS)
         }
-        return view
+        return bindingHL.root
     }
 
     companion object {

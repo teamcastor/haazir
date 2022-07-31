@@ -14,5 +14,6 @@
         <item name="colorSecondaryContainer">@color/slate_grey</item>
         <item name="dividerColor">@color/divider</item>
         <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
+        <!-- Override Theme Colors-->
     </style>
 </resources>

@@ -1,20 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/item_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingStart="@dimen/cardview_default_elevation"
+            android:clipToPadding="false">
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/dayDetailsCard"
+                    app:strokeWidth="0dp"
+                    app:cardElevation="@dimen/cardview_default_elevation"
+                    android:layout_width="wrap_content"
+                    app:contentPaddingLeft="6dp"
+                    app:contentPaddingRight="6dp"
+                    app:contentPaddingTop="4dp"
+                    app:contentPaddingBottom="4dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical">
+                        <LinearLayout
+                            android:id="@+id/dayDetailsLL"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center">
+                                <TextView
+                                    android:id="@+id/dayNum"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:textAppearance="?attr/textAppearanceListItem" />
+                                <TextView
+                                    android:id="@+id/dayName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-    <TextView
-        android:id="@+id/content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        <TextView
+            android:id="@+id/enterTime"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="09:35 AM"
+            android:textAppearance="?textAppearanceTitleMedium" />
+
+        <TextView
+            android:id="@+id/workDuration"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="08h 24m"
+            android:gravity="center"
+            android:textAppearance="?textAppearanceTitleMedium" />
+
+        <TextView
+            android:id="@+id/exitTime"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/cardview_default_elevation"
+            android:text="05:05 PM"
+            android:gravity="right"
+            android:textAppearance="?textAppearanceTitleMedium" />
 </LinearLayout>

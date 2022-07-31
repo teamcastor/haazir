@@ -32,15 +32,15 @@ class MyAttendanceDetailRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
         holder.idView.text = item.id
-        holder.contentView.text = item.content
+        holder.contentView.text = "THU"
     }
 
     override fun getItemCount(): Int = values.size
 
     inner class ViewHolder(binding: FragmentHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val idView: TextView = binding.itemNumber
-        val contentView: TextView = binding.content
+        val idView: TextView = binding.dayNum
+        val contentView: TextView = binding.dayName
 
         override fun toString(): String {
             return super.toString() + " '" + contentView.text + "'"

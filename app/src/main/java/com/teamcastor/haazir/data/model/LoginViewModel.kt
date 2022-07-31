@@ -20,6 +20,7 @@ import com.teamcastor.haazir.ui.login.LoginFormState
 import com.teamcastor.haazir.ui.login.LoginResult
 import com.teamcastor.haazir.ui.register.RegisterFormState
 import com.teamcastor.haazir.ui.register.RegisterFragment
+import java.lang.Exception
 
 
 class LoginViewModel() : ViewModel() {
@@ -57,23 +58,28 @@ class LoginViewModel() : ViewModel() {
     }
 
     fun findEmail(en: String, password: String) {
-        db.child("pairsUE").child(en).addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        val email = dataSnapshot.value.toString()
-                        login(email, password)
+        try {
+            db.child("pairsUE").child(en).addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            val email = dataSnapshot.value.toString()
+                            login(email, password)
+                        } else {
+                            _loginResult.value = LoginResult(error = R.string.login_failed)
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "This employee number is not registered")
+                        }
                     }
-                    else {
-                        _loginResult.value = LoginResult(error = R.string.login_failed)
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "This employee number is not registered")
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(TAG, "getUser:onCancelled")
                     }
-                }
-                override fun onCancelled(error: DatabaseError) {
-                    Log.w(TAG, "getUser:onCancelled")
-                }
-            })
+                })
+        } catch (e: Exception) {
+            Log.w(TAG, "Could not initiate email lookup", e)
+            _loginResult.value = LoginResult(error = R.string.login_failed)
+        }
     }
 
     fun login(email : String, password: String) {

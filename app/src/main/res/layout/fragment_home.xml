@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardCornerRadius="@dimen/cornerRadius"
-            app:cardElevation="@dimen/elevation"
+            app:cardElevation="@dimen/cardview_default_elevation"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:strokeWidth="0dp">
@@ -38,10 +38,10 @@
         <TextView
             android:id="@+id/location"
             android:layout_width="wrap_content"
-            android:drawableTint="?colorOnSurfaceInverse"
+            android:drawableTint="?colorSurface"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/medium_gap"
-            android:textColor="?colorOnSurfaceInverse"
+            android:textColor="?colorSurface"
             android:drawablePadding="8dp"
             android:drawableStart="@drawable/ic_baseline_location_on_24"
             android:text="Not-GAIL Head Office, Sirigiya"
@@ -57,7 +57,7 @@
             android:layout_gravity="center"
             android:layout_marginHorizontal="@dimen/small_gap"
             android:text="Ravan Singh"
-            android:textColor="?colorOnSurfaceInverse"
+            android:textColor="?colorSurface"
             android:textAppearance="?textAppearanceTitleLarge"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.1"
@@ -70,7 +70,7 @@
             android:textAppearance="?textAppearanceBodyMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="?colorOnSurfaceInverse"
+            android:textColor="?colorSurface"
             android:text="Employee No: 5174"
             app:layout_constraintBottom_toBottomOf="@+id/photoCardView"
             app:layout_constraintEnd_toEndOf="parent"
@@ -105,7 +105,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:padding="@dimen/medium_gap">
 
                     <LinearLayout
@@ -131,25 +131,25 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:dividerColor="?dividerColor"
-                        app:dividerThickness="1dp"
                         android:layout_marginVertical="@dimen/medium_gap"
                         app:dividerInsetStart="16dp"
                         app:dividerInsetEnd="16dp"
-                        app:layout_constraintBottom_toTopOf="@id/guideline"
+                        app:layout_constraintBottom_toTopOf="@id/barrier"
                         app:layout_constraintTop_toBottomOf="@id/dateLayout" />
 
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:orientation="horizontal"
-                        app:layout_constraintGuide_percent="0.49" />
+                    <androidx.constraintlayout.widget.Barrier
+                        android:id="@+id/barrier"
+                        app:barrierDirection="top"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="enterTime, workDuration, exitTime"/>
+
 
                     <TextView
                         android:id="@+id/enterTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableTop="@drawable/ic_checkin_36"
+                        android:drawableTop="@drawable/ic_checkin_24"
                         android:drawablePadding="8dp"
                         android:drawableTint="?colorOnSurface"
                         android:text="09:35 AM"
@@ -157,33 +157,37 @@
                         app:layout_constraintEnd_toStartOf="@+id/workDuration"
                         app:layout_constraintHorizontal_chainStyle="spread_inside"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/guideline" />
+                        app:layout_constraintTop_toBottomOf="@id/divider"
+                        app:layout_constraintBottom_toTopOf="@id/enterTimeDesc"/>
 
                     <TextView
                         android:id="@+id/workDuration"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableTop="@drawable/ic_timer_36"
+                        android:drawableTop="@drawable/ic_timer_24"
                         android:drawablePadding="8dp"
                         android:drawableTint="?colorOnSurface"
-                        android:text="08:24"
+                        android:text="08h 24m"
                         android:textAppearance="?textAppearanceTitleMedium"
                         app:layout_constraintEnd_toStartOf="@id/exitTime"
                         app:layout_constraintStart_toEndOf="@id/enterTime"
-                        app:layout_constraintTop_toBottomOf="@id/guideline" />
+                        app:layout_constraintTop_toTopOf="@id/divider"
+                        app:layout_constraintBottom_toTopOf="@id/workDurationDesc"
+                        />
 
                     <TextView
                         android:id="@+id/exitTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableTop="@drawable/ic_checkout_36"
+                        android:drawableTop="@drawable/ic_checkout_24"
                         android:drawablePadding="8dp"
                         android:drawableTint="?colorOnSurface"
                         android:text="05:05 PM"
                         android:textAppearance="?textAppearanceTitleMedium"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/workDuration"
-                        app:layout_constraintTop_toBottomOf="@id/guideline" />
+                        app:layout_constraintTop_toBottomOf="@id/divider"
+                        app:layout_constraintBottom_toTopOf="@id/exitTimeDesc"/>
 
 
                     <TextView
@@ -192,7 +196,6 @@
                         android:layout_height="wrap_content"
                         android:text="Check-in"
                         android:textAppearance="?textAppearanceLabelMedium"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/enterTime"
                         app:layout_constraintHorizontal_chainStyle="spread_inside"
                         app:layout_constraintStart_toStartOf="@id/enterTime"
@@ -204,7 +207,6 @@
                         android:layout_height="wrap_content"
                         android:text="Check-out"
                         android:textAppearance="?textAppearanceLabelMedium"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/exitTime"
                         app:layout_constraintStart_toStartOf="@id/exitTime"
                         app:layout_constraintTop_toBottomOf="@id/exitTime" />
@@ -215,7 +217,6 @@
                         android:layout_height="wrap_content"
                         android:text="Work Time"
                         android:textAppearance="?textAppearanceLabelMedium"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@id/workDuration"
                         app:layout_constraintStart_toStartOf="@id/workDuration"
                         app:layout_constraintTop_toBottomOf="@id/workDuration" />
@@ -234,7 +235,7 @@
                 app:slider_icon_color="?attr/colorOnSurface"
                 app:slider_locked="false"
                 app:text="Slide Right to Check-In"
-                app:text_color="?colorOnSurfaceInverse"
+                app:text_color="?colorSurface"
                 app:border_radius="@dimen/cornerRadius" />
 
         </RelativeLayout>
