@@ -12,22 +12,27 @@
         android:id="@+id/topbar"
         layout="@layout/appbar" />
 
-    <androidx.camera.view.PreviewView
-        android:id="@+id/viewFinder"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </androidx.camera.view.PreviewView>
+        android:layout_height="match_parent">
+        <androidx.camera.view.PreviewView
+            android:id="@+id/viewFinder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </androidx.camera.view.PreviewView>
 
-    <com.teamcastor.haazir.GraphicOverlay
-        android:id="@+id/graphic_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/resultInfo"
-        android:textSize="18sp"
-        android:layout_width="wrap_content"
-        android:textColor="@color/white"
-        android:background="@color/black_overlay"
-        android:layout_height="wrap_content" />
+        <com.teamcastor.haazir.GraphicOverlay
+            android:id="@+id/graphic_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/resultInfo"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:textColor="@color/white"
+            android:background="@color/black_overlay"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 
 </LinearLayout>
