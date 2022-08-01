@@ -19,6 +19,5 @@
     </style>
     <style name="Theme.Haazir.AppBarOverlay" parent="ThemeOverlay.Material3">
         <item name="colorControlNormal">?attr/colorSurface</item>
-        <item name="homeAsUpIndicator">@drawable/ic_today_24</item>
     </style>
 </resources>

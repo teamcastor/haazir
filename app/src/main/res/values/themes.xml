@@ -32,6 +32,5 @@
     <style name="Theme.Haazir.AppBarOverlay" parent="ThemeOverlay.Material3">
         <!-- Color used by toolbar icons/text -->
         <item name="colorControlNormal">?attr/colorSurface</item>
-        <item name="homeAsUpIndicator">@drawable/ic_today_24_white</item>
     </style>
 </resources>
