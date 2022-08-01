@@ -13,7 +13,12 @@
         <item name="colorOutline">@color/dm_blue_variant</item>
         <item name="colorSecondaryContainer">@color/slate_grey</item>
         <item name="dividerColor">@color/divider</item>
-        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" >?attr/colorPrimary</item>
+        <item name="android:windowLightStatusBar">true</item>
         <!-- Override Theme Colors-->
+    </style>
+    <style name="Theme.Haazir.AppBarOverlay" parent="ThemeOverlay.Material3">
+        <item name="colorControlNormal">?attr/colorSurface</item>
+        <item name="homeAsUpIndicator">@drawable/ic_today_24</item>
     </style>
 </resources>

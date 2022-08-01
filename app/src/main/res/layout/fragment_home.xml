@@ -10,6 +10,10 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
+    <include
+        android:id="@+id/topbar"
+        layout="@layout/appbar"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -224,19 +228,20 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.ncorti.slidetoact.SlideToActView
-                android:layout_alignParentBottom="true"
                 android:id="@+id/slider"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
+                android:layout_alignParentBottom="true"
+                android:paddingBottom="80dp"
                 android:elevation="@dimen/cardview_default_elevation"
                 app:animate_completion="false"
+                app:border_radius="@dimen/cornerRadius"
                 app:inner_color="?attr/colorSurface"
                 app:outer_color="?attr/colorPrimaryDark"
                 app:slider_icon_color="?attr/colorOnSurface"
                 app:slider_locked="false"
                 app:text="Slide Right to Check-In"
-                app:text_color="?colorSurface"
-                app:border_radius="@dimen/cornerRadius" />
+                app:text_color="?colorSurface" />
 
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>

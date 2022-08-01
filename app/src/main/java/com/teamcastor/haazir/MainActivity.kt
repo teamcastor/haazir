@@ -1,18 +1,14 @@
 package com.teamcastor.haazir
 
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.navigation.NavController
-import android.widget.TextView
-import androidx.navigation.findNavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.android.gms.location.*
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.ActivityMainBinding
-import kotlin.system.exitProcess
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -24,11 +20,8 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.SystemClock.sleep
 import android.provider.Settings
-import android.widget.Button
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.NavHostFragment
@@ -39,7 +32,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
-import com.google.android.material.tabs.TabLayoutMediator
 
 
 class MainActivity : AppCompatActivity() {
@@ -54,8 +46,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var str: String
 
-
-
 //    private lateinit var tv: TextView
 //    private lateinit var tv1: TextView
 //    private lateinit var btn: Button
@@ -66,41 +56,30 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-        binding.toolbar.setTitleTextAppearance(this, R.style.SmarkanTextAppearance)
 
         setupNavigation()
 
         bottomNavigationView = binding.bottomNavigation
         bottomNavigationView.setupWithNavController(navController)
-
-
-
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.viewPagerFragment -> {
-                    bottomNavigationView.visibility = View.GONE
-                    binding.toolbar.visibility = View.GONE
-                }
                 R.id.AttendanceFragment -> {
-//                    bottomNavigationView.visibility = View.GONE
                     bottomNavigationView.visibility = View.GONE
                     binding.statusCard.visibility = View.VISIBLE
 
                 }
                 else -> {
-                    binding.toolbar.title = null
                     bottomNavigationView.visibility = View.VISIBLE
-                    binding.toolbar.visibility = View.VISIBLE
                     binding.statusCard.visibility = View.GONE
                 }
             }
         }
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+
+
         // I don't know what is up with these, they keep throwing NullPointerException
         // Since they don't work anyway, I'm just gonna comment them out.
         // Others can fix it properly
@@ -114,39 +93,10 @@ class MainActivity : AppCompatActivity() {
 //            getLocation()
 //        }
 
-        loginViewModel.authenticationState.observeForever { authenticationState ->
-            when (authenticationState) {
-                LoginViewModel.AuthenticationState.AUTHENTICATED -> {
-                    navController.navigate(R.id.action_global_HomeFragment)
-                }
-                else -> {
-                    navController.navigate(R.id.action_global_ViewPagerFragment)
-                }
+        loginViewModel.authenticationState.observe(this) { authenticationState ->
+            if (authenticationState != LoginViewModel.AuthenticationState.AUTHENTICATED) {
+                    navController.navigate(R.id.LoginActivity)
             }
-            // Need to update start destination
-            setupNavigation()
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_tool_bar, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_logout -> {
-                LoginViewModel.logout()
-                true
-            }
-            R.id.action_exit -> {
-                exitProcess(0)
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -157,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         val navGraph = navController.navInflater.inflate(R.navigation.nav_graph)
         when (Firebase.auth.currentUser) {
             null -> {
-                navGraph.setStartDestination(R.id.viewPagerFragment)
+                navGraph.setStartDestination(R.id.LoginActivity)
             }
             else -> {
                 navGraph.setStartDestination(R.id.HomeFragment)

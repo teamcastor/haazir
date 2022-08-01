@@ -14,7 +14,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/dayDetailsCard"
                     app:strokeWidth="0dp"
-                    app:cardElevation="@dimen/cardview_default_elevation"
+                    app:cardElevation="1dp"
                     android:layout_width="wrap_content"
                     app:contentPaddingLeft="6dp"
                     app:contentPaddingRight="6dp"

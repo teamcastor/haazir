@@ -1,17 +1,18 @@
 package com.teamcastor.haazir
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.recyclerview.widget.DividerItemDecoration
+import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.ScaleProvider
+import com.google.android.material.transition.SlideDistanceProvider
 import com.teamcastor.haazir.databinding.FragmentHistoryBinding
 import com.teamcastor.haazir.databinding.FragmentHistoryListBinding
 import com.teamcastor.haazir.placeholder.PlaceholderContent
+
 
 /**
  * A fragment representing a list of Items.
@@ -25,6 +26,7 @@ class HistoryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
 
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
@@ -50,7 +52,13 @@ class HistoryFragment : Fragment() {
             }
             adapter = MyAttendanceDetailRecyclerViewAdapter(PlaceholderContent.ITEMS)
         }
+
         return bindingHL.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _bindingHL = null
     }
 
     companion object {

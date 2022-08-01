@@ -1,15 +1,25 @@
 package com.teamcastor.haazir
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageFormat
 import android.graphics.Matrix
 import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.media.Image
 import android.os.Environment
 import android.renderscript.*
 import android.util.Log
 import android.view.View
+import android.view.View.*
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.animation.AnimationUtils
+import android.view.animation.AnimationUtils.loadInterpolator
+import androidx.core.animation.doOnEnd
+import androidx.core.view.drawToBitmap
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.FileNotFoundException

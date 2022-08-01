@@ -1,23 +1,28 @@
 package com.teamcastor.haazir
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.transition.MaterialFade
+import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.SlideDistanceProvider
 import com.ncorti.slidetoact.SlideToActView
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.FragmentHomeBinding
+import kotlin.system.exitProcess
 
 class HomeFragment : Fragment() {
     companion object {
         const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
     private var _binding: FragmentHomeBinding? = null
     private val loginViewModel: LoginViewModel by activityViewModels()
     private lateinit var savedStateHandle: SavedStateHandle
@@ -44,7 +49,27 @@ class HomeFragment : Fragment() {
             }
         }
         binding.slider.onSlideCompleteListener = onSlideCompleteListener
+        binding.topbar.toolbar.apply {
+            inflateMenu(R.menu.menu_tool_bar)
 
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_logout -> {
+                        LoginViewModel.logout()
+                        true
+                    }
+                    R.id.action_exit -> {
+                        exitProcess(0)
+                    }
+                    else -> false
+                }
+            }
+        }
+
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
     }
 
 

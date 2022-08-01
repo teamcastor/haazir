@@ -4,53 +4,72 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-    <LinearLayout
-        android:paddingVertical="8dp"
+    android:orientation="vertical"
+    android:background="?colorPrimary">
+    <com.google.android.material.card.MaterialCardView
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Haazir.CardView.TopRounded"
+        app:strokeWidth="0dp"
+        app:cardPreventCornerOverlap="false"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="?colorSurfaceVariant"
-        android:gravity="center"
-        android:paddingHorizontal="@dimen/medium_gap">
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="8dp"
+            android:paddingTop="8dp">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:text="Date"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"
-            android:text="Check-in"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Work Time"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:paddingEnd="8dp"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="Check-out"/>
+            <LinearLayout
+                android:id="@+id/headerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/small_gap"
+                android:paddingVertical="@dimen/small_gap">
 
-    </LinearLayout>
-    <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/list"
-    android:name="com.teamcastor.haazir.HistoryFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginHorizontal="@dimen/medium_gap"
-    app:layoutManager="LinearLayoutManager"
-    tools:context=".HistoryFragment"
-    tools:listitem="@layout/fragment_history" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="8dp"
+                    android:text="Date"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Check-in"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Work Time"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:paddingEnd="8dp"
+                    android:text="Check-out"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_below="@id/headerLayout"
+                android:id="@+id/list"
+                android:name="com.teamcastor.haazir.HistoryFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/small_gap"
+                app:layoutManager="LinearLayoutManager"
+                tools:context=".HistoryFragment"
+                tools:listitem="@layout/fragment_history" />
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

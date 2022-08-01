@@ -8,14 +8,12 @@
     <activity
         android:id="@+id/MainActivity"
         android:name="com.teamcastor.haazir.MainActivity"
-        android:label="HomeScreen"
         tools:layout="@layout/activity_main" />
 
 
     <fragment
         android:id="@+id/HomeFragment"
         android:name="com.teamcastor.haazir.HomeFragment"
-        android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_home">
 
         <action
@@ -40,15 +38,12 @@
         tools:layout="@layout/fragment_history" />
 
     <action
+        android:id="@+id/action_global_MainActivity"
+        app:destination="@id/MainActivity"
+        />
+    <action
         android:id="@+id/action_global_HomeFragment"
         app:destination="@id/HomeFragment"
-        app:launchSingleTop="false"
-        app:popUpTo="@+id/nav_graph"
-        app:popUpToInclusive="true" />
-
-    <action
-        android:id="@+id/action_global_ViewPagerFragment"
-        app:destination="@id/viewPagerFragment"
         app:launchSingleTop="false"
         app:popUpTo="@+id/nav_graph"
         app:popUpToInclusive="true" />
@@ -56,12 +51,9 @@
     <fragment
         android:id="@+id/AttendanceFragment"
         android:name="com.teamcastor.haazir.AttendanceFragment"
-        android:label="Attendance"
         tools:layout="@layout/fragment_attendance">
     </fragment>
-    <fragment
-        android:id="@+id/viewPagerFragment"
-        android:name="com.teamcastor.haazir.ui.ViewPagerFragment"
-        android:label="fragment_view_pager"
-        tools:layout="@layout/fragment_view_pager" />
+    <activity
+        android:id="@+id/LoginActivity"
+        android:name="com.teamcastor.haazir.ui.LoginActivity"/>
 </navigation>
