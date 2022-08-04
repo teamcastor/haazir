@@ -7,7 +7,7 @@
         <item name="colorPrimaryVariant">@color/dm_blue_variant</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondary">@color/blue</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="colorOutline">@color/dm_blue_variant</item>

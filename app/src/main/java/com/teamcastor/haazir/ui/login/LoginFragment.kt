@@ -1,60 +1,27 @@
 package com.teamcastor.haazir.ui.login
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.teamcastor.haazir.*
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.FragmentLoginBinding
 
 
-class LoginFragment : Fragment() {
+class LoginFragment : Fragment(R.layout.fragment_login) {
     private val loginViewModel: LoginViewModel by activityViewModels()
-    private lateinit var auth: FirebaseAuth
-    private var _binding: FragmentLoginBinding? = null
-    private lateinit var ctx: Context
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        ctx = context
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        auth = Firebase.auth
-
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentLoginBinding.inflate(
-            inflater,
-            container,
-            false
-        )
-        return binding.root
-
-
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val binding = FragmentLoginBinding.bind(view)
         val empNumberEditText = binding.empNumber
         val empNumberEditTextLayout = binding.empNumberLayout
         val passwordEditTextLayout = binding.passwordLayout
@@ -126,19 +93,15 @@ class LoginFragment : Fragment() {
 
         loginButton.setOnClickListener {
             loadingProgressBar.visibility = View.VISIBLE
-            loginViewModel.findEmail(empNumberEditText.text.toString(), passwordEditText.text.toString())
-
+            loginViewModel.findEmail(
+                empNumberEditText.text.toString(),
+                passwordEditText.text.toString()
+            )
         }
-
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {
         val appContext = context?.applicationContext ?: return
         Toast.makeText(appContext, errorString, Toast.LENGTH_LONG).show()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
