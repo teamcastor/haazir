@@ -1,13 +1,19 @@
 package com.teamcastor.haazir
 
-import android.location.LocationManager
+import android.app.PendingIntent
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.GeofencingRequest
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -17,20 +23,73 @@ import com.teamcastor.haazir.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        // Noida Institute of Technology
+        const val LATITUDE = 28.463036
+        const val LONGITUDE = 77.490994
+    }
+
     private lateinit var binding: ActivityMainBinding
     private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var navController: NavController
     private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var geofencingClient: GeofencingClient
+
+    private val geofencePendingIntent: PendingIntent by lazy {
+        val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
+        // addGeofences() and removeGeofences().
+        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Needed for notifications
+        createChannel(this)
+
+        // [START Geofencing related code]
+        geofencingClient = LocationServices.getGeofencingClient(this)
+
+        val geofence = Geofence.Builder()
+            // Set the request ID of the geofence. This is a string to identify this
+            // geofence.
+            .setRequestId("niit-delhi")
+
+            // Set the circular region of this geofence.
+            .setCircularRegion(
+                LATITUDE, LONGITUDE,  100F
+            )
+            // Set the transition types of interest. Alerts are only generated for these
+            // transition. We track entry and exit transitions.
+            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
+            // Create the geofence.
+            .setExpirationDuration(Geofence.NEVER_EXPIRE)
+            .build()
+
+        fun getGeofencingRequest(): GeofencingRequest {
+            return GeofencingRequest.Builder().apply {
+                setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                addGeofence(geofence)
+            }.build()
+        }
+
+        geofencingClient.addGeofences(getGeofencingRequest(), geofencePendingIntent).run {
+            addOnSuccessListener {
+                Log.i("MainActivity", "geofence added successfully")
+            }
+            addOnFailureListener {
+                Log.w("MainActivity", "can't add geofence", it)
+            }
+        }
+        // [END Geofencing related code]
+
+        // Setup View binding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        // Navigation
         setupNavigation()
-
         bottomNavigationView = binding.bottomNavigation
         bottomNavigationView.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -53,9 +112,18 @@ class MainActivity : AppCompatActivity() {
 
         loginViewModel.authenticationState.observe(this) { authenticationState ->
             if (authenticationState != LoginViewModel.AuthenticationState.AUTHENTICATED) {
-                    navController.navigate(R.id.LoginActivity)
+                navController.navigate(R.id.LoginActivity)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        removeGeofences()
+    }
+
+    private fun removeGeofences() {
+        geofencingClient.removeGeofences(geofencePendingIntent)
     }
 
     private fun setupNavigation() {
