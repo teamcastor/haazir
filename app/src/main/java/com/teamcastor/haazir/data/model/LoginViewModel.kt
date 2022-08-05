@@ -7,6 +7,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.teamcastor.haazir.R
 import com.teamcastor.haazir.data.FirebaseUserLiveData
@@ -29,6 +30,25 @@ class LoginViewModel() : ViewModel() {
         val db =
             Firebase.database("https://haazir-11bae-default-rtdb.asia-southeast1.firebasedatabase.app/").reference
     }
+
+    fun getUser(): LiveData<User> {
+        val user: MutableLiveData<User> = MutableLiveData()
+        if (user.value == null) {
+            val userListener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    user.postValue(dataSnapshot.getValue<User>())
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.w(TAG, "loadUser:onCancelled", databaseError.toException())
+                }
+            }
+            Firebase.auth.uid?.let { db.child("users").child(it).addListenerForSingleValueEvent(userListener) }
+        }
+
+        return user
+    }
+
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
     private val _loginResult = MutableLiveData<LoginResult>()
@@ -110,8 +130,8 @@ class LoginViewModel() : ViewModel() {
             db.child("pairsUE").addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        if (!dataSnapshot.hasChild(user.empNumber)) {
-                            Firebase.auth.createUserWithEmailAndPassword(user.email, password)
+                        if (!dataSnapshot.hasChild(user.empNumber!!)) {
+                            Firebase.auth.createUserWithEmailAndPassword(user.email!!, password)
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
                                         val uid = Firebase.auth.currentUser?.uid
@@ -128,7 +148,7 @@ class LoginViewModel() : ViewModel() {
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "createUserWithEmail:success")
                                         // Upload email and empNumber pair to pairsUE ref
-                                        db.child("pairsUE").child(user.empNumber).setValue(user.email)
+                                        db.child("pairsUE").child(user.empNumber!!).setValue(user.email)
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Log.w(TAG, "createUserWithEmail:failure", task.exception)
@@ -160,20 +180,20 @@ class LoginViewModel() : ViewModel() {
     }
 
     fun registerDataChanged(user: User, password: String) {
-        if (!RegisterFragment.isEmpNumValid(user.empNumber)) {
+        if (!RegisterFragment.isEmpNumValid(user.empNumber!!)) {
             _registerForm.value = RegisterFormState(employeeNumberError = R.string.invalid_employee_number)
         }
-        else if (!RegisterFragment.isEmailValid(user.email)) {
+        else if (!RegisterFragment.isEmailValid(user.email!!)) {
             _registerForm.value = RegisterFormState(emailError = R.string.invalid_email)
-        } else if (!RegisterFragment.isNameValid(user.name)) {
+        } else if (!RegisterFragment.isNameValid(user.name!!)) {
             _registerForm.value = RegisterFormState(nameError = R.string.invalid_name)
-        } else if (!RegisterFragment.isGenderValid(user.gender)) {
+        } else if (!RegisterFragment.isGenderValid(user.gender!!)) {
             _registerForm.value = RegisterFormState(genderError = R.string.invalid_gender)
-        } else if (!RegisterFragment.isNumberValid(user.phoneNumber)) {
+        } else if (!RegisterFragment.isNumberValid(user.phoneNumber!!)) {
             _registerForm.value = RegisterFormState(phoneError = R.string.invalid_number)
         } else if (!RegisterFragment.isPasswordValid(password)) {
             _registerForm.value = RegisterFormState(passwordError = R.string.invalid_password)
-        } else if (!RegisterFragment.isAddressValid(user.address)) {
+        } else if (!RegisterFragment.isAddressValid(user.address!!)) {
             _registerForm.value = RegisterFormState(addressError = R.string.invalid_address)
         } else {
             _registerForm.value = RegisterFormState(isDataValid = true)
