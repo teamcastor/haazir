@@ -10,28 +10,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/leavetabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        app:tabIndicatorColor="#b55385"
-        app:tabIndicatorHeight="5dp"
-        app:tabIndicatorAnimationMode="linear"
-        app:tabSelectedTextColor="#b55385"
-        app:layout_constraintStart_toStartOf="@+id/fra"
-        app:layout_constraintEnd_toEndOf="@+id/fra"
-        app:layout_constraintTop_toTopOf="parent">
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/leavetabLayout"
+            android:layout_width="match_parent"
+            android:background="?colorSurfaceVariant"
+            android:layout_height="70dp"
+            app:tabIndicatorColor="?colorPrimary"
+            app:tabIndicatorHeight="5dp"
+            app:tabIndicatorAnimationMode="linear"
+            app:tabSelectedTextColor="?colorPrimary"
+            app:layout_constraintStart_toStartOf="@+id/fra"
+            app:layout_constraintEnd_toEndOf="@+id/fra"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Apply"
-            />
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Status"/>
-    </com.google.android.material.tabs.TabLayout>
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Apply"
+                />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Status"/>
+        </com.google.android.material.tabs.TabLayout>
         <FrameLayout
             android:id="@+id/frame"
             android:layout_width="match_parent"
