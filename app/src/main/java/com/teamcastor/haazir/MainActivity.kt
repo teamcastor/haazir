@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        removeGeofences()
+//        removeGeofences()
     }
 
     private fun removeGeofences() {
