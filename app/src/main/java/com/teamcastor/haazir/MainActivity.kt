@@ -143,10 +143,11 @@ class MainActivity : AppCompatActivity() {
     private fun initiateRequestPermissions(view: View) {
         when {
             checkPermissions() -> {}
+            REQUIRED_PERMISSIONS.any {
             ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) -> {
+            )} -> {
                 Utils.showSnackbar(
                     view,
                     "Missing Permissions",
@@ -208,7 +209,8 @@ class MainActivity : AppCompatActivity() {
             mutableListOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ).apply {
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
