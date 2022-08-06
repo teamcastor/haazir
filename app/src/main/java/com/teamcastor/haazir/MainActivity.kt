@@ -23,11 +23,13 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.teamcastor.haazir.data.model.LoginViewModel
 import com.teamcastor.haazir.databinding.ActivityMainBinding
+import kotlin.system.exitProcess
 
 
 class MainActivity : AppCompatActivity() {
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var geofencingClient: GeofencingClient
+    private lateinit var backgroundDialog: MaterialAlertDialogBuilder
 
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
@@ -51,6 +54,9 @@ class MainActivity : AppCompatActivity() {
         if (permissions.containsValue(false)) {
             initiateRequestPermissions(binding.root)
         }
+        // Call it again for requesting background location permission
+        if (!checkBLPermission())
+            initiateRequestPermissions(binding.root)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,15 +88,27 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        backgroundDialog = MaterialAlertDialogBuilder(this)
+            .setTitle("Allow background location access")
+            .setMessage("Select ${packageManager.backgroundPermissionOptionLabel} on the upcoming screen.")
+            .setCancelable(false)
+            .setNegativeButton("Quit Application") { dialog, which ->
+                // Respond to negative button press
+                exitProcess(0)
+            }
+            .setPositiveButton("Proceed") { dialog, which ->
+                requestPermissionsLauncher.launch(
+                    arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                )
+            }
     }
 
     override fun onStart() {
         super.onStart()
-        if (checkPermissions()) {
+        initiateRequestPermissions(binding.root)
+        if (checkPermissions() && checkBLPermission()) {
             if (isLocationEnabled())
                 addGeofence()
-        } else {
-            initiateRequestPermissions(binding.root)
         }
     }
 
@@ -136,17 +154,24 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    private fun checkBLPermission(): Boolean {
+        return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                == PackageManager.PERMISSION_GRANTED)
+    }
     private fun checkPermissions() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun initiateRequestPermissions(view: View) {
         when {
-            checkPermissions() -> {}
+            checkPermissions() -> {
+                if (!checkBLPermission())
+                    backgroundDialog.show()
+            }
             REQUIRED_PERMISSIONS.any {
             ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                it
             )} -> {
                 Utils.showSnackbar(
                     view,
@@ -171,6 +196,7 @@ class MainActivity : AppCompatActivity() {
         loginViewModel.authenticationState.observe(this) { authenticationState ->
             if (authenticationState != LoginViewModel.AuthenticationState.AUTHENTICATED) {
                 navController.navigate(R.id.LoginActivity)
+                finish()
             }
         }
     }
@@ -210,7 +236,6 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.CAMERA,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ).apply {
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)

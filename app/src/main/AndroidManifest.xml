@@ -27,7 +27,6 @@
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan"
             android:exported="true"
-            android:noHistory="true"
             android:theme="@style/Theme.Haazir">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
