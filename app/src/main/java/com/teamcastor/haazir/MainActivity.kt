@@ -1,12 +1,20 @@
 package com.teamcastor.haazir
 
+import android.Manifest
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -15,6 +23,7 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.teamcastor.haazir.data.model.LoginViewModel
@@ -22,12 +31,6 @@ import com.teamcastor.haazir.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
-
-    companion object {
-        // Noida Institute of Technology
-        const val LATITUDE = 28.463036
-        const val LONGITUDE = 77.490994
-    }
 
     private lateinit var binding: ActivityMainBinding
     private val loginViewModel: LoginViewModel by viewModels()
@@ -42,15 +45,56 @@ class MainActivity : AppCompatActivity() {
         PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
     }
 
+    private val requestPermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions.containsValue(false)) {
+            initiateRequestPermissions(binding.root)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Needed for notifications
         createChannel(this)
 
-        // [START Geofencing related code]
         geofencingClient = LocationServices.getGeofencingClient(this)
 
+        // Setup View binding
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // Navigation
+        setupNavigation()
+        bottomNavigationView = binding.bottomNavigation
+        bottomNavigationView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.AttendanceFragment -> {
+                    bottomNavigationView.visibility = View.GONE
+                    binding.statusCard.visibility = View.VISIBLE
+
+                }
+                else -> {
+                    bottomNavigationView.visibility = View.VISIBLE
+                    binding.statusCard.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (checkPermissions()) {
+            if (isLocationEnabled())
+                addGeofence()
+        } else {
+            initiateRequestPermissions(binding.root)
+        }
+    }
+
+    private fun addGeofence() {
         val geofence = Geofence.Builder()
             // Set the request ID of the geofence. This is a string to identify this
             // geofence.
@@ -82,28 +126,41 @@ class MainActivity : AppCompatActivity() {
                 Log.w("MainActivity", "can't add geofence", it)
             }
         }
-        // [END Geofencing related code]
+    }
 
-        // Setup View binding
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    private fun isLocationEnabled(): Boolean {
+        val locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
+    }
 
-        // Navigation
-        setupNavigation()
-        bottomNavigationView = binding.bottomNavigation
-        bottomNavigationView.setupWithNavController(navController)
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.AttendanceFragment -> {
-                    bottomNavigationView.visibility = View.GONE
-                    binding.statusCard.visibility = View.VISIBLE
+    private fun checkPermissions() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+    }
 
-                }
-                else -> {
-                    bottomNavigationView.visibility = View.VISIBLE
-                    binding.statusCard.visibility = View.GONE
+    private fun initiateRequestPermissions(view: View) {
+        when {
+            checkPermissions() -> {}
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) -> {
+                Utils.showSnackbar(
+                    view,
+                    "Missing Permissions",
+                    Snackbar.LENGTH_INDEFINITE,
+                    "Ok"
+                ) {
+                    requestPermissionsLauncher.launch(
+                        REQUIRED_PERMISSIONS
+                    )
                 }
             }
+            else -> requestPermissionsLauncher.launch(
+                REQUIRED_PERMISSIONS
+            )
         }
     }
 
@@ -140,5 +197,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
         navController.graph = navGraph
+    }
+
+    companion object {
+        // Noida Institute of Technology
+        const val LATITUDE = 28.463036
+        const val LONGITUDE = 77.490994
+
+        private val REQUIRED_PERMISSIONS =
+            mutableListOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ).apply {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                    add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                }
+            }.toTypedArray()
     }
 }
