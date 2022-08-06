@@ -31,8 +31,9 @@ class LoginViewModel() : ViewModel() {
             Firebase.database("https://haazir-11bae-default-rtdb.asia-southeast1.firebasedatabase.app/").reference
     }
 
+    val user: MutableLiveData<User> = MutableLiveData()
+
     fun getUser(): LiveData<User> {
-        val user: MutableLiveData<User> = MutableLiveData()
         if (user.value == null) {
             val userListener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
