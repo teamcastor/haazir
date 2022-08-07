@@ -1,15 +1,18 @@
 package com.teamcastor.haazir
 
 import android.Manifest
+import android.annotation.TargetApi
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -18,10 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.gms.location.Geofence
-import com.google.android.gms.location.GeofencingClient
-import com.google.android.gms.location.GeofencingRequest
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var geofencingClient: GeofencingClient
-    private lateinit var backgroundDialog: MaterialAlertDialogBuilder
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
@@ -61,6 +61,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Needed for notifications
         createChannel(this)
@@ -88,7 +90,22 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        backgroundDialog = MaterialAlertDialogBuilder(this)
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        initiateRequestPermissions(binding.root)
+        if (checkPermissions() && checkBLPermission()) {
+            if (isLocationEnabled())
+                getLocation()
+            addGeofence()
+        }
+    }
+
+    @TargetApi(30)
+    private fun showBackLocDialog() {
+        MaterialAlertDialogBuilder(this)
             .setTitle("Allow background location access")
             .setMessage("Select ${packageManager.backgroundPermissionOptionLabel} on the upcoming screen.")
             .setCancelable(false)
@@ -101,15 +118,25 @@ class MainActivity : AppCompatActivity() {
                     arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
                 )
             }
+            .show()
     }
-
-    override fun onStart() {
-        super.onStart()
-        initiateRequestPermissions(binding.root)
-        if (checkPermissions() && checkBLPermission()) {
-            if (isLocationEnabled())
-                addGeofence()
-        }
+    private fun getLocation() {
+        // PRIORITY_HIGH_ACCURACY takes upto 15s to return location, so not using that
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+            .addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    val lat = location.latitude
+                    val lon = location.longitude
+                    println("Latitude: $lat and Longitude: $lon")
+                }
+                // The location can be null, if this starts happening too often we will have to
+                // implement https://developer.android.com/training/location/request-updates#updates
+                Log.w("getLocation()", "Null location was returned by fLClient")
+            }
+            .addOnFailureListener {
+                Log.w("getLocation()", "Failed to get location", it)
+                Toast.makeText(this, "Cannot get location.", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun addGeofence() {
@@ -166,13 +193,13 @@ class MainActivity : AppCompatActivity() {
         when {
             checkPermissions() -> {
                 if (!checkBLPermission())
-                    backgroundDialog.show()
+                    showBackLocDialog()
             }
             REQUIRED_PERMISSIONS.any {
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                it
-            )} -> {
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    it
+                )} -> {
                 Utils.showSnackbar(
                     view,
                     "Missing Permissions",
