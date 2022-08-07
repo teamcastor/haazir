@@ -1,7 +1,6 @@
 package com.teamcastor.haazir
 
 import android.Manifest
-import android.annotation.TargetApi
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -15,6 +14,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @TargetApi(30)
+    @RequiresApi(30)
     private fun showBackLocDialog() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Allow background location access")
