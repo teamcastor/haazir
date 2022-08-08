@@ -1,66 +1,75 @@
 package com.teamcastor.haazir.data.model
 
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import com.teamcastor.haazir.FirebaseRepository
 import com.teamcastor.haazir.R
+import com.teamcastor.haazir.SliderFormState
+import com.teamcastor.haazir.data.Attendance
 import com.teamcastor.haazir.data.FirebaseUserLiveData
-import com.teamcastor.haazir.data.ScanResult
 import com.teamcastor.haazir.data.User
 import com.teamcastor.haazir.ui.login.LoggedInUserView
 import com.teamcastor.haazir.ui.login.LoginFormState
 import com.teamcastor.haazir.ui.login.LoginResult
 import com.teamcastor.haazir.ui.register.RegisterFormState
 import com.teamcastor.haazir.ui.register.RegisterFragment
-import java.lang.Exception
 
 
-class LoginViewModel() : ViewModel() {
+class AppViewModel(
+    private val firebaseRepository: FirebaseRepository = FirebaseRepository(),
+) : ViewModel() {
     companion object {
         fun logout() {
             Firebase.auth.signOut()
         }
-        const val TAG: String = "LoginViewModel"
+
+        const val TAG: String = "AppViewModel"
         val db =
-            Firebase.database("https://haazir-11bae-default-rtdb.asia-southeast1.firebasedatabase.app/").reference
+            Firebase.database.reference
     }
 
-    val user: MutableLiveData<User> = MutableLiveData()
+    private val _sliderFormState = MutableLiveData<SliderFormState>()
+    val sliderFormState: LiveData<SliderFormState> = _sliderFormState
 
-    fun getUser(): LiveData<User> {
-        if (user.value == null) {
-            val userListener = object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    user.postValue(dataSnapshot.getValue<User>())
-                }
+    val user = Transformations.distinctUntilChanged(firebaseRepository.latestUserInfo.asLiveData())
 
-                override fun onCancelled(databaseError: DatabaseError) {
-                    Log.w(TAG, "loadUser:onCancelled", databaseError.toException())
-                }
-            }
-            Firebase.auth.uid?.let { db.child("users").child(it).addListenerForSingleValueEvent(userListener) }
-        }
-
-        return user
-    }
+    val attendanceToday =
+        Transformations.distinctUntilChanged(firebaseRepository.todayAttendance.asLiveData())
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
     private val _loginResult = MutableLiveData<LoginResult>()
-    private val _scanResult = MutableLiveData<ScanResult>()
-    val scanResult: LiveData<ScanResult> = _scanResult
-    val loginResult: LiveData<LoginResult> = _loginResult
+    val loginResult: LiveData<LoginResult> = (_loginResult)
     private val _registerForm = MutableLiveData<RegisterFormState>()
     val registerFormState: LiveData<RegisterFormState> = _registerForm
 
     enum class AuthenticationState {
         AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
+    }
+
+    fun sliderStateChanged(attendance: Attendance?) {
+        if (attendance?.checkIn == null) {
+            _sliderFormState.value = SliderFormState()
+        } else if (attendance.checkOut == null) {
+            _sliderFormState.value = SliderFormState("out")
+        } else
+            _sliderFormState.value = SliderFormState(Visibility = View.GONE)
+    }
+
+    fun markAttendance() {
+        var event: String? = null
+        if (attendanceToday.value?.checkIn == null)
+            event = "checkIn"
+        else if (attendanceToday.value?.checkOut == null)
+            event = "checkOut"
+        firebaseRepository.markAttendance(event)
     }
 
     val authenticationState = FirebaseUserLiveData().map { user ->
@@ -69,10 +78,6 @@ class LoginViewModel() : ViewModel() {
         } else {
             AuthenticationState.UNAUTHENTICATED
         }
-    }
-
-    fun authenticate(isSharp: Boolean, isSpoof: Boolean, isRecognized: Boolean) {
-        _scanResult.value = ScanResult(isSharp, isSpoof, isRecognized)
     }
 
     fun findEmail(en: String, password: String) {

@@ -8,6 +8,10 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.Geofence
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 private const val NOTIFICATION_ID = 33
 private const val CHANNEL_ID = "GeofenceChannel"
@@ -47,4 +51,16 @@ fun NotificationManager.sendGeofenceNotification(context: Context, transition: I
         .build()
 
     this.notify(NOTIFICATION_ID, builder)
+}
+
+fun Long.toTimeIST(): String {
+    val timeFormat = SimpleDateFormat("h:m a", Locale.getDefault())
+    val time = Date(this)
+    return timeFormat.format(time)
+}
+
+fun Long.toDurationHM(): String {
+    return this.toDuration(DurationUnit.MILLISECONDS).toComponents { hours, minutes, _, _ ->
+        "%2dh %2dm".format(hours, minutes)
+    }
 }

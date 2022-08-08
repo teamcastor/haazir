@@ -1,6 +1,5 @@
 package com.teamcastor.haazir.ui.register
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,15 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.teamcastor.haazir.data.model.LoginViewModel
-import com.teamcastor.haazir.databinding.FragmentRegisterBinding
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.teamcastor.haazir.R
 import com.teamcastor.haazir.data.User
+import com.teamcastor.haazir.data.model.AppViewModel
+import com.teamcastor.haazir.databinding.FragmentRegisterBinding
 
 
 private const val ARG_PARAM1 = "param1"
@@ -28,7 +25,7 @@ private const val ARG_PARAM2 = "param2"
 class RegisterFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterBinding
-    private val loginViewModel: LoginViewModel by activityViewModels()
+    private val appViewModel: AppViewModel by activityViewModels()
     private lateinit var user: User
 
     override fun onCreateView(
@@ -58,7 +55,8 @@ class RegisterFragment : Fragment() {
         val passwordEditText = binding.password
         val passwordEditTextLayout = binding.passwordLayout
 
-        loginViewModel.registerFormState.observe(viewLifecycleOwner,
+        appViewModel.registerFormState.observe(
+            viewLifecycleOwner,
             Observer { registerFormState ->
                 if (registerFormState == null) {
                     return@Observer
@@ -112,7 +110,7 @@ class RegisterFragment : Fragment() {
                     name = nameEditText.text.toString(),
                     gender = genderEditText.text.toString()
                 )
-                loginViewModel.registerDataChanged(user, passwordEditText.text.toString())
+                appViewModel.registerDataChanged(user, passwordEditText.text.toString())
             }
         }
 
@@ -126,7 +124,7 @@ class RegisterFragment : Fragment() {
         }
 
         registerButton.setOnClickListener {
-            loginViewModel.register(user, passwordEditText.text.toString())
+            appViewModel.register(user, passwordEditText.text.toString())
         }
     }
     companion object {

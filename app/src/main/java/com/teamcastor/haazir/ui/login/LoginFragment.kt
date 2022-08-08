@@ -10,13 +10,13 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.teamcastor.haazir.*
-import com.teamcastor.haazir.data.model.LoginViewModel
+import com.teamcastor.haazir.R
+import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.FragmentLoginBinding
 
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
-    private val loginViewModel: LoginViewModel by activityViewModels()
+    private val appViewModel: AppViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -29,7 +29,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         val loadingProgressBar = binding.loading
         val loginButton = binding.login
 
-        loginViewModel.loginFormState.observe(viewLifecycleOwner,
+        appViewModel.loginFormState.observe(
+            viewLifecycleOwner,
             Observer { loginFormState ->
                 if (loginFormState == null) {
                     return@Observer
@@ -37,8 +38,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 loginButton.isEnabled = loginFormState.isDataValid
                 if (loginFormState.passwordError != null) {
                     passwordEditTextLayout.error = getString(loginFormState.passwordError)
-                }
-                else {
+                } else {
                     passwordEditTextLayout.error = null
                 }
                 if (loginFormState.usernameError != null) {
@@ -50,7 +50,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
             })
 
-        loginViewModel.loginResult.observe(viewLifecycleOwner,
+        appViewModel.loginResult.observe(viewLifecycleOwner,
             Observer { loginResult ->
                 loginResult ?: return@Observer
                 loginResult.success?.let {
@@ -72,7 +72,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             }
 
             override fun afterTextChanged(s: Editable) {
-                loginViewModel.loginDataChanged(
+                appViewModel.loginDataChanged(
                     empNumberEditText.text.toString(),
                     passwordEditText.text.toString()
                 )
@@ -83,7 +83,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         passwordEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 loadingProgressBar.visibility = View.VISIBLE
-                loginViewModel.findEmail(
+                appViewModel.findEmail(
                     empNumberEditText.text.toString(),
                     passwordEditText.text.toString()
                 )
@@ -93,7 +93,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         loginButton.setOnClickListener {
             loadingProgressBar.visibility = View.VISIBLE
-            loginViewModel.findEmail(
+            appViewModel.findEmail(
                 empNumberEditText.text.toString(),
                 passwordEditText.text.toString()
             )

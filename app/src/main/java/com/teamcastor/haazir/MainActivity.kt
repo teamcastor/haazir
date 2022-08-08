@@ -1,6 +1,7 @@
 package com.teamcastor.haazir
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -27,7 +28,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.teamcastor.haazir.data.model.LoginViewModel
+import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.ActivityMainBinding
 import kotlin.system.exitProcess
 
@@ -35,7 +36,7 @@ import kotlin.system.exitProcess
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val loginViewModel: LoginViewModel by viewModels()
+    private val appViewModel: AppViewModel by viewModels()
     private lateinit var navController: NavController
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var geofencingClient: GeofencingClient
@@ -45,7 +46,11 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
         // addGeofences() and removeGeofences().
-        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+        } else {
+            PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
     }
 
     private val requestPermissionsLauncher = registerForActivityResult(
@@ -84,14 +89,17 @@ class MainActivity : AppCompatActivity() {
                     binding.statusCard.visibility = View.VISIBLE
 
                 }
+                R.id.PostAttendanceFragment -> {
+                    bottomNavigationView.visibility = View.GONE
+                }
                 else -> {
                     bottomNavigationView.visibility = View.VISIBLE
                     binding.statusCard.visibility = View.GONE
                 }
             }
         }
-    }
 
+    }
 
     override fun onStart() {
         super.onStart()
@@ -120,6 +128,8 @@ class MainActivity : AppCompatActivity() {
             }
             .show()
     }
+
+    @SuppressLint("MissingPermission")
     private fun getLocation() {
         // PRIORITY_HIGH_ACCURACY takes upto 15s to return location, so not using that
         fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
@@ -139,6 +149,7 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    @SuppressLint("MissingPermission")
     private fun addGeofence() {
         val geofence = Geofence.Builder()
             // Set the request ID of the geofence. This is a string to identify this
@@ -182,8 +193,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkBLPermission(): Boolean {
-        return (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                == PackageManager.PERMISSION_GRANTED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            return (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            )
+                    == PackageManager.PERMISSION_GRANTED)
+        }
+        else
+            return true
     }
     private fun checkPermissions() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
@@ -193,7 +211,9 @@ class MainActivity : AppCompatActivity() {
         when {
             checkPermissions() -> {
                 if (!checkBLPermission())
-                    showBackLocDialog()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        showBackLocDialog()
+                    }
             }
             REQUIRED_PERMISSIONS.any {
                 ActivityCompat.shouldShowRequestPermissionRationale(
@@ -220,17 +240,12 @@ class MainActivity : AppCompatActivity() {
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
 
-        loginViewModel.authenticationState.observe(this) { authenticationState ->
-            if (authenticationState != LoginViewModel.AuthenticationState.AUTHENTICATED) {
+        appViewModel.authenticationState.observe(this) { authenticationState ->
+            if (authenticationState != AppViewModel.AuthenticationState.AUTHENTICATED) {
                 navController.navigate(R.id.LoginActivity)
                 finish()
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-//        removeGeofences()
     }
 
     private fun removeGeofences() {

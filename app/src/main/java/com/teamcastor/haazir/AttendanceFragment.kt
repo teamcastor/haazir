@@ -1,13 +1,10 @@
 package com.teamcastor.haazir
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.Rect
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.Size
@@ -15,24 +12,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.*
-import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.snackbar.Snackbar
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
-import com.teamcastor.haazir.data.model.LoginViewModel
+import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.FragmentAttendanceBinding
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class AttendanceFragment : Fragment() {
@@ -42,9 +42,8 @@ class AttendanceFragment : Fragment() {
     private lateinit var previewView: PreviewView
     private lateinit var resultView: TextView
     private val binding get() = _binding!!
-    private val parentJob = Job()
     private var camera: Camera? = null
-    private val loginViewModel: LoginViewModel by activityViewModels()
+    private val appViewModel: AppViewModel by activityViewModels()
 
 
 
@@ -52,10 +51,8 @@ class AttendanceFragment : Fragment() {
         super.onAttach(context)
         ctx = context
     }
-    private fun isPortraitMode(): Boolean {
-        return getApplicationContext(ctx).resources.configuration.orientation != Configuration.ORIENTATION_LANDSCAPE
-    }
 
+    @SuppressLint("UnsafeOptInUsageError")
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(ctx)
         cameraProviderFuture.addListener({
@@ -65,14 +62,14 @@ class AttendanceFragment : Fragment() {
             // Image Analysis
             val imageAnalysis = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .setTargetRotation(view!!.display.rotation)
+                .setTargetRotation(requireView().display.rotation)
                 .setTargetResolution(Size(720,1280))
                 .build()
 
             // Preview
             val preview = Preview.Builder()
-                .setTargetResolution(Size(720,1280))
-                .setTargetRotation(view!!.display.rotation)
+                .setTargetResolution(Size(720, 1280))
+                .setTargetRotation(requireView().display.rotation)
                 .build()
                 .also {
                     it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
@@ -82,17 +79,14 @@ class AttendanceFragment : Fragment() {
                 .addUseCase(preview)
                 .addUseCase(imageAnalysis)
                 .build()
-            val coroutineScope = CoroutineScope(Dispatchers.Default + parentJob)
-            var recognitionJob: Job = Job()
-            var spoofJob: Job = Job()
 
             var isSharp = false
-            var isSpoof = true
+            var isNotSpoof = false
             var isRecognized = false
 
             fun reset() {
                 isSharp = false
-                isSpoof = true
+                isNotSpoof = false
                 isRecognized = false
             }
 
@@ -109,17 +103,10 @@ class AttendanceFragment : Fragment() {
 
                 faceDetector.process(image)
                     .addOnSuccessListener { faces ->
-                        if (faces.isEmpty()) {
-                            reset()
-                            parentJob.cancelChildren()
-                        }
                         graphicOverlay.clear()
                         if (faces.size == 1) {
                             val face = faces.first()
-                            if (isPortraitMode()) {
-                                graphicOverlay.setImageSourceInfo(image.height, image.width, true)
-                            } else
-                                graphicOverlay.setImageSourceInfo(image.width, image.height, true)
+                            graphicOverlay.setImageSourceInfo(image.height, image.width, true)
 
                             val bitmap = Bitmap.createBitmap(
                                 image.width,
@@ -160,30 +147,59 @@ class AttendanceFragment : Fragment() {
                                 ) {
                                     Log.i("AttendanceFragment", "Face is not in the frame")
 
-                                }
-                                else {
-                                    val faceBitmap = Utils.cropFace(rect, rotatedBitmap, 256)
-                                    val fasl = FaceAntiSpoofing.laplacian(faceBitmap)
-                                    if (fasl > FaceAntiSpoofing.LAPLACE_FINAL_THRESHOLD) {
-                                        isSharp = true
-                                        coroutineScope.launch {
-
-                                            spoofJob = launch {
-                                                val result = runAntiSpoofing(faceBitmap)
-                                                isSpoof = (result > FaceAntiSpoofing.SPOOF_THRESHOLD)
+                                } else {
+                                    lifecycleScope.launch {
+                                        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                                            val faceBitmap =
+                                                Utils.cropFace(rect, rotatedBitmap, 256)
+                                            val fasl = FaceAntiSpoofing.laplacian(faceBitmap)
+                                            if (fasl > FaceAntiSpoofing.LAPLACE_FINAL_THRESHOLD) {
+                                                isSharp = true
+                                                val spoofingJob = launch {
+                                                    val result = runAntiSpoofing(faceBitmap)
+                                                    isNotSpoof =
+                                                        (result < FaceAntiSpoofing.SPOOF_THRESHOLD)
+                                                }
+                                                val recognitionJob = launch {
+                                                    val faceBitmap2 =
+                                                        Utils.getResizedBitmap(faceBitmap, 112, 112)
+                                                    val output = runRecognition(faceBitmap2)
+                                                    val floatArray = FloatArray(myemb.size)
+                                                    for (i in myemb.indices) {
+                                                        floatArray[i] = myemb[i].toFloat()
+                                                    }
+                                                    val score = async {
+                                                        FaceRecognition.distance(
+                                                            output,
+                                                            floatArray
+                                                        )
+                                                    }
+                                                    val score2 = async {
+                                                        FaceRecognition.cosineSimilarity(
+                                                            output,
+                                                            floatArray
+                                                        )
+                                                    }
+                                                    isRecognized =
+                                                        (score.await() < FaceRecognition.EUCLIDEAN_THRESHOLD
+                                                                && score2.await() > FaceRecognition.COSINE_THRESHOLD)
+                                                }
+//                                                Don't wait for spoofing job, it takes some time
+//                                                spoofingJob.join()
+                                                recognitionJob.join()
 
                                             }
-                                            recognitionJob = launch {
-                                                val faceBitmap2 = Utils.getResizedBitmap(faceBitmap, 112, 112)
-                                                val output = runRecognition(faceBitmap2)
-                                                val floatArray = FloatArray(myemb.size)
-                                                for (i in myemb.indices) {
-                                                    floatArray[i] = myemb[i].toFloat()
+                                            println("isSharp: $isSharp, isRecognized: $isRecognized")
+                                            if (isSharp && isRecognized) {
+                                                reset()
+                                                // This will automatically happen when navigation happens, but in case that takes time, we
+                                                // can do it beforehand this way.
+                                                // lifecycleScope.cancel()
+                                                // Do we really need to check this? I guess there's no harm.
+                                                if (findNavController().currentDestination?.id == R.id.AttendanceFragment) {
+                                                    findNavController().navigate(R.id.action_Attendance_to_PostAttendanceFragment)
                                                 }
-                                                val score = async {FaceRecognition.distance(output, floatArray)}
-                                                val score2 = async {FaceRecognition.cosineSimilarity(output, floatArray)}
-                                                isRecognized = (score.await() < FaceRecognition.EUCLIDEAN_THRESHOLD
-                                                        && score2.await() > FaceRecognition.COSINE_THRESHOLD)
+                                                appViewModel.markAttendance()
                                             }
                                         }
                                     }
@@ -191,13 +207,10 @@ class AttendanceFragment : Fragment() {
                             }
                         }
                     }
-                    .addOnFailureListener { e -> }
+                    .addOnFailureListener { e -> Log.w("", "", e) }
                     .addOnCompleteListener {
-                        loginViewModel.authenticate(isSharp, isSpoof, isRecognized)
                         imageProxy.close()
                     }
-
-
             }
 
             // Select back camera as a default
@@ -209,7 +222,8 @@ class AttendanceFragment : Fragment() {
 
                 // Bind use cases to camera
                 camera = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, useCaseGroup)
+                    this as LifecycleOwner, cameraSelector, useCaseGroup
+                )
 
             } catch(exc: Exception) {
                 Log.e("AF", "Use case binding failed", exc)
@@ -217,6 +231,7 @@ class AttendanceFragment : Fragment() {
         }, ContextCompat.getMainExecutor(ctx))
 
     }
+
     private suspend fun runAntiSpoofing(bitmap: Bitmap) =
         withContext(Dispatchers.Default) {
             val fas = FaceAntiSpoofing(ctx)
@@ -259,20 +274,11 @@ class AttendanceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         startCamera()
-
-        loginViewModel.scanResult.observe(viewLifecycleOwner) {
-            resultView.text = "isSharp : ${it.isSharp}\n" +
-                    "isSpoof : ${it.isSpoof}\n" +
-                    "isRecognized : ${it.isRecognized}"
-        }
-
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        // clean up coroutine job
-        parentJob.cancel()
     }
 
     companion object {

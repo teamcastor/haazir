@@ -23,6 +23,7 @@
             app:exitAnim="@animator/slide_out_right"
             app:popEnterAnim="@animator/slide_in_right"
             app:popExitAnim="@animator/slide_out_left" />
+
     </fragment>
 
     <fragment
@@ -44,7 +45,6 @@
     <action
         android:id="@+id/action_global_HomeFragment"
         app:destination="@id/HomeFragment"
-        app:launchSingleTop="false"
         app:popUpTo="@+id/nav_graph"
         app:popUpToInclusive="true" />
 
@@ -52,8 +52,20 @@
         android:id="@+id/AttendanceFragment"
         android:name="com.teamcastor.haazir.AttendanceFragment"
         tools:layout="@layout/fragment_attendance">
+
+        <action
+            android:id="@+id/action_Attendance_to_PostAttendanceFragment"
+            app:destination="@id/PostAttendanceFragment"
+            app:popUpTo="@id/AttendanceFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
+
     <activity
         android:id="@+id/LoginActivity"
         android:name="com.teamcastor.haazir.ui.LoginActivity"/>
+    <fragment
+        android:id="@+id/PostAttendanceFragment"
+        android:name="com.teamcastor.haazir.PostAttendanceFragment"
+        tools:layout="@layout/fragment_post_attendance"/>
+
 </navigation>

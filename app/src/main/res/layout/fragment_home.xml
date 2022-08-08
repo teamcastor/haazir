@@ -122,9 +122,10 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
+                            android:id="@+id/date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Friday, 29th July"
+                            android:text="Today's Overview"
                             android:textAppearance="?textAppearanceTitleLarge" />
                     </LinearLayout>
 
@@ -151,16 +152,17 @@
                         android:id="@+id/enterTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="24dp"
                         android:drawableTop="@drawable/ic_checkin_24"
                         android:drawablePadding="8dp"
                         android:drawableTint="?colorOnSurface"
-                        android:text="09:35 AM"
+                        android:text="--:--"
                         android:textAppearance="?textAppearanceTitleMedium"
+                        app:flow_horizontalStyle="spread"
+                        app:layout_constraintBottom_toTopOf="@id/enterTimeDesc"
                         app:layout_constraintEnd_toStartOf="@+id/workDuration"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/divider"
-                        app:layout_constraintBottom_toTopOf="@id/enterTimeDesc"/>
+                        app:layout_constraintTop_toBottomOf="@id/divider" />
 
                     <TextView
                         android:id="@+id/workDuration"
@@ -169,7 +171,7 @@
                         android:drawableTop="@drawable/ic_timer_24"
                         android:drawablePadding="8dp"
                         android:drawableTint="?colorOnSurface"
-                        android:text="08h 24m"
+                        android:text="--:--"
                         android:textAppearance="?textAppearanceTitleMedium"
                         app:layout_constraintEnd_toStartOf="@id/exitTime"
                         app:layout_constraintStart_toEndOf="@id/enterTime"
@@ -181,15 +183,16 @@
                         android:id="@+id/exitTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
                         android:drawableTop="@drawable/ic_checkout_24"
                         android:drawablePadding="8dp"
                         android:drawableTint="?colorOnSurface"
-                        android:text="05:05 PM"
+                        android:text="--:--"
                         android:textAppearance="?textAppearanceTitleMedium"
+                        app:layout_constraintBottom_toTopOf="@id/exitTimeDesc"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/workDuration"
-                        app:layout_constraintTop_toBottomOf="@id/divider"
-                        app:layout_constraintBottom_toTopOf="@id/exitTimeDesc"/>
+                        app:layout_constraintTop_toBottomOf="@id/divider" />
 
 
                     <TextView
@@ -199,7 +202,6 @@
                         android:text="Check-in"
                         android:textAppearance="?textAppearanceLabelMedium"
                         app:layout_constraintEnd_toEndOf="@+id/enterTime"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
                         app:layout_constraintStart_toStartOf="@id/enterTime"
                         app:layout_constraintTop_toBottomOf="@id/enterTime" />
 
@@ -238,7 +240,6 @@
                 app:outer_color="?attr/colorPrimaryDark"
                 app:slider_icon_color="?attr/colorOnSurface"
                 app:slider_locked="false"
-                app:text="Slide Right to Check-In"
                 app:text_color="?colorSurface" />
 
         </RelativeLayout>

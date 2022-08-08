@@ -11,6 +11,4 @@ data class User(
     var gender: String? = null,
     var phoneNumber: String? = null,
     var address: String? = null,
-) {
-
-}
+)

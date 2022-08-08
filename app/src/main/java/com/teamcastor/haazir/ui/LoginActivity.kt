@@ -8,13 +8,13 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.teamcastor.haazir.MainActivity
 import com.teamcastor.haazir.ViewPagerAdapter
-import com.teamcastor.haazir.data.model.LoginViewModel
+import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var viewPager: ViewPager2
-    private val loginViewModel: LoginViewModel by viewModels()
+    private val appViewModel: AppViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +34,8 @@ class LoginActivity : AppCompatActivity() {
             tab.text = fragmentArray[position]
         }.attach()
 
-        loginViewModel.authenticationState.observe(this) { authenticationState ->
-            if (authenticationState == LoginViewModel.AuthenticationState.AUTHENTICATED) {
+        appViewModel.authenticationState.observe(this) { authenticationState ->
+            if (authenticationState == AppViewModel.AuthenticationState.AUTHENTICATED) {
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             }
