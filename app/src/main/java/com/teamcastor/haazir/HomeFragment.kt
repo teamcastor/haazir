@@ -40,9 +40,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     slider.text = getString(R.string.slider_check_in)
                 else
                     slider.text = getString(R.string.slider_check_out)
+                if (it.isLocked)
+                    slider.text = "Slider locked outside geofence area"
                 slider.isLocked = it.isLocked
                 slider.visibility = it.Visibility
                 slider.isReversed = it.isReversed
+            }
+        }
+
+        AppViewModel.geofenceState.observe(viewLifecycleOwner) {
+            if (it == null || it == false) {
+                binding.location.text = "Outside geofence area"
+                binding.slider.isLocked = true
+                appViewModel.sliderStateChanged()
+            } else {
+                binding.location.text = "Inside geofence area"
+                appViewModel.sliderStateChanged()
             }
         }
 

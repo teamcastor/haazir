@@ -25,7 +25,15 @@ import com.teamcastor.haazir.ui.register.RegisterFragment
 class AppViewModel(
     private val firebaseRepository: FirebaseRepository = FirebaseRepository(),
 ) : ViewModel() {
+
+
+
     companion object {
+        private val geofenceStateMutable = MutableLiveData<Boolean?>(null)
+        val geofenceState: LiveData<Boolean?> = geofenceStateMutable
+        fun geofenceStatusChanged(status: Boolean?) {
+            geofenceStateMutable.value = status
+        }
         fun logout() {
             Firebase.auth.signOut()
         }
@@ -34,6 +42,7 @@ class AppViewModel(
         val db =
             Firebase.database.reference
     }
+
 
     private val _sliderFormState = MutableLiveData<SliderFormState>()
     val sliderFormState: LiveData<SliderFormState> = _sliderFormState
@@ -50,11 +59,14 @@ class AppViewModel(
     private val _registerForm = MutableLiveData<RegisterFormState>()
     val registerFormState: LiveData<RegisterFormState> = _registerForm
 
+
+
+
     enum class AuthenticationState {
         AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
     }
 
-    fun sliderStateChanged(attendance: Attendance?) {
+    fun sliderStateChanged(attendance: Attendance? = attendanceToday.value) {
         if (attendance?.checkIn == null) {
             _sliderFormState.value = SliderFormState()
         } else if (attendance.checkOut == null) {

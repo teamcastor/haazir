@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
+import com.teamcastor.haazir.data.model.AppViewModel
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
@@ -31,6 +32,16 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         val geofenceTransition = geofencingEvent?.geofenceTransition
 
         // Test that the reported transition was of interest.
+        when (geofenceTransition) {
+            Geofence.GEOFENCE_TRANSITION_ENTER ->
+                AppViewModel.geofenceStatusChanged(true)
+            Geofence.GEOFENCE_TRANSITION_EXIT ->
+                AppViewModel.geofenceStatusChanged(false)
+            else -> {
+                Log.e(TAG, "Invalid type transition $geofenceTransition")
+                AppViewModel.geofenceStatusChanged(null)
+            }
+        }
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER || geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
             // Creating and sending notification
             val notificationManager = ContextCompat.getSystemService(
