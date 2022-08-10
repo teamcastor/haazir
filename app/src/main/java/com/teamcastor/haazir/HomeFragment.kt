@@ -1,9 +1,7 @@
 package com.teamcastor.haazir
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -16,7 +14,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val appViewModel: AppViewModel by activityViewModels()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
