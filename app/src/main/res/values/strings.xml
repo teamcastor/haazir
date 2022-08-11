@@ -32,6 +32,7 @@
     <string name="calender_info">Select date using datepicker</string>
     <string name="slider_check_in">Slide Right to Check-In</string>
     <string name="slider_check_out">Slide Left to Check-Out</string>
+    <string name="attendance_successful">Attendance Marked &#128077;</string>
     <string-array name="Gender">
         <item>Male</item>
         <item>Female</item>

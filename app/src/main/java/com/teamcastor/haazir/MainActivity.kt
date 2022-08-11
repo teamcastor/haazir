@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.PostAttendanceFragment -> {
                     bottomNavigationView.visibility = View.GONE
+                    binding.statusCard.visibility = View.GONE
                 }
                 else -> {
                     bottomNavigationView.visibility = View.VISIBLE
