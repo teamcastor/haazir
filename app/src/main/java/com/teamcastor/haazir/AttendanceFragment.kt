@@ -112,17 +112,6 @@ class AttendanceFragment : Fragment() {
                                 Bitmap.Config.ARGB_8888,
                             )
 
-                            fun Bitmap.rotate(degrees: Float): Bitmap =
-                                Bitmap.createBitmap(
-                                    this,
-                                    0,
-                                    0,
-                                    width,
-                                    height,
-                                    Matrix().apply { postRotate(degrees) },
-                                    true
-                                )
-
                             // ImageAnalysis usecase gives YUV_420_8888 format images
                             // Convert them to ARGB_8888 bitmap
                             val yuvToRgbConverter = Utils.YuvToRgbConverter(ctx)

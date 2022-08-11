@@ -5,6 +5,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.Geofence
@@ -64,3 +66,14 @@ fun Long.toDurationHM(): String {
         "%2dh %2dm".format(hours, minutes)
     }
 }
+
+fun Bitmap.rotate(degrees: Float): Bitmap =
+    Bitmap.createBitmap(
+        this,
+        0,
+        0,
+        width,
+        height,
+        Matrix().apply { postRotate(degrees) },
+        true
+    )
