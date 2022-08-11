@@ -111,11 +111,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(30)
+    @RequiresApi(29)
     private fun showBackLocDialog() {
+        val label = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            packageManager.backgroundPermissionOptionLabel
+        } else {
+            "Allow all the time"
+        }
         MaterialAlertDialogBuilder(this)
             .setTitle("Allow background location access")
-            .setMessage("Select ${packageManager.backgroundPermissionOptionLabel} on the upcoming screen.")
+            .setMessage("Select '${label}' on the upcoming screen.")
             .setCancelable(false)
             .setNegativeButton("Quit Application") { dialog, which ->
                 // Respond to negative button press
@@ -193,15 +198,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkBLPermission(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return (ContextCompat.checkSelfPermission(
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             )
                     == PackageManager.PERMISSION_GRANTED)
-        }
-        else
-            return true
+        } else
+            true
     }
     private fun checkPermissions() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
