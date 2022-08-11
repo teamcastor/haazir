@@ -18,10 +18,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.mlkit.vision.common.InputImage
@@ -105,6 +102,7 @@ class AttendanceFragment : Fragment() {
                     .addOnSuccessListener { faces ->
                         graphicOverlay.clear()
                         if (faces.size == 1) {
+
                             val face = faces.first()
                             graphicOverlay.setImageSourceInfo(image.height, image.width, true)
 
@@ -145,11 +143,19 @@ class AttendanceFragment : Fragment() {
                                 if (rect.left < 0 || rect.top < 0 || rect.left + rect.width() > (rotatedBitmap.width) ||
                                     rect.top + rect.height() > rotatedBitmap.height
                                 ) {
+                                    lifecycleScope.launch {
+                                        whenStarted {
+                                            binding.helpText.text = "Detected face is outside camera bounds.\n" +
+                                                    "Please bring it in the center of the preview"
+                                        }
+                                    }
                                     Log.i("AttendanceFragment", "Face is not in the frame")
 
                                 } else {
                                     lifecycleScope.launch {
                                         lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                                            binding.helpText.text = "Face Detected. Processing"
+                                            binding.processingBar.visibility = View.VISIBLE
                                             val faceBitmap =
                                                 Utils.cropFace(rect, rotatedBitmap, 256)
                                             val fasl = FaceAntiSpoofing.laplacian(faceBitmap)
@@ -202,6 +208,19 @@ class AttendanceFragment : Fragment() {
                                                 appViewModel.markAttendance()
                                             }
                                         }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            lifecycleScope.launch {
+                                whenCreated {
+                                    binding.processingBar.visibility = View.INVISIBLE
+                                    if (faces.isEmpty()) {
+                                        binding.helpText.text = "No face detected"
+                                    }
+                                    else {
+                                        binding.helpText.text = "Detected ${faces.size} faces. Raavan?"
                                     }
                                 }
                             }

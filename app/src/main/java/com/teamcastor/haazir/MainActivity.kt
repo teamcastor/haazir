@@ -86,16 +86,16 @@ class MainActivity : AppCompatActivity() {
             when (destination.id) {
                 R.id.AttendanceFragment -> {
                     bottomNavigationView.visibility = View.GONE
-                    binding.statusCard.visibility = View.VISIBLE
+                    binding.bottomBarPlaceholder.visibility = View.VISIBLE
 
                 }
                 R.id.PostAttendanceFragment -> {
                     bottomNavigationView.visibility = View.GONE
-                    binding.statusCard.visibility = View.GONE
+                    binding.bottomBarPlaceholder.visibility = View.GONE
                 }
                 else -> {
                     bottomNavigationView.visibility = View.VISIBLE
-                    binding.statusCard.visibility = View.GONE
+                    binding.bottomBarPlaceholder.visibility = View.GONE
                 }
             }
         }

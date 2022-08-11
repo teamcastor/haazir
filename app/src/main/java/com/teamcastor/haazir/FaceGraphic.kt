@@ -51,6 +51,6 @@ class FaceGraphic(overlay: GraphicOverlay, private val face: Face, private val i
 
     }
     companion object {
-        var selectedColor = Color.WHITE
+        var selectedColor = Color.TRANSPARENT
     }
 }
