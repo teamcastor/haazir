@@ -141,58 +141,56 @@ class AttendanceFragment : Fragment() {
                                         } else {
                                             binding.helpText.text = "Face Detected. Processing"
                                             binding.processingBar.visibility = View.VISIBLE
-                                            lifecycleScope.launch {
-                                                val faceBitmap =
-                                                    Utils.cropFace(rect, rotatedBitmap, 256)
-                                                val fasl = FaceAntiSpoofing.laplacian(faceBitmap)
-                                                if (fasl > FaceAntiSpoofing.LAPLACE_FINAL_THRESHOLD) {
-                                                    isSharp = true
-                                                    val spoofingJob = launch {
-                                                        val result = runAntiSpoofing(faceBitmap)
-                                                        isNotSpoof =
-                                                            (result < FaceAntiSpoofing.SPOOF_THRESHOLD)
+                                            val faceBitmap =
+                                                Utils.cropFace(rect, rotatedBitmap, 256)
+                                            val fasl = FaceAntiSpoofing.laplacian(faceBitmap)
+                                            if (fasl > FaceAntiSpoofing.LAPLACE_FINAL_THRESHOLD) {
+                                                isSharp = true
+                                                val spoofingJob = launch {
+                                                    val result = runAntiSpoofing(faceBitmap)
+                                                    isNotSpoof =
+                                                        (result < FaceAntiSpoofing.SPOOF_THRESHOLD)
+                                                }
+                                                val recognitionJob = launch {
+                                                    val faceBitmap2 =
+                                                        Utils.getResizedBitmap(faceBitmap, 112, 112)
+                                                    val output = runRecognition(faceBitmap2)
+                                                    val floatArray = FloatArray(myemb.size)
+                                                    for (i in myemb.indices) {
+                                                        floatArray[i] = myemb[i].toFloat()
                                                     }
-                                                    val recognitionJob = launch {
-                                                        val faceBitmap2 =
-                                                            Utils.getResizedBitmap(faceBitmap, 112, 112)
-                                                        val output = runRecognition(faceBitmap2)
-                                                        val floatArray = FloatArray(myemb.size)
-                                                        for (i in myemb.indices) {
-                                                            floatArray[i] = myemb[i].toFloat()
-                                                        }
-                                                        val score = async {
-                                                            FaceRecognition.distance(
-                                                                output,
-                                                                floatArray
-                                                            )
-                                                        }
-                                                        val score2 = async {
-                                                            FaceRecognition.cosineSimilarity(
-                                                                output,
-                                                                floatArray
-                                                            )
-                                                        }
-                                                        isRecognized =
-                                                            (score.await() < FaceRecognition.EUCLIDEAN_THRESHOLD
-                                                                    && score2.await() > FaceRecognition.COSINE_THRESHOLD)
+                                                    val score = async {
+                                                        FaceRecognition.distance(
+                                                            output,
+                                                            floatArray
+                                                        )
                                                     }
+                                                    val score2 = async {
+                                                        FaceRecognition.cosineSimilarity(
+                                                            output,
+                                                            floatArray
+                                                        )
+                                                    }
+                                                    isRecognized =
+                                                        (score.await() < FaceRecognition.EUCLIDEAN_THRESHOLD
+                                                                && score2.await() > FaceRecognition.COSINE_THRESHOLD)
+                                                }
 //                                                Don't wait for spoofing job, it takes some time
 //                                                    spoofingJob.join()
-                                                    recognitionJob.join()
+                                                recognitionJob.join()
 
+                                            }
+                                            println("isSharp: $isSharp, isRecognized: $isRecognized")
+                                            if (isSharp && isRecognized) {
+                                                reset()
+                                                // This will automatically happen when navigation happens, but in case that takes time, we
+                                                // can do it beforehand this way.
+                                                // lifecycleScope.cancel()
+                                                // Do we really need to check this? I guess there's no harm.
+                                                if (findNavController().currentDestination?.id == R.id.AttendanceFragment) {
+                                                    findNavController().navigate(R.id.action_Attendance_to_PostAttendanceFragment)
                                                 }
-                                                println("isSharp: $isSharp, isRecognized: $isRecognized")
-                                                if (isSharp && isRecognized) {
-                                                    reset()
-                                                    // This will automatically happen when navigation happens, but in case that takes time, we
-                                                    // can do it beforehand this way.
-                                                    // lifecycleScope.cancel()
-                                                    // Do we really need to check this? I guess there's no harm.
-                                                    if (findNavController().currentDestination?.id == R.id.AttendanceFragment) {
-                                                        findNavController().navigate(R.id.action_Attendance_to_PostAttendanceFragment)
-                                                    }
-                                                    appViewModel.markAttendance()
-                                                }
+                                                appViewModel.markAttendance()
                                             }
                                         }
                                     }
