@@ -56,7 +56,7 @@ fun NotificationManager.sendGeofenceNotification(context: Context, transition: I
 }
 
 fun Long.toTimeIST(): String {
-    val timeFormat = SimpleDateFormat("h:m a", Locale.getDefault())
+    val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
     val time = Date(this)
     return timeFormat.format(time)
 }
