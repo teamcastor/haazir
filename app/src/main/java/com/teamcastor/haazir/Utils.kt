@@ -92,6 +92,10 @@ class Utils {
             scriptYuvToRgb.setInput(inputAllocation)
             scriptYuvToRgb.forEach(outputAllocation)
             outputAllocation!!.copyTo(output)
+            // Strict mode logs these otherwise
+            inputAllocation!!.destroy()
+            outputAllocation!!.destroy()
+            scriptYuvToRgb.destroy()
         }
 
         private fun needCreateAllocations(image: Image, yuvBuffer: YuvByteBuffer): Boolean {
@@ -133,7 +137,6 @@ class Utils {
             val matrix = Matrix()
             // RESIZE THE BIT MAP
             matrix.postScale(scaleWidth, scaleHeight)
-
             // "RECREATE" THE NEW BITMAP
             // Disable the filter as it smooths out the image
             return Bitmap.createBitmap(

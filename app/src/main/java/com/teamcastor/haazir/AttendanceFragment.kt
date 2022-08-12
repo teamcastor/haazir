@@ -59,14 +59,12 @@ class AttendanceFragment : Fragment() {
             // Image Analysis
             val imageAnalysis = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .setTargetRotation(requireView().display.rotation)
                 .setTargetResolution(Size(720,1280))
                 .build()
 
             // Preview
             val preview = Preview.Builder()
                 .setTargetResolution(Size(720, 1280))
-                .setTargetRotation(requireView().display.rotation)
                 .build()
                 .also {
                     it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
@@ -87,123 +85,119 @@ class AttendanceFragment : Fragment() {
                 isRecognized = false
             }
 
+            val faceDetectOps = FaceDetectorOptions.Builder()
+                .setMinFaceSize(0.2F)
+                .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+                .build()
+
+            val faceDetector = FaceDetection.getClient(faceDetectOps)
+
             imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(ctx)) { imageProxy ->
+
                 val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-                val faceDetectOps = FaceDetectorOptions.Builder()
-                    .setMinFaceSize(0.2F)
-                    .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
-                    .build()
 
-                val faceDetector = FaceDetection.getClient(faceDetectOps)
                 val image = InputImage.fromMediaImage(imageProxy.image!!, rotationDegrees)
-
 
                 faceDetector.process(image)
                     .addOnSuccessListener { faces ->
-                        graphicOverlay.clear()
-                        if (faces.size == 1) {
+                        lifecycleScope.launch {
+                            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                                graphicOverlay.clear()
+                                if (faces.size == 1) {
 
-                            val face = faces.first()
-                            graphicOverlay.setImageSourceInfo(image.height, image.width, true)
+                                    val face = faces.first()
+                                    graphicOverlay.setImageSourceInfo(image.height, image.width, true)
 
-                            val bitmap = Bitmap.createBitmap(
-                                image.width,
-                                image.height,
-                                Bitmap.Config.ARGB_8888,
-                            )
+                                    val bitmap = Bitmap.createBitmap(
+                                        image.width,
+                                        image.height,
+                                        Bitmap.Config.ARGB_8888,
+                                    )
 
-                            // ImageAnalysis usecase gives YUV_420_8888 format images
-                            // Convert them to ARGB_8888 bitmap
-                            val yuvToRgbConverter = Utils.YuvToRgbConverter(ctx)
-                            yuvToRgbConverter.yuvToRgb(imageProxy.image!!, bitmap)
-                            val rotatedBitmap = bitmap!!.rotate(rotationDegrees.toFloat())
-                            graphicOverlay.add(
-                                FaceGraphic(
-                                    graphicOverlay,
-                                    face,
-                                    rotatedBitmap
-                                )
-                            )
-                            // The coordinates of this are according to ImageAnalysis imageProxy
-                            // GraphicOverlay will transform them to preview size
-                            val rect = Rect(face.boundingBox)
-                            // Confirm the face is in the view fram
-                            if (rotatedBitmap.width != 0 && rotatedBitmap.height != 0) {
-                                if (rect.left < 0 || rect.top < 0 || rect.left + rect.width() > (rotatedBitmap.width) ||
-                                    rect.top + rect.height() > rotatedBitmap.height
-                                ) {
-                                    lifecycleScope.launch {
-                                        whenStarted {
+                                    // ImageAnalysis usecase gives YUV_420_8888 format images
+                                    // Convert them to ARGB_8888 bitmap
+                                    val yuvToRgbConverter = Utils.YuvToRgbConverter(ctx)
+                                    yuvToRgbConverter.yuvToRgb(imageProxy.image!!, bitmap)
+                                    val rotatedBitmap = bitmap!!.rotate(rotationDegrees.toFloat())
+                                    graphicOverlay.add(
+                                        FaceGraphic(
+                                            graphicOverlay,
+                                            face,
+                                            rotatedBitmap
+                                        )
+                                    )
+                                    // The coordinates of this are according to ImageAnalysis imageProxy
+                                    // GraphicOverlay will transform them to preview size
+                                    val rect = Rect(face.boundingBox)
+                                    // Confirm the face is in the view fram
+                                    if (rotatedBitmap.width != 0 && rotatedBitmap.height != 0) {
+                                        if (rect.left < 0 || rect.top < 0 || rect.left + rect.width() > (rotatedBitmap.width) ||
+                                            rect.top + rect.height() > rotatedBitmap.height
+                                        ) {
                                             binding.helpText.text = "Detected face is outside camera bounds.\n" +
                                                     "Please bring it in the center of the preview"
-                                        }
-                                    }
-                                    Log.i("AttendanceFragment", "Face is not in the frame")
+                                            Log.i("AttendanceFragment", "Face is not in the frame")
 
-                                } else {
-                                    lifecycleScope.launch {
-                                        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                                        } else {
                                             binding.helpText.text = "Face Detected. Processing"
                                             binding.processingBar.visibility = View.VISIBLE
-                                            val faceBitmap =
-                                                Utils.cropFace(rect, rotatedBitmap, 256)
-                                            val fasl = FaceAntiSpoofing.laplacian(faceBitmap)
-                                            if (fasl > FaceAntiSpoofing.LAPLACE_FINAL_THRESHOLD) {
-                                                isSharp = true
-                                                val spoofingJob = launch {
-                                                    val result = runAntiSpoofing(faceBitmap)
-                                                    isNotSpoof =
-                                                        (result < FaceAntiSpoofing.SPOOF_THRESHOLD)
-                                                }
-                                                val recognitionJob = launch {
-                                                    val faceBitmap2 =
-                                                        Utils.getResizedBitmap(faceBitmap, 112, 112)
-                                                    val output = runRecognition(faceBitmap2)
-                                                    val floatArray = FloatArray(myemb.size)
-                                                    for (i in myemb.indices) {
-                                                        floatArray[i] = myemb[i].toFloat()
+                                            lifecycleScope.launch {
+                                                val faceBitmap =
+                                                    Utils.cropFace(rect, rotatedBitmap, 256)
+                                                val fasl = FaceAntiSpoofing.laplacian(faceBitmap)
+                                                if (fasl > FaceAntiSpoofing.LAPLACE_FINAL_THRESHOLD) {
+                                                    isSharp = true
+                                                    val spoofingJob = launch {
+                                                        val result = runAntiSpoofing(faceBitmap)
+                                                        isNotSpoof =
+                                                            (result < FaceAntiSpoofing.SPOOF_THRESHOLD)
                                                     }
-                                                    val score = async {
-                                                        FaceRecognition.distance(
-                                                            output,
-                                                            floatArray
-                                                        )
+                                                    val recognitionJob = launch {
+                                                        val faceBitmap2 =
+                                                            Utils.getResizedBitmap(faceBitmap, 112, 112)
+                                                        val output = runRecognition(faceBitmap2)
+                                                        val floatArray = FloatArray(myemb.size)
+                                                        for (i in myemb.indices) {
+                                                            floatArray[i] = myemb[i].toFloat()
+                                                        }
+                                                        val score = async {
+                                                            FaceRecognition.distance(
+                                                                output,
+                                                                floatArray
+                                                            )
+                                                        }
+                                                        val score2 = async {
+                                                            FaceRecognition.cosineSimilarity(
+                                                                output,
+                                                                floatArray
+                                                            )
+                                                        }
+                                                        isRecognized =
+                                                            (score.await() < FaceRecognition.EUCLIDEAN_THRESHOLD
+                                                                    && score2.await() > FaceRecognition.COSINE_THRESHOLD)
                                                     }
-                                                    val score2 = async {
-                                                        FaceRecognition.cosineSimilarity(
-                                                            output,
-                                                            floatArray
-                                                        )
-                                                    }
-                                                    isRecognized =
-                                                        (score.await() < FaceRecognition.EUCLIDEAN_THRESHOLD
-                                                                && score2.await() > FaceRecognition.COSINE_THRESHOLD)
-                                                }
 //                                                Don't wait for spoofing job, it takes some time
-//                                                spoofingJob.join()
-                                                recognitionJob.join()
+//                                                    spoofingJob.join()
+                                                    recognitionJob.join()
 
-                                            }
-                                            println("isSharp: $isSharp, isRecognized: $isRecognized")
-                                            if (isSharp && isRecognized) {
-                                                reset()
-                                                // This will automatically happen when navigation happens, but in case that takes time, we
-                                                // can do it beforehand this way.
-                                                // lifecycleScope.cancel()
-                                                // Do we really need to check this? I guess there's no harm.
-                                                if (findNavController().currentDestination?.id == R.id.AttendanceFragment) {
-                                                    findNavController().navigate(R.id.action_Attendance_to_PostAttendanceFragment)
                                                 }
-                                                appViewModel.markAttendance()
+                                                println("isSharp: $isSharp, isRecognized: $isRecognized")
+                                                if (isSharp && isRecognized) {
+                                                    reset()
+                                                    // This will automatically happen when navigation happens, but in case that takes time, we
+                                                    // can do it beforehand this way.
+                                                    // lifecycleScope.cancel()
+                                                    // Do we really need to check this? I guess there's no harm.
+                                                    if (findNavController().currentDestination?.id == R.id.AttendanceFragment) {
+                                                        findNavController().navigate(R.id.action_Attendance_to_PostAttendanceFragment)
+                                                    }
+                                                    appViewModel.markAttendance()
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                        }
-                        else {
-                            lifecycleScope.launch {
-                                whenCreated {
+                                else {
                                     binding.processingBar.visibility = View.INVISIBLE
                                     if (faces.isEmpty()) {
                                         binding.helpText.text = "No face detected"
