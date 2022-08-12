@@ -175,13 +175,13 @@ class AttendanceFragment : Fragment() {
                                                         (score.await() < FaceRecognition.EUCLIDEAN_THRESHOLD
                                                                 && score2.await() > FaceRecognition.COSINE_THRESHOLD)
                                                 }
-//                                                Don't wait for spoofing job, it takes some time
-//                                                    spoofingJob.join()
+//                                              Wait for jobs to finish
+                                                spoofingJob.join()
                                                 recognitionJob.join()
 
                                             }
-                                            println("isSharp: $isSharp, isRecognized: $isRecognized")
-                                            if (isSharp && isRecognized) {
+                                            println("isSharp: $isSharp, isRecognized: $isRecognized, isNotSpoof: $isNotSpoof")
+                                            if (isSharp && isRecognized && isNotSpoof) {
                                                 reset()
                                                 // This will automatically happen when navigation happens, but in case that takes time, we
                                                 // can do it beforehand this way.
