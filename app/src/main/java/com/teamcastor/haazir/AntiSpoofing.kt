@@ -33,9 +33,9 @@ class AntiSpoofing(context: Context) {
     }
 
     companion object {
-        const val SCORE_THRESHOLD = 0.75
+        const val SCORE_THRESHOLD = 0.7
         const val LAPLACE_THRESHOLD = 50
-        const val LAPLACE_FINAL_THRESHOLD = 500
+        const val LAPLACE_FINAL_THRESHOLD = 750
 
         fun laplacian(bitmap: Bitmap): Int {
             val laplace = arrayOf(intArrayOf(0, 1, 0), intArrayOf(1, -4, 1), intArrayOf(0, 1, 0))
