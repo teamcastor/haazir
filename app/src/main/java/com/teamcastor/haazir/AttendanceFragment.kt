@@ -142,7 +142,7 @@ class AttendanceFragment : Fragment() {
                                             binding.helpText.text = "Face Detected. Processing"
                                             binding.processingBar.visibility = View.VISIBLE
                                             val faceBitmap =
-                                                Utils.cropFace(rect, rotatedBitmap, 112)
+                                                Utils.cropFace(rect, rotatedBitmap, 224)
                                             val fasl = AntiSpoofing.laplacian(faceBitmap)
                                             if (fasl > AntiSpoofing.LAPLACE_FINAL_THRESHOLD) {
                                                 isSharp = true

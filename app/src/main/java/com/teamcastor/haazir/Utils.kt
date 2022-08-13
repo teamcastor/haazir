@@ -109,7 +109,7 @@ class Utils {
 
     companion object {
 
-        fun convertBitmapToByteBuffer(bp: Bitmap, capacity: Int, width: Int): ByteBuffer {
+        fun convertBitmapToByteBuffer(bp: Bitmap, capacity: Int, width: Int, imgMean: Float, imgStd: Float): ByteBuffer {
             val current = System.currentTimeMillis()
             val imageBuffer = ByteBuffer.allocate(capacity)
             imageBuffer.order(ByteOrder.nativeOrder())
@@ -119,9 +119,9 @@ class Utils {
             for (pixel in 0 until ((width * width) - 1)) {                                    //
                 val value = intValues[pixel]
                 // Normalize to [-1.0,1.0]
-                imageBuffer.putFloat((value shr 16 and 0xFF) / 255.0f) // Red
-                imageBuffer.putFloat((value shr 8 and 0xFF) / 255.0f)  // Green
-                imageBuffer.putFloat((value and 0xFF) / 255.0f)        // Blue
+                imageBuffer.putFloat(((value shr 16 and 0xFF ) - imgMean) / imgStd) // Red
+                imageBuffer.putFloat(((value shr 8 and 0xFF) - imgMean) / imgStd)  // Green
+                imageBuffer.putFloat(((value and 0xFF ) - imgMean) / imgStd)       // Blue
             }
             val end = System.currentTimeMillis()
             Log.v("FAS", "Time-taken for convertBitmapTBB : ${end - current}")

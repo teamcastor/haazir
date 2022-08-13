@@ -25,7 +25,7 @@ class FaceAntiSpoofing(context: Context) {
     fun antiSpoofing(bitmap: Bitmap): Float{
         val current = System.currentTimeMillis()
         val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 256, 256, 3), DataType.FLOAT32)
-        inputFeature0.loadBuffer(Utils.convertBitmapToByteBuffer(bitmap, (256*256*3*4), 256))
+        inputFeature0.loadBuffer(Utils.convertBitmapToByteBuffer(bitmap, (256*256*3*4), 256, 0F, 255F))
         val outputs = model.process(inputFeature0)
         val outputFeature0 = outputs.outputFeature0AsTensorBuffer
         val outputFeature1 = outputs.outputFeature1AsTensorBuffer
