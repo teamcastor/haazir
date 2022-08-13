@@ -142,14 +142,12 @@ class AttendanceFragment : Fragment() {
                                             binding.helpText.text = "Face Detected. Processing"
                                             binding.processingBar.visibility = View.VISIBLE
                                             val faceBitmap =
-                                                Utils.cropFace(rect, rotatedBitmap, 256)
-                                            val fasl = FaceAntiSpoofing.laplacian(faceBitmap)
-                                            if (fasl > FaceAntiSpoofing.LAPLACE_FINAL_THRESHOLD) {
+                                                Utils.cropFace(rect, rotatedBitmap, 112)
+                                            val fasl = AntiSpoofing.laplacian(faceBitmap)
+                                            if (fasl > AntiSpoofing.LAPLACE_FINAL_THRESHOLD) {
                                                 isSharp = true
                                                 val spoofingJob = launch {
-                                                    val result = runAntiSpoofing(faceBitmap)
-                                                    isNotSpoof =
-                                                        (result < FaceAntiSpoofing.SPOOF_THRESHOLD)
+                                                    isNotSpoof = runAntiSpoofing(faceBitmap)
                                                 }
                                                 val recognitionJob = launch {
                                                     val faceBitmap2 =
@@ -234,7 +232,7 @@ class AttendanceFragment : Fragment() {
 
     private suspend fun runAntiSpoofing(bitmap: Bitmap) =
         withContext(Dispatchers.Default) {
-            val fas = FaceAntiSpoofing(ctx)
+            val fas = AntiSpoofing(ctx)
             val result = fas.antiSpoofing(bitmap)
             fas.close()
             return@withContext result
