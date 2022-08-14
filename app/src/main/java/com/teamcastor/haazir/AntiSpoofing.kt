@@ -33,7 +33,7 @@ class AntiSpoofing(context: Context) {
     }
 
     companion object {
-        const val SCORE_THRESHOLD = 0.95
+        const val SCORE_THRESHOLD = 0.5
         const val LAPLACE_THRESHOLD = 50
         const val LAPLACE_FINAL_THRESHOLD = 750
 
