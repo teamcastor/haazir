@@ -43,7 +43,12 @@ class AppViewModel(
             Firebase.database.reference
     }
 
+    private val _vector = MutableLiveData<FloatArray>()
+    val vector: LiveData<FloatArray> = _vector
 
+    fun addVector(v: FloatArray) {
+        _vector.value = v
+    }
     private val _sliderFormState = MutableLiveData<SliderFormState>()
     val sliderFormState: LiveData<SliderFormState> = _sliderFormState
 

@@ -1,27 +1,36 @@
-package com.teamcastor.haazir
+package com.teamcastor.haazir.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.teamcastor.haazir.ui.login.LoginFragment
 import com.teamcastor.haazir.ui.register.RegisterFragment
 
-private const val NUM_TABS = 2
 
-class ViewPagerAdapter(activity: AppCompatActivity) :
+class ViewPagerAdapter(activity: AppCompatActivity, private val fragmentList: MutableList<Pair<String, Fragment>>) :
     FragmentStateAdapter(activity) {
 
     override fun getItemCount(): Int {
-        return NUM_TABS
+        return fragmentList.size
+    }
+    // Without overriding getItemId and containsItem, fragment will simply
+    // be reused instead of calling createFragment
+    override fun getItemId(position: Int): Long {
+        return fragmentList[position].second.hashCode().toLong()
+    }
+
+    override fun containsItem(itemId: Long): Boolean {
+        return fragmentList.find { it.second.hashCode().toLong() == itemId } != null
+    }
+
+    fun replaceRegisterFragment(gotVector: Boolean) {
+        if (gotVector) {
+            fragmentList.removeAt(1)
+            fragmentList.add(1, Pair("Register Scan", RegisterFragment()))
+        }
+        notifyItemChanged(1)
     }
 
     override fun createFragment(position: Int): Fragment {
-        if (position == 0) {
-            return LoginFragment()
-        }
-        return RegisterFragment()
+        return fragmentList[position].second
     }
 }

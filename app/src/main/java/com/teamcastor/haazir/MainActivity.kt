@@ -91,7 +91,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.PostAttendanceFragment -> {
                     bottomNavigationView.visibility = View.GONE
-                    binding.bottomBarPlaceholder.visibility = View.GONE
                 }
                 else -> {
                     bottomNavigationView.visibility = View.VISIBLE

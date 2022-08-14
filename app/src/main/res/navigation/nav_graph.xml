@@ -67,5 +67,8 @@
         android:id="@+id/PostAttendanceFragment"
         android:name="com.teamcastor.haazir.PostAttendanceFragment"
         tools:layout="@layout/fragment_post_attendance"/>
+    <fragment
+        android:id="@+id/RegisterCamFragment"
+        tools:layout="@layout/fragment_register_cam"/>
 
 </navigation>

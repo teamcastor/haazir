@@ -108,7 +108,8 @@ class RegisterFragment : Fragment() {
                     phoneNumber = phoneNumberEditText.text.toString(),
                     address = addressEditText.text.toString(),
                     name = nameEditText.text.toString(),
-                    gender = genderEditText.text.toString()
+                    gender = genderEditText.text.toString(),
+                    vector = appViewModel.vector.value!!.asList()
                 )
                 appViewModel.registerDataChanged(user, passwordEditText.text.toString())
             }
