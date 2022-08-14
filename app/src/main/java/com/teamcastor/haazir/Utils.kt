@@ -118,12 +118,14 @@ class Utils {
             // Convert the image to floating point.
             for (pixel in 0 until ((width * width) - 1)) {                                    //
                 val value = intValues[pixel]
-                // Normalize to [-1.0,1.0]
+                // Do normalization if needed (255f imgStd leads to 0 to 1.0)
+                // Recognition model needs RGB
                 if (!bgr) {
                     imageBuffer.putFloat(((value shr 16 and 0xFF) - imgMean) / imgStd) // Red
                     imageBuffer.putFloat(((value shr 8 and 0xFF) - imgMean) / imgStd)  // Green
                     imageBuffer.putFloat(((value and 0xFF) - imgMean) / imgStd)       // Blue
                 }
+                // Spoofing model needs BGR
                 else {
                     imageBuffer.putFloat(((value and 0xFF) - imgMean) / imgStd)     // Blue
                     imageBuffer.putFloat(((value shr 8 and 0xFF) - imgMean) / imgStd)  // Green
