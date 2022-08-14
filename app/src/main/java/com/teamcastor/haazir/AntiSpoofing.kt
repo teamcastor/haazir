@@ -13,8 +13,8 @@ class AntiSpoofing(context: Context) {
 
     fun antiSpoofing(bitmap: Bitmap): Boolean{
         val current = System.currentTimeMillis()
-        val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
-        inputFeature0.loadBuffer(Utils.convertBitmapToByteBuffer(bitmap, (224*224*3*4), 224, 127.5f, 127.5f))
+        val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 3, 128, 128), DataType.FLOAT32)
+        inputFeature0.loadBuffer(Utils.convertBitmapToByteBuffer(bitmap, (128*128*3*4), 128,0f, 1f, true))
         val outputs = model.process(inputFeature0)
         val outputFeature0 = outputs.outputFeature0AsTensorBuffer
         val end = System.currentTimeMillis()
@@ -23,9 +23,11 @@ class AntiSpoofing(context: Context) {
     }
 
     private fun checkThreshold(out1: FloatArray): Boolean{
-        val score = out1[0]
-        println("Anti-spoofing Score: $score")
-        return (score > SCORE_THRESHOLD)
+        val realP = out1[0]
+        val spoofP = out1[1]
+        Log.w("AntiSpoofing","Real probability: $realP")
+        Log.w("AntiSpoofing", "Spoof probability: $spoofP")
+        return (realP > PROBABILITY_THRESHOLD && spoofP < PROBABILITY_THRESHOLD)
     }
 
     fun close() {
@@ -33,7 +35,7 @@ class AntiSpoofing(context: Context) {
     }
 
     companion object {
-        const val SCORE_THRESHOLD = 0.5
+        const val PROBABILITY_THRESHOLD = 0.5
         const val LAPLACE_THRESHOLD = 50
         const val LAPLACE_FINAL_THRESHOLD = 750
 
