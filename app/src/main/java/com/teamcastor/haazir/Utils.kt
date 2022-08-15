@@ -109,7 +109,7 @@ class Utils {
 
     companion object {
 
-        fun convertBitmapToByteBuffer(bp: Bitmap, capacity: Int, width: Int, imgMean: Float, imgStd: Float, bgr: Boolean= false): ByteBuffer {
+        fun convertBitmapToByteBuffer(bp: Bitmap, capacity: Int, width: Int, imgMean: FloatArray, imgStd: FloatArray): ByteBuffer {
             val current = System.currentTimeMillis()
             val imageBuffer = ByteBuffer.allocate(capacity)
             imageBuffer.order(ByteOrder.nativeOrder())
@@ -118,19 +118,10 @@ class Utils {
             // Convert the image to floating point.
             for (pixel in 0 until ((width * width) - 1)) {                                    //
                 val value = intValues[pixel]
-                // Do normalization if needed (255f imgStd leads to 0 to 1.0)
-                // Recognition model needs RGB
-                if (!bgr) {
-                    imageBuffer.putFloat(((value shr 16 and 0xFF) - imgMean) / imgStd) // Red
-                    imageBuffer.putFloat(((value shr 8 and 0xFF) - imgMean) / imgStd)  // Green
-                    imageBuffer.putFloat(((value and 0xFF) - imgMean) / imgStd)       // Blue
-                }
-                // Spoofing model needs BGR
-                else {
-                    imageBuffer.putFloat(((value and 0xFF) - imgMean) / imgStd)     // Blue
-                    imageBuffer.putFloat(((value shr 8 and 0xFF) - imgMean) / imgStd)  // Green
-                    imageBuffer.putFloat(((value shr 16 and 0xFF) - imgMean) / imgStd) // Red
-                }
+                // Do normalization
+                    imageBuffer.putFloat(((value shr 16 and 0xFF) - imgMean[0]) / imgStd[0]) // Red
+                    imageBuffer.putFloat(((value shr 8 and 0xFF) - imgMean[1]) / imgStd[1])  // Green
+                    imageBuffer.putFloat(((value and 0xFF) - imgMean[2]) / imgStd[2])       // Blue
             }
             val end = System.currentTimeMillis()
             Log.v("FAS", "Time-taken for convertBitmapTBB : ${end - current}")

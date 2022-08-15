@@ -13,8 +13,8 @@ class AntiSpoofing(context: Context) {
 
     fun antiSpoofing(bitmap: Bitmap): Boolean{
         val current = System.currentTimeMillis()
-        val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 3, 128, 128), DataType.FLOAT32)
-        inputFeature0.loadBuffer(Utils.convertBitmapToByteBuffer(bitmap, (128*128*3*4), 128,0f, 1f, true))
+        val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
+        inputFeature0.loadBuffer(Utils.convertBitmapToByteBuffer(bitmap, (128*128*3*4), 128, MEAN, SCALE))
         val outputs = model.process(inputFeature0)
         val outputFeature0 = outputs.outputFeature0AsTensorBuffer
         val end = System.currentTimeMillis()
@@ -38,6 +38,8 @@ class AntiSpoofing(context: Context) {
         const val PROBABILITY_THRESHOLD = 0.5
         const val LAPLACE_THRESHOLD = 50
         const val LAPLACE_FINAL_THRESHOLD = 750
+        val MEAN = floatArrayOf(151.2405f,119.5950f,107.8395f)
+        val SCALE = floatArrayOf(63.0105f,56.4570f,55.0035f)
 
         fun laplacian(bitmap: Bitmap): Int {
             val laplace = arrayOf(intArrayOf(0, 1, 0), intArrayOf(1, -4, 1), intArrayOf(0, 1, 0))
