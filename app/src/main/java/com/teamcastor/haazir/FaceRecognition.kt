@@ -12,14 +12,9 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 class FaceRecognition(context: Context) {
-    // This model doesn't work well on GPU for some reason
-//    private val compatList = CompatibilityList()
-//    private val options: Model.Options = if (compatList.isDelegateSupportedOnThisDevice) {
-//        Model.Options.Builder().setDevice(Model.Device.GPU).build()
-//    } else {
-//        Model.Options.Builder().setNumThreads(4).build()
-//    }
-    private val model = Mobilefacenet.newInstance(context)
+
+    private val options = Model.Options.Builder().setNumThreads(2).build()
+    private val model = Mobilefacenet.newInstance(context, options)
 
     fun getOutputVector(bitmap: Bitmap): FloatArray{
         val current = System.currentTimeMillis()

@@ -4,12 +4,14 @@ import android.graphics.*
 import android.util.Log
 import com.teamcastor.haazir.ml.AntiSpoofing
 import org.tensorflow.lite.DataType
+import org.tensorflow.lite.support.model.Model
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 
 
 class AntiSpoofing(context: Context) {
 
-    private val model = AntiSpoofing.newInstance(context)
+    private val options = Model.Options.Builder().setNumThreads(2).build()
+    private val model = AntiSpoofing.newInstance(context, options)
 
     fun antiSpoofing(bitmap: Bitmap): Boolean{
         val current = System.currentTimeMillis()
