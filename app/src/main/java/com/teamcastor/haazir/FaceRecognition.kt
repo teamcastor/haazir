@@ -25,7 +25,7 @@ class FaceRecognition(context: Context) {
         val current = System.currentTimeMillis()
         val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 112, 112, 3), DataType.FLOAT32)
         inputFeature0.loadBuffer(Utils.convertBitmapToByteBuffer(bitmap, (112*112*3*4), 112,
-            FloatArray(3) {0f}, FloatArray(3) {255f}))
+            FloatArray(3) {127.5f}, FloatArray(3) {128f}))
         val outputs = model.process(inputFeature0)
         val outputFeature = outputs.outputFeature0AsTensorBuffer.floatArray
         val end = System.currentTimeMillis()
