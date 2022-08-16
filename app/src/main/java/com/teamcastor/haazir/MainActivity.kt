@@ -134,12 +134,32 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun mockDetected() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Warning")
+            .setMessage("Mock location detected.")
+            .setPositiveButton("Ok") { dialog, _ ->
+               dialog.dismiss()
+            }
+            .show()
+    }
+
+    @Suppress("DEPRECATION")
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         // PRIORITY_HIGH_ACCURACY takes upto 15s to return location, so not using that
         fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
             .addOnSuccessListener { location: Location? ->
                 if (location != null) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                        if (location.isFromMockProvider) {
+                            mockDetected()
+                        }
+                    } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        if (location.isMock) {
+                            mockDetected()
+                        }
+                    }
                     val lat = location.latitude
                     val lon = location.longitude
                     println("Latitude: $lat and Longitude: $lon")
@@ -158,8 +178,9 @@ class MainActivity : AppCompatActivity() {
     private fun addGeofence() {
         val geofence = Geofence.Builder()
             // Set the request ID of the geofence. This is a string to identify this
-            // geofence.
-            .setRequestId("niit-delhi")
+            // geofence. Something to note is that system won't add a geofence if
+            // a previous one with same Id exists, even if lat and long changes.
+            .setRequestId("jmit")
 
             // Set the circular region of this geofence.
             .setCircularRegion(
@@ -274,8 +295,11 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         // Noida Institute of Technology
-        const val LATITUDE = 28.463036
-        const val LONGITUDE = 77.490994
+//        const val LATITUDE = 28.463036
+//        const val LONGITUDE = 77.490994
+        // JMIT
+        const val LATITUDE = 30.036659738247568
+        const val LONGITUDE = 77.16009847819805
 
         private val REQUIRED_PERMISSIONS =
             mutableListOf(
