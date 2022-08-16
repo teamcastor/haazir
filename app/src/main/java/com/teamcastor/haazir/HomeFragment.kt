@@ -34,6 +34,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }
         }
+
+        appViewModel.attendanceHistory.observe(viewLifecycleOwner) {
+            println("Attendance history: $it")
+        }
         appViewModel.sliderFormState.observe(viewLifecycleOwner) {
             with(binding) {
                 if (it.event == "in")

@@ -3,12 +3,14 @@ package com.teamcastor.haazir
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.dzmitry_lakisau.month_year_picker_dialog.MonthYearPickerDialog
+import com.teamcastor.haazir.content.AttendanceHistoryContent
+import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.FragmentHistoryListBinding
-import com.teamcastor.haazir.placeholder.PlaceholderContent
 
 
 /**
@@ -16,11 +18,26 @@ import com.teamcastor.haazir.placeholder.PlaceholderContent
  */
 class HistoryFragment : Fragment(R.layout.fragment_history_list) {
     private var columnCount = 1
+    private val appViewModel: AppViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val bindingHL = FragmentHistoryListBinding.bind(view)
+
+        appViewModel.attendanceHistory.observe(viewLifecycleOwner) {
+            if (it != null) {
+                for (k in it.keys) {
+                    AttendanceHistoryContent.addItem(k, it[k])
+                }
+                bindingHL.list.adapter?.let { adapter ->
+                    (adapter as AttendanceHistoryRecyclerViewAdapter).updateData(
+                        AttendanceHistoryContent.ITEMS
+                    )
+                }
+            }
+        }
+
         // Set adapter
         with(bindingHL.list) {
             // Add divider
@@ -36,7 +53,7 @@ class HistoryFragment : Fragment(R.layout.fragment_history_list) {
                 else -> GridLayoutManager(context, columnCount)
             }
             // Set the adapter
-            adapter = MyAttendanceDetailRecyclerViewAdapter(PlaceholderContent.ITEMS)
+            adapter = AttendanceHistoryRecyclerViewAdapter(AttendanceHistoryContent.ITEMS)
         }
 
         val picker = MonthYearPickerDialog.Builder(

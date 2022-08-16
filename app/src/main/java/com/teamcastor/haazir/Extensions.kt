@@ -26,6 +26,7 @@ fun createChannel(context: Context) {
         notificationManager.createNotificationChannel(notificationChannel)
     }
 }
+
 // extension function
 fun NotificationManager.sendGeofenceNotification(context: Context, transition: Int) {
 
@@ -59,6 +60,18 @@ fun Long.toTimeIST(): String {
     val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
     val time = Date(this)
     return timeFormat.format(time)
+}
+
+fun Long.toDate(): String {
+    val dateFormat = SimpleDateFormat("d", Locale.getDefault())
+    val date = Date(this)
+    return dateFormat.format(date)
+}
+
+fun Long.toDay(): String {
+    val dateFormat = SimpleDateFormat("E", Locale.getDefault())
+    val date = Date(this)
+    return dateFormat.format(date)
 }
 
 fun Long.toDurationHM(): String {

@@ -57,6 +57,8 @@ class AppViewModel(
     val attendanceToday =
         Transformations.distinctUntilChanged(firebaseRepository.todayAttendance.asLiveData())
 
+    val attendanceHistory = firebaseRepository.attendanceHistory.asLiveData()
+
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
     private val _loginResult = MutableLiveData<LoginResult>()

@@ -24,7 +24,7 @@ class FirebaseRepository(
     ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
     companion object {
-        val db =  Firebase.database.reference
+        val db = Firebase.database.reference
         val today = System.currentTimeMillis() - (System.currentTimeMillis() % 86400000)
     }
 
@@ -44,6 +44,7 @@ class FirebaseRepository(
                             Log.w("trySend", "cancelled notifying user info change")
                         }
                 }
+
                 override fun onCancelled(error: DatabaseError) {
                     Log.w(AppViewModel.TAG, "lastestUserInfo:onCancelled")
                 }
@@ -58,8 +59,11 @@ class FirebaseRepository(
         .flowOn(ioDispatcher)
 
     val todayAttendance: Flow<Attendance?> = callbackFlow {
-        val todayAttendancePath = Firebase.auth.uid?.let { firebaseDb.child("attendance").child(it).child(
-            today.toString())}
+        val todayAttendancePath = Firebase.auth.uid?.let {
+            firebaseDb.child("attendance").child(it).child(
+                today.toString()
+            )
+        }
         val listener = todayAttendancePath?.addValueEventListener(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -74,6 +78,7 @@ class FirebaseRepository(
                             Log.w("trySend", "cancelled notifying attendance")
                         }
                 }
+
                 override fun onCancelled(error: DatabaseError) {
                     Log.w(AppViewModel.TAG, "lastestUserInfo:onCancelled", error.toException())
                 }
@@ -101,6 +106,34 @@ class FirebaseRepository(
             }
         } catch (e: Exception) {
             Log.w("markattendance", "error", e)
+        }
+    }
+
+    val attendanceHistory: Flow<Map<String, Attendance>?> = callbackFlow {
+        val attendanceHistoryPath =
+            Firebase.auth.uid?.let { firebaseDb.child("attendance").child(it) }
+        val listener =
+            attendanceHistoryPath?.orderByKey()?.startAt("1660262400000")?.endAt("2660262400000")
+                ?.addValueEventListener(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            val history = mutableMapOf<String, Attendance>()
+                            for (date in dataSnapshot.children) {
+                                date.key?.let {
+                                    date.getValue<Attendance>()?.let { it1 -> history.put(it, it1) }
+                                }
+                            }
+                            trySend(history as Map<String, Attendance>)
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            Log.w("", "loadPost:onCancelled", databaseError.toException())
+                        }
+                    })
+        awaitClose {
+            if (listener != null) {
+                attendanceHistoryPath.removeEventListener(listener)
+            }
         }
     }
 
