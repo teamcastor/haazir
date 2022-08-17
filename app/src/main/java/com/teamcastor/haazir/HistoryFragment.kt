@@ -1,6 +1,7 @@
 package com.teamcastor.haazir
 
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -10,10 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.teamcastor.haazir.FirebaseRepository.Companion.month
+import com.teamcastor.haazir.FirebaseRepository.Companion.today
 import com.teamcastor.haazir.content.AttendanceHistoryContent
 import com.teamcastor.haazir.data.Attendance
 import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.FragmentHistoryListBinding
+import java.util.*
 
 
 /**
@@ -79,9 +83,14 @@ class HistoryFragment : Fragment(R.layout.fragment_history_list) {
             // Set the adapter
             adapter = AttendanceHistoryRecyclerViewAdapter(AttendanceHistoryContent.ITEMS)
         }
+
+        // Start is year 2010
         val constraints =
             CalendarConstraints.Builder()
+                .setEnd(month)
+                .setStart(1262304000000)
                 .setValidator(DateValidatorPointBackward.now()).build()
+
 
         val picker = MaterialDatePicker.Builder.dateRangePicker()
             .setSelection(

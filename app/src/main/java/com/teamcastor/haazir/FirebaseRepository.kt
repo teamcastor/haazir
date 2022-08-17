@@ -27,9 +27,7 @@ class FirebaseRepository(
     companion object {
         val db = Firebase.database.reference
         val today = System.currentTimeMillis() - (System.currentTimeMillis() % 86400000)
-        private val monthStart = MaterialDatePicker.thisMonthInUtcMilliseconds()
-        var startDate = monthStart
-        var endDate = today
+        val month = MaterialDatePicker.thisMonthInUtcMilliseconds()
     }
 
     val latestUserInfo: Flow<User?> = callbackFlow {
