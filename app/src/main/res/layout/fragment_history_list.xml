@@ -9,36 +9,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/cornerRadius"
+        android:padding="@dimen/large_gap"
+        android:gravity="center"
         android:clipToPadding="false">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            android:theme="@style/App.Widget.Material3.TextInputLayout.FilledBox"
-            app:boxStrokeColor="@color/textfield_box_stroke"
-            android:textColorHint="@color/textfield_label_color"
-            app:hintTextColor="?colorSecondary"
-            app:placeholderText="mm/yyyy"
-            app:placeholderTextColor="?colorSurfaceVariant"
-            android:id="@+id/datePickerLayout"
-            android:layout_width="match_parent"
-            android:hint="Month and Year"
-            android:layout_height="wrap_content"
-            app:endIconMode="custom"
-            app:endIconDrawable="@drawable/ic_calendar_24"
-            app:endIconTint="?colorSurface">
+       <TextView
+           android:id="@+id/range"
+           android:layout_width="0dp"
+           android:layout_weight="1"
+           android:textAppearance="?textAppearanceTitleLarge"
+           android:textColor="?colorSurface"
+           android:layout_height="wrap_content"/>
 
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/datePicker"
-                android:background="@android:color/transparent"
-                android:textColor="?colorSurface"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:maxLength="7"
-                android:inputType="date">
-            </com.google.android.material.textfield.TextInputEditText>
-        </com.google.android.material.textfield.TextInputLayout>
+        <ImageButton
+            android:id="@+id/datePicker"
+            android:backgroundTint="@android:color/transparent"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_calendar_24"
+            app:tint="?colorSurface" />
 
     </LinearLayout>
     <com.google.android.material.card.MaterialCardView

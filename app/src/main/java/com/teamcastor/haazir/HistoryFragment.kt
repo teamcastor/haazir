@@ -7,8 +7,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import by.dzmitry_lakisau.month_year_picker_dialog.MonthYearPickerDialog
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.teamcastor.haazir.content.AttendanceHistoryContent
+import com.teamcastor.haazir.data.Attendance
 import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.FragmentHistoryListBinding
 
@@ -19,16 +22,22 @@ import com.teamcastor.haazir.databinding.FragmentHistoryListBinding
 class HistoryFragment : Fragment(R.layout.fragment_history_list) {
     private var columnCount = 1
     private val appViewModel: AppViewModel by activityViewModels()
+    private var startDate = MaterialDatePicker.thisMonthInUtcMilliseconds()
+    private var endDate = MaterialDatePicker.todayInUtcMilliseconds()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val bindingHL = FragmentHistoryListBinding.bind(view)
 
-        appViewModel.attendanceHistory.observe(viewLifecycleOwner) {
-            if (it != null) {
-                for (k in it.keys) {
-                    AttendanceHistoryContent.addItem(k, it[k])
+        fun updateListData(map: Map<String, Attendance>?) {
+            if (map != null) {
+                val filteredMap = map.filterKeys {
+                    it.toLong() in startDate..endDate
+                }
+                println("filtered map: $filteredMap")
+                for (k in filteredMap.keys) {
+                    AttendanceHistoryContent.addItem(k, map[k])
                 }
                 bindingHL.list.adapter?.let { adapter ->
                     (adapter as AttendanceHistoryRecyclerViewAdapter).updateData(
@@ -36,7 +45,22 @@ class HistoryFragment : Fragment(R.layout.fragment_history_list) {
                     )
                 }
             }
+            AttendanceHistoryContent.ITEM_MAP.clear()
         }
+
+        appViewModel.attendanceHistory.observe(viewLifecycleOwner) { it1 ->
+            updateListData(it1)
+        }
+
+        appViewModel.historyRange.observe(viewLifecycleOwner) {
+            val start = it.first.toDate() + " " + it.first.toMonth()
+            val end = it.second.toDate() + " " + it.second.toMonth()
+            bindingHL.range.text = start + "  -  " + end
+            startDate = it.first
+            endDate = it.second
+            updateListData(appViewModel.attendanceHistory.value)
+        }
+
 
         // Set adapter
         with(bindingHL.list) {
@@ -55,26 +79,35 @@ class HistoryFragment : Fragment(R.layout.fragment_history_list) {
             // Set the adapter
             adapter = AttendanceHistoryRecyclerViewAdapter(AttendanceHistoryContent.ITEMS)
         }
+        val constraints =
+            CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointBackward.now()).build()
 
-        val picker = MonthYearPickerDialog.Builder(
-            context = requireContext(),
-            themeResId = R.style.Style_MonthYearPickerDialog,
-            onDateSetListener = { year, month ->
-                // Add one because it starts counting from zero (really?)
-                var twoDigitMonth = (month + 1).toString()
-                if (twoDigitMonth.toInt() < 10) {
-                    twoDigitMonth = ("0$twoDigitMonth")
+        val picker = MaterialDatePicker.Builder.dateRangePicker()
+            .setSelection(
+                androidx.core.util.Pair(
+                    MaterialDatePicker.thisMonthInUtcMilliseconds(),
+                    MaterialDatePicker.todayInUtcMilliseconds()
+                )
+            )
+            .setCalendarConstraints(constraints)
+
+
+            .setTitleText("Select date")
+            .build()
+
+        bindingHL.datePicker.setOnClickListener {
+            // Sometimes on consecutive presses, without this error comes:
+            // ` java.lang.IllegalStateException: Fragment already added: MaterialDatePicker`
+            if (!picker.isVisible) {
+                picker.show(parentFragmentManager, "historyFragment")
+            }
+            picker.addOnPositiveButtonClickListener {
+                it?.let {
+                    appViewModel.historyRangeChanged(it)
                 }
-                bindingHL.datePicker.setText("${twoDigitMonth}/$year")
-            },
-            selectedMonth = 7,
-            selectedYear = 2022
-        ).build()
-
-        bindingHL.datePickerLayout.setEndIconOnClickListener {
-            picker.show()
+            }
         }
-        picker.setTitle("Select Month and Year")
     }
 
 }

@@ -9,7 +9,7 @@ import com.teamcastor.haazir.toTimeIST
 object AttendanceHistoryContent {
 
 
-    private val ITEM_MAP: MutableMap<String, AttendanceItem> = HashMap()
+    val ITEM_MAP: MutableMap<String, AttendanceItem> = HashMap()
 
     val ITEMS: List<AttendanceItem> get() =  ArrayList<AttendanceItem>(ITEM_MAP.values)
 

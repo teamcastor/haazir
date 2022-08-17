@@ -3,6 +3,7 @@ package com.teamcastor.haazir.data.model
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.*
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,6 +21,7 @@ import com.teamcastor.haazir.ui.login.LoginFormState
 import com.teamcastor.haazir.ui.login.LoginResult
 import com.teamcastor.haazir.ui.register.RegisterFormState
 import com.teamcastor.haazir.ui.register.RegisterFragment
+import androidx.core.util.Pair as xPair
 
 
 class AppViewModel(
@@ -49,6 +51,7 @@ class AppViewModel(
     fun addVector(v: FloatArray) {
         _vector.value = v
     }
+
     private val _sliderFormState = MutableLiveData<SliderFormState>()
     val sliderFormState: LiveData<SliderFormState> = _sliderFormState
 
@@ -59,14 +62,24 @@ class AppViewModel(
 
     val attendanceHistory = firebaseRepository.attendanceHistory.asLiveData()
 
+
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = (_loginResult)
     private val _registerForm = MutableLiveData<RegisterFormState>()
     val registerFormState: LiveData<RegisterFormState> = _registerForm
+    private val _historyRange = MutableLiveData(
+        xPair(
+            MaterialDatePicker.thisMonthInUtcMilliseconds(),
+            MaterialDatePicker.todayInUtcMilliseconds()
+        )
+    )
+    val historyRange: LiveData<xPair<Long, Long>> = _historyRange
 
-
+    fun historyRangeChanged(range: xPair<Long, Long>) {
+        _historyRange.value = range
+    }
 
 
     enum class AuthenticationState {

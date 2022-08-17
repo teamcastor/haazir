@@ -1,6 +1,7 @@
 package com.teamcastor.haazir
 
 import android.util.Log
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
@@ -26,6 +27,9 @@ class FirebaseRepository(
     companion object {
         val db = Firebase.database.reference
         val today = System.currentTimeMillis() - (System.currentTimeMillis() % 86400000)
+        private val monthStart = MaterialDatePicker.thisMonthInUtcMilliseconds()
+        var startDate = monthStart
+        var endDate = today
     }
 
     val latestUserInfo: Flow<User?> = callbackFlow {
@@ -109,33 +113,28 @@ class FirebaseRepository(
         }
     }
 
-    val attendanceHistory: Flow<Map<String, Attendance>?> = callbackFlow {
-        val attendanceHistoryPath =
-            Firebase.auth.uid?.let { firebaseDb.child("attendance").child(it) }
-        val listener =
-            attendanceHistoryPath?.orderByKey()?.startAt("1660262400000")?.endAt("2660262400000")
-                ?.addValueEventListener(
-                    object : ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            val history = mutableMapOf<String, Attendance>()
-                            for (date in dataSnapshot.children) {
-                                date.key?.let {
-                                    date.getValue<Attendance>()?.let { it1 -> history.put(it, it1) }
-                                }
-                            }
-                            trySend(history as Map<String, Attendance>)
-                        }
 
-                        override fun onCancelled(databaseError: DatabaseError) {
-                            Log.w("", "loadPost:onCancelled", databaseError.toException())
-                        }
-                    })
-        awaitClose {
-            if (listener != null) {
-                attendanceHistoryPath.removeEventListener(listener)
+        val attendanceHistory: Flow<Map<String, Attendance>?> = callbackFlow {
+            val attendanceHistoryPath =
+                Firebase.auth.uid?.let { firebaseDb.child("attendance").child(it) }
+            val listener =
+                attendanceHistoryPath?.orderByKey()
+                    ?.addValueEventListener(
+                        object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                trySend(dataSnapshot.getValue<Map<String, Attendance>>())
+                            }
+
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                Log.w("", "loadPost:onCancelled", databaseError.toException())
+                            }
+                        })
+            awaitClose {
+                if (listener != null) {
+                    attendanceHistoryPath.removeEventListener(listener)
+                }
             }
         }
-    }
 
 
 //    val isConnected: Flow<Boolean> = callbackFlow {
