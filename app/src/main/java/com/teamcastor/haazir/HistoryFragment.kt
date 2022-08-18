@@ -45,7 +45,9 @@ class HistoryFragment : Fragment(R.layout.fragment_history_list) {
                 }
                 bindingHL.list.adapter?.let { adapter ->
                     (adapter as AttendanceHistoryRecyclerViewAdapter).updateData(
-                        AttendanceHistoryContent.ITEMS
+                        AttendanceHistoryContent.ITEMS.sortedBy {
+                            it.date
+                        }
                     )
                 }
             }
