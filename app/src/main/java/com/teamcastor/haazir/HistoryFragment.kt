@@ -18,6 +18,7 @@ import com.teamcastor.haazir.data.Attendance
 import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.FragmentHistoryListBinding
 import java.util.*
+import com.google.android.material.R as material
 
 
 /**
@@ -106,10 +107,11 @@ class HistoryFragment : Fragment(R.layout.fragment_history_list) {
                 )
             )
             .setCalendarConstraints(constraints)
-
-
             .setTitleText("Select attendance date range")
+            .setTheme(material.style.ThemeOverlay_Material3_MaterialCalendar)
             .build()
+
+        picker.showsDialog = true
 
         bindingHL.datePicker.setOnClickListener {
             // Sometimes on consecutive presses, without this error comes:
