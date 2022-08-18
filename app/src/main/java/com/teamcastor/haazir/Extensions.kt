@@ -62,6 +62,12 @@ fun Long.toTimeIST(): String {
     return timeFormat.format(time)
 }
 
+fun Long.toYear(): String {
+    val dateFormat = SimpleDateFormat("yyyy", Locale.getDefault())
+    val year = Date(this)
+    return dateFormat.format(year)
+}
+
 fun Long.toMonth(): String {
     val dateFormat = SimpleDateFormat("MMM", Locale.getDefault())
     val month = Date(this)

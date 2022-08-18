@@ -59,8 +59,12 @@ class HistoryFragment : Fragment(R.layout.fragment_history_list) {
         }
 
         appViewModel.historyRange.observe(viewLifecycleOwner) {
-            val start = it.first.toDate() + " " + it.first.toMonth()
-            val end = it.second.toDate() + " " + it.second.toMonth()
+            var start = it.first.toDate() + " " + it.first.toMonth()
+            var end = it.second.toDate() + " " + it.second.toMonth()
+            if (it.first.toYear() != today.toYear() || it.second.toYear() != today.toYear()) {
+                start += " ${it.first.toYear()}"
+                end += " ${it.second.toYear()}"
+            }
             bindingHL.range.text = start + "  -  " + end
             startDate = it.first
             endDate = it.second
