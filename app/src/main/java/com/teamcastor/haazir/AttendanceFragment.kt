@@ -66,7 +66,7 @@ class AttendanceFragment : Fragment() {
 
             // Preview
             val preview = Preview.Builder()
-                .setTargetResolution(Size(720, 720))
+                .setTargetResolution(Size(360, 360))
                 .build()
                 .also {
                     it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
