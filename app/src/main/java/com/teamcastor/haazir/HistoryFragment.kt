@@ -108,7 +108,7 @@ class HistoryFragment : Fragment(R.layout.fragment_history_list) {
             .setCalendarConstraints(constraints)
 
 
-            .setTitleText("Select date")
+            .setTitleText("Select attendance date range")
             .build()
 
         bindingHL.datePicker.setOnClickListener {

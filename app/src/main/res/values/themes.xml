@@ -23,8 +23,8 @@
     </style>
     <style name="ShapeAppearanceOverlay.Haazir.CardView.TopRounded" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopRight">36dp</item>
-        <item name="cornerSizeTopLeft">36dp</item>
+        <item name="cornerSizeTopRight">@dimen/cornerRadius</item>
+        <item name="cornerSizeTopLeft">@dimen/cornerRadius</item>
         <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
