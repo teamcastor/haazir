@@ -65,7 +65,7 @@ class HistoryFragment : Fragment(R.layout.fragment_history_list) {
                 start += " ${it.first.toYear()}"
                 end += " ${it.second.toYear()}"
             }
-            bindingHL.range.text = start + "  -  " + end
+            bindingHL.range.text = start + "  —  " + end
             startDate = it.first
             endDate = it.second
             updateListData(appViewModel.attendanceHistory.value)
