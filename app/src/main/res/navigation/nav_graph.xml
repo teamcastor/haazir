@@ -57,7 +57,11 @@
             android:id="@+id/action_Attendance_to_PostAttendanceFragment"
             app:destination="@id/PostAttendanceFragment"
             app:popUpTo="@id/AttendanceFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true"
+            app:enterAnim="@animator/slide_in_right"
+            app:exitAnim="@animator/slide_out_left"
+            app:popEnterAnim="@animator/slide_in_left"
+            app:popExitAnim="@animator/slide_out_right" />
     </fragment>
 
     <activity
