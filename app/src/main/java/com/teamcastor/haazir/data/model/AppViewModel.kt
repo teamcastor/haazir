@@ -4,6 +4,8 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.*
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -15,6 +17,7 @@ import com.teamcastor.haazir.R
 import com.teamcastor.haazir.SliderFormState
 import com.teamcastor.haazir.data.Attendance
 import com.teamcastor.haazir.data.FirebaseUserLiveData
+import com.teamcastor.haazir.data.Leave
 import com.teamcastor.haazir.data.User
 import com.teamcastor.haazir.ui.login.LoggedInUserView
 import com.teamcastor.haazir.ui.login.LoginFormState
@@ -103,6 +106,10 @@ class AppViewModel(
             event = "checkOut"
         firebaseRepository.markAttendance(event)
     }
+//    fun applyLeave(type: String, daycount: String, from: String, till: String, halfdate: String , reason: String) {
+//        Log.i("AppViewModel", "success !!")
+//        firebaseRepository.applyLeave(type, daycount, from, till, halfdate, reason)
+//    }
 
     val authenticationState = FirebaseUserLiveData().map { user ->
         if (user != null) {
@@ -173,7 +180,6 @@ class AppViewModel(
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
                                         val uid = Firebase.auth.currentUser?.uid
-
                                         if (uid != null) {
                                             db.child("users").child(uid).setValue(user)
                                                 .addOnCompleteListener { t ->
@@ -205,7 +211,26 @@ class AppViewModel(
             Log.w(TAG, "createUserWithEmail:exception", e)
         }
     }
+    fun applyLeave(leave: Leave, count: Int) {
+        try {
+            // We have to make sure no other account exists with this Emp Number
 
+                        val uid = Firebase.auth.currentUser?.uid
+                        if (uid != null) {
+                            db.child("leave").child(uid).child(count.toString()).setValue(leave)
+                                .addOnCompleteListener { t ->
+                                    if (t.isSuccessful) {
+                                        Log.w(TAG, count.toString())
+                                        Log.w(TAG, "Leave data pushed !!!!!!!!!!!!!!!!!")
+                                    } else
+                                        Log.w(TAG, "EERROORR!!!!!!!!!")
+                                }
+                        }
+
+        } catch (e: Throwable) {
+            Log.w(TAG, "createUserWithEmail:exception", e)
+        }
+    }
 
     fun loginDataChanged(username: String, password: String) {
         if (!RegisterFragment.isEmpNumValid(username)) {

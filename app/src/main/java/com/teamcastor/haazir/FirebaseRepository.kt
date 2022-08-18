@@ -110,6 +110,28 @@ class FirebaseRepository(
             Log.w("markattendance", "error", e)
         }
     }
+//    fun applyLeave(type: String, daycount: String, from: String, till: String,halfdate: String, reason: String) {
+//        try {
+//            Firebase.auth.uid?.let { path ->
+//                let {
+//                    db.child("leave").child(path)
+//                        .child(type)
+//                        .child(daycount)
+//                        .child(from)
+//                        .child(till)
+//                        .child(halfdate)
+//                        .child(reason)
+//                        .setValue(1)
+//                        .addOnFailureListener {
+//                            Log.w("ma", "failed", it)
+//                        }
+//                    print("Database updated !!")
+//                }
+//            }
+//        } catch (e: Exception) {
+//            Log.w("applyleave", "error", e)
+//        }
+//    }
 
 
         val attendanceHistory: Flow<Map<String, Attendance>?> = callbackFlow {

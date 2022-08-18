@@ -1,11 +1,11 @@
 package com.teamcastor.haazir
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.text.InputFilter
+import android.text.*
 import android.text.InputFilter.LengthFilter
-import android.text.Spanned
-import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +13,18 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.teamcastor.haazir.data.Leave
+import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.FragmentApplyLeaveBinding
 import java.util.*
 
 
 class ApplyLeaveFragment : Fragment() {
 
+
+    private lateinit var leave: Leave
     var half: RadioButton? = null
     var regular: RadioButton? = null
     var numofdays: LinearLayout? = null
@@ -33,6 +38,10 @@ class ApplyLeaveFragment : Fragment() {
     var tilldate: TextView? = null
     var reasontext: EditText? = null
     var apply: Button? = null
+    private val sharedPrefFile = "sharedpreference"
+    private var count = 1
+
+    private val appViewModel: AppViewModel by activityViewModels()
     private var _binding: FragmentApplyLeaveBinding? = null
     private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +64,11 @@ class ApplyLeaveFragment : Fragment() {
         val materialDatePicker1 = materialDateBuilder.build()
         val materialDatePicker2 = materialDateBuilder.build()
 
+//        val sharedPreferences: SharedPreferences =
+//            requireActivity().getSharedPreferences(sharedPrefFile,Context.MODE_PRIVATE)
+//        val editor:SharedPreferences.Editor =  sharedPreferences.edit()
+
+
         _binding = FragmentApplyLeaveBinding.inflate(inflater,container,false)
         date = binding.date
         datehalf = binding.datehalf
@@ -71,12 +85,6 @@ class ApplyLeaveFragment : Fragment() {
         apply = binding.apply
 
         date?.visibility = View.INVISIBLE
-//        numofdaysedit?.isEnabled = false  // initialized before Type selected
-//        till?.isEnabled = false
-//        from?.isEnabled = false
-//        tilldate?.isEnabled = true
-//        fromdate?.isEnabled = true
-//        reasontext?.isEnabled = false
 
         from!!.setOnClickListener{
             materialDatePicker.show(parentFragmentManager, "MATERIAL_DATE_PICKER")
@@ -106,13 +114,10 @@ class ApplyLeaveFragment : Fragment() {
             from?.visibility = View.INVISIBLE
             till?.visibility =  View.INVISIBLE
             date?.visibility = View.VISIBLE
-//            numofdays?.isEnabled = false
-//            numofdaysedit?.text = null
-//            numofdaysedit?.isEnabled = false
-//            tilldate?.isEnabled = false
-//            till?.isEnabled = false
-//            from?.isEnabled = true
-            tilldate?.text = " Pick Date "
+            datehalf!!.text = " Pick Date  "
+            fromdate?.text = null
+            tilldate?.text = null
+            numofdaysedit?.text = null
             fromtext!!.text = "Date"
         }
         regular!!.setOnClickListener(){
@@ -120,22 +125,21 @@ class ApplyLeaveFragment : Fragment() {
             from?.visibility = View.VISIBLE
             till?.visibility =  View.VISIBLE
             date?.visibility = View.INVISIBLE
-//            numofdays?.isEnabled = true
-//            till?.isEnabled = true
-////            from?.isEnabled = true
-//            numofdaysedit?.isEnabled = true
-//            tilldate?.isEnabled = true
+            fromdate?.text = " Pick Date  "
+            tilldate?.text = " Pick Date  "
+            datehalf!!.text = null
             fromtext!!.text = "From"
 
         }
+
         apply!!.setOnClickListener(){
-            var i=0
+            val i=0
             while (i!=1){
                 if(regular!!.isChecked){
-                    leave_type += "Regular"
+                    leave_type = "Regular"
                 }
                 else if (half!!.isChecked){
-                    leave_type += "Half Day"
+                    leave_type = "Half Day"
                 }
                 else if(!regular!!.isChecked && !half!!.isChecked){
                     Toast.makeText(activity,"Select Leave Type !!",Toast.LENGTH_LONG).show()
@@ -146,42 +150,59 @@ class ApplyLeaveFragment : Fragment() {
                     break
                 }
                 else if(regular!!.isChecked && !TextUtils.isEmpty(numofdaysedit!!.text.toString())){
-                    leave_numofdays += " " + numofdaysedit!!.text.toString()
+                    leave_numofdays = numofdaysedit!!.text.toString()
                 }
                 if(regular!!.isChecked && fromdate!!.text == " Pick Date  "){
                     Toast.makeText(activity,"Select Date !!",Toast.LENGTH_LONG).show()
                     break
                 }
                 else if(regular!!.isChecked && fromdate!!.text != " Pick Date  "){
-                    from_date += "" + fromdate!!.text.toString()
+                    from_date = fromdate!!.text.toString()
+                    date_halfday = ""
                 }
                 if(regular!!.isChecked && tilldate!!.text == " Pick Date  "){
                     Toast.makeText(activity,"Select Dates !!",Toast.LENGTH_LONG).show()
                     break
                 }
                 else if(regular!!.isChecked && tilldate!!.text != " Pick Date  "){
-                    till_date += " " + tilldate!!.text.toString()
+                    till_date =  tilldate!!.text.toString()
+                    date_halfday = ""
                 }
                 if(half!!.isChecked && datehalf!!.text == " Pick Date  "){
                     Toast.makeText(activity,"Select Date !!",Toast.LENGTH_LONG).show()
                     break
                 }
-                else if(half!!.isChecked && fromdate!!.text != " Pick Date  "){
-                    date_halfday += " " + datehalf!!.text.toString()
+                else if(half!!.isChecked && datehalf!!.text != " Pick Date  "){
+                    date_halfday = datehalf!!.text.toString()
+                    from_date = ""
+                    till_date = ""
                 }
                 if(TextUtils.isEmpty(reasontext!!.text.toString())){
                     Toast.makeText(activity,"Enter reason in brief",Toast.LENGTH_LONG).show()
                     break
                 }
                 else if (!TextUtils.isEmpty(reasontext!!.text.toString())){
-                    reason_text += " " + reasontext!!.text.toString()
-//                    Toast.makeText(activity,"gggg",Toast.LENGTH_LONG).show()
+                    reason_text = reasontext!!.text.toString()
+
                     Log.i("ApplyLeaveFragment", leave_type)
                     Log.i("ApplyLeaveFragment", leave_numofdays)
                     Log.i("ApplyLeaveFragment", from_date)
                     Log.i("ApplyLeaveFragment", till_date)
                     Log.i("ApplyLeaveFragment", date_halfday)
                     Log.i("ApplyLeaveFragment", reason_text)
+                    leave = Leave(
+                        leaveType = leave_type,
+                        numOfDays = leave_numofdays,
+                        fromDate = from_date,
+                        toDate = till_date,
+                        halfDate = date_halfday,
+                        reason = reason_text,
+                    )
+
+                    appViewModel.applyLeave(leave,count)
+                    count++;
+//                    editor.putInt("count",count)
+//                    editor.apply()
                     break
                 }
             }
