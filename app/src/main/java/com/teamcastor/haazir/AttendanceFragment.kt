@@ -61,12 +61,12 @@ class AttendanceFragment : Fragment() {
             // Image Analysis
             val imageAnalysis = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .setTargetResolution(Size(720,1280))
+                .setTargetResolution(Size(720,720))
                 .build()
 
             // Preview
             val preview = Preview.Builder()
-                .setTargetResolution(Size(720, 1280))
+                .setTargetResolution(Size(720, 720))
                 .build()
                 .also {
                     it.setSurfaceProvider(binding.viewFinder.surfaceProvider)

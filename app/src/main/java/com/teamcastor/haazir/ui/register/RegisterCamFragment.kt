@@ -134,7 +134,6 @@ class RegisterCamFragment : Fragment() {
                                         Log.i("AttendanceFragment", "Face is not in the frame")
 
                                     } else {
-                                        Utils.saveImage(rotatedBitmap)
                                         binding.helpText.text = "Face Detected. Processing"
                                         binding.processingBar.visibility = View.VISIBLE
                                         val faceBitmap =
