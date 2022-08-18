@@ -10,6 +10,7 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -101,8 +102,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         initiateRequestPermissions(binding.root)
         if (checkPermissions() && checkBLPermission()) {
             if (isLocationEnabled())
@@ -139,7 +140,7 @@ class MainActivity : AppCompatActivity() {
             .setTitle("Warning")
             .setMessage("Mock location detected.")
             .setPositiveButton("Ok") { dialog, _ ->
-               dialog.dismiss()
+                dialog.dismiss()
             }
             .show()
     }
@@ -153,11 +154,15 @@ class MainActivity : AppCompatActivity() {
                 if (location != null) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                         if (location.isFromMockProvider) {
-                            mockDetected()
+                            if (!this.isFinishing) {
+                                mockDetected()
+                            }
                         }
                     } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         if (location.isMock) {
-                            mockDetected()
+                            if (!this.isFinishing) {
+                                mockDetected()
+                            }
                         }
                     }
                     val lat = location.latitude
