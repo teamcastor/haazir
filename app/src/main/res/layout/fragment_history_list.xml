@@ -83,26 +83,22 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:cardPreventCornerOverlap="false"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Haazir.CardView.TopRounded"
         app:strokeWidth="0dp">
 
-        <RelativeLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list"
+            android:name="com.teamcastor.haazir.HistoryFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingHorizontal="8dp"
-            android:paddingTop="8dp">
+            android:layout_marginHorizontal="@dimen/medium_gap"
+            android:layout_marginTop="@dimen/small_gap"
+            app:layoutManager="LinearLayoutManager"
+            tools:context=".HistoryFragment"
+            tools:listitem="@layout/fragment_history" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list"
-                android:name="com.teamcastor.haazir.HistoryFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="@dimen/small_gap"
-                app:layoutManager="LinearLayoutManager"
-                tools:context=".HistoryFragment"
-                tools:listitem="@layout/fragment_history" />
-        </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
+
 </LinearLayout>
