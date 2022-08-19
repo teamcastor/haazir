@@ -8,10 +8,6 @@
     android:orientation="vertical"
     tools:context="com.teamcastor.haazir.AttendanceFragment">
 
-    <include
-        android:id="@+id/topbar"
-        layout="@layout/appbar" />
-
     <FrameLayout
         android:layout_width="320sp"
         android:layout_height="320sp"

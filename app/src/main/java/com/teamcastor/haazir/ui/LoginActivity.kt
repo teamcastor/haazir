@@ -62,8 +62,6 @@ class LoginActivity : AppCompatActivity() {
             // If the user is currently looking at the first fragment, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed()
-        } else if(viewPager.currentItem == 2) {
-            viewPager.currentItem = 0
         } else {
             // Otherwise, select the previous previous fragment.
             viewPager.currentItem = viewPager.currentItem - 1

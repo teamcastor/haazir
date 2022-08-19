@@ -9,17 +9,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/large_gap"
+        android:layout_marginHorizontal="@dimen/medium_gap"
+        android:layout_marginTop="@dimen/medium_gap"
         android:gravity="center"
         android:clipToPadding="false">
 
-       <TextView
-           android:id="@+id/range"
-           android:layout_width="0dp"
-           android:layout_weight="1"
-           android:textAppearance="?textAppearanceTitleLarge"
-           android:textColor="?colorSurface"
-           android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/range"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:textAppearance="?textAppearanceTitleLarge"
+            android:textColor="?colorSurface" />
 
         <ImageButton
             android:id="@+id/datePicker"
@@ -31,67 +33,72 @@
             app:tint="?colorSurface" />
 
     </LinearLayout>
-    <com.google.android.material.card.MaterialCardView
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Haazir.CardView.TopRounded"
-        app:strokeWidth="0dp"
-        app:cardPreventCornerOverlap="false"
+
+    <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/medium_gap"
+        android:paddingVertical="@dimen/medium_gap">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="8dp"
+            android:text="Date"
+            android:textStyle="bold"
+            android:theme="?android:textAppearanceInverse" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Check-in"
+            android:textStyle="bold"
+            android:theme="?android:textAppearanceInverse" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Work Time"
+            android:textStyle="bold"
+            android:theme="?android:textAppearanceInverse" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingEnd="8dp"
+            android:text="Check-out"
+            android:textStyle="bold"
+            android:theme="?android:textAppearanceInverse" />
+
+    </LinearLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardPreventCornerOverlap="false"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Haazir.CardView.TopRounded"
+        app:strokeWidth="0dp">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingHorizontal="8dp"
             android:paddingTop="8dp">
 
-            <LinearLayout
-                android:id="@+id/headerLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/small_gap"
-                android:paddingVertical="@dimen/small_gap">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingStart="8dp"
-                    android:text="Date"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Check-in"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Work Time"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:paddingEnd="8dp"
-                    android:text="Check-out"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list"
                 android:name="com.teamcastor.haazir.HistoryFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/headerLayout"
                 android:layout_marginHorizontal="@dimen/small_gap"
                 app:layoutManager="LinearLayoutManager"
                 tools:context=".HistoryFragment"

@@ -25,7 +25,7 @@ class ViewPagerAdapter(activity: AppCompatActivity, private val fragmentList: Mu
     fun replaceRegisterFragment(gotVector: Boolean) {
         if (gotVector) {
             fragmentList.removeAt(1)
-            fragmentList.add(1, Pair("Register Scan", RegisterFragment()))
+            fragmentList.add(1, Pair("Register", RegisterFragment()))
         }
         notifyItemChanged(1)
     }
