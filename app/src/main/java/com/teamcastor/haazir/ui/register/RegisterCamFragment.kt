@@ -96,11 +96,11 @@ class RegisterCamFragment : Fragment() {
                     .addOnSuccessListener { faces ->
                         lifecycleScope.launch {
                             reset()
-                            graphicOverlay.clear()
+//                            graphicOverlay.clear()
                             if (faces.size == 1) {
 
                                 val face = faces.first()
-                                graphicOverlay.setImageSourceInfo(image.height, image.width, true)
+//                                graphicOverlay.setImageSourceInfo(image.height, image.width, true)
 
                                 val bitmap = Bitmap.createBitmap(
                                     image.width,
@@ -113,13 +113,13 @@ class RegisterCamFragment : Fragment() {
                                 val yuvToRgbConverter = Utils.YuvToRgbConverter(ctx)
                                 yuvToRgbConverter.yuvToRgb(imageProxy.image!!, bitmap)
                                 val rotatedBitmap = bitmap!!.rotate(rotationDegrees.toFloat())
-                                graphicOverlay.add(
-                                    FaceGraphic(
-                                        graphicOverlay,
-                                        face,
-                                        rotatedBitmap
-                                    )
-                                )
+//                                graphicOverlay.add(
+//                                    FaceGraphic(
+//                                        graphicOverlay,
+//                                        face,
+//                                        rotatedBitmap
+//                                    )
+//                                )
                                 // The coordinates of this are according to ImageAnalysis imageProxy
                                 // GraphicOverlay will transform them to preview size
                                 val rect = Rect(face.boundingBox)
