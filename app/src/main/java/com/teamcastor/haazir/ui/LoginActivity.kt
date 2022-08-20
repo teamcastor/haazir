@@ -53,6 +53,7 @@ class LoginActivity : AppCompatActivity() {
             if (authenticationState == AppViewModel.AuthenticationState.AUTHENTICATED) {
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
+                finish()
             }
         }
 
