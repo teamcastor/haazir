@@ -1,252 +1,259 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment"
-    android:orientation="vertical"
-    android:background="?colorPrimary"
-    android:clipChildren="false"
-    android:clipToPadding="false">
+    android:fillViewport="true">
 
-    <include
-        android:id="@+id/topbar"
-        layout="@layout/appbar"/>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="48dp"
-        tools:ignore="UseCompoundDrawables"
-        android:clipChildren="false"
-        android:clipToPadding="false">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/photoCardView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/cornerRadius"
-            app:cardElevation="@dimen/cardview_default_elevation"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:strokeWidth="0dp">
-
-            <ImageView
-                android:id="@+id/filePhoto"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:src="@drawable/file_photo" />
-        </com.google.android.material.card.MaterialCardView>
-
-        <TextView
-            android:id="@+id/location"
-            android:layout_width="wrap_content"
-            android:drawableTint="?colorSurface"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/medium_gap"
-            android:textColor="?colorSurface"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_baseline_location_on_24"
-            android:text="Outside geofence area"
-            app:layout_constraintTop_toBottomOf="@id/photoCardView"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:textAppearance="?textAppearanceTitleSmall"
-            app:layout_constraintStart_toStartOf="@id/photoCardView" />
-
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="@dimen/small_gap"
-            android:textColor="?colorSurface"
-            android:textAppearance="?textAppearanceTitleLarge"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.1"
-            app:layout_constraintStart_toEndOf="@+id/photoCardView"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/employeeNumber"/>
-
-        <TextView
-            android:id="@+id/employeeNumber"
-            android:textAppearance="?textAppearanceBodyMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="?colorSurface"
-            app:layout_constraintBottom_toBottomOf="@+id/photoCardView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/name"
-            app:layout_constraintTop_toBottomOf="@+id/name"
-            app:layout_constraintVertical_bias="0.3" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.card.MaterialCardView
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Haazir.CardView.TopRounded"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardPreventCornerOverlap="false"
-        app:strokeWidth="0dp">
+        android:background="?colorPrimary"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        tools:context=".HomeFragment">
+
+        <include
+            android:id="@+id/topbar"
+            layout="@layout/appbar" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/medium_gap"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
             android:clipToPadding="false"
-            android:clipChildren="false">
+            android:paddingHorizontal="48dp"
+            tools:ignore="UseCompoundDrawables">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardView"
-                android:layout_width="match_parent"
+                android:id="@+id/photoCardView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="@dimen/cornerRadius"
                 app:cardElevation="@dimen/cardview_default_elevation"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="spread"
                 app:strokeWidth="0dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/medium_gap">
-
-                    <LinearLayout
-                        android:id="@+id/dateLayout"
-                        android:layout_width="match_parent"
-                        android:gravity="center_horizontal"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@id/divider"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:id="@+id/date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Today's Overview"
-                            android:textAppearance="?textAppearanceTitleLarge" />
-                    </LinearLayout>
-
-                    <com.google.android.material.divider.MaterialDivider
-                        android:id="@+id/divider"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:dividerColor="?dividerColor"
-                        android:layout_marginVertical="@dimen/medium_gap"
-                        app:dividerInsetStart="16dp"
-                        app:dividerInsetEnd="16dp"
-                        app:layout_constraintBottom_toTopOf="@id/barrier"
-                        app:layout_constraintTop_toBottomOf="@id/dateLayout" />
-
-                    <androidx.constraintlayout.widget.Barrier
-                        android:id="@+id/barrier"
-                        app:barrierDirection="top"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:constraint_referenced_ids="enterTime, workDuration, exitTime"/>
-
-
-                    <TextView
-                        android:id="@+id/enterTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="24dp"
-                        android:drawableTop="@drawable/ic_checkin_24"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="?colorOnSurface"
-                        android:text="--:--"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        app:flow_horizontalStyle="spread"
-                        app:layout_constraintBottom_toTopOf="@id/enterTimeDesc"
-                        app:layout_constraintEnd_toStartOf="@+id/workDuration"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/divider" />
-
-                    <TextView
-                        android:id="@+id/workDuration"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableTop="@drawable/ic_timer_24"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="?colorOnSurface"
-                        android:text="--:--"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        app:layout_constraintEnd_toStartOf="@id/exitTime"
-                        app:layout_constraintStart_toEndOf="@id/enterTime"
-                        app:layout_constraintTop_toTopOf="@id/divider"
-                        app:layout_constraintBottom_toTopOf="@id/workDurationDesc"
-                        />
-
-                    <TextView
-                        android:id="@+id/exitTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:drawableTop="@drawable/ic_checkout_24"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="?colorOnSurface"
-                        android:text="--:--"
-                        android:textAppearance="?textAppearanceTitleMedium"
-                        app:layout_constraintBottom_toTopOf="@id/exitTimeDesc"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/workDuration"
-                        app:layout_constraintTop_toBottomOf="@id/divider" />
-
-
-                    <TextView
-                        android:id="@+id/enterTimeDesc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Check-in"
-                        android:textAppearance="?textAppearanceLabelMedium"
-                        app:layout_constraintEnd_toEndOf="@+id/enterTime"
-                        app:layout_constraintStart_toStartOf="@id/enterTime"
-                        app:layout_constraintTop_toBottomOf="@id/enterTime" />
-
-                    <TextView
-                        android:id="@+id/exitTimeDesc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Check-out"
-                        android:textAppearance="?textAppearanceLabelMedium"
-                        app:layout_constraintEnd_toEndOf="@+id/exitTime"
-                        app:layout_constraintStart_toStartOf="@id/exitTime"
-                        app:layout_constraintTop_toBottomOf="@id/exitTime" />
-
-                    <TextView
-                        android:id="@+id/workDurationDesc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Work Time"
-                        android:textAppearance="?textAppearanceLabelMedium"
-                        app:layout_constraintEnd_toEndOf="@id/workDuration"
-                        app:layout_constraintStart_toStartOf="@id/workDuration"
-                        app:layout_constraintTop_toBottomOf="@id/workDuration" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/filePhoto"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:src="@drawable/file_photo" />
             </com.google.android.material.card.MaterialCardView>
 
-            <com.ncorti.slidetoact.SlideToActView
-                android:id="@+id/slider"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                app:layout_constraintTop_toBottomOf="@id/cardView"
-                app:layout_constraintVertical_bias="1.0"
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/medium_gap"
+                android:drawableStart="@drawable/ic_baseline_location_on_24"
+                android:drawablePadding="8dp"
+                android:drawableTint="?colorSurface"
+                android:text="Outside geofence area"
+                android:textAppearance="?textAppearanceTitleSmall"
+                android:textColor="?colorSurface"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginTop="@dimen/medium_gap"
-                android:elevation="@dimen/cardview_default_elevation"
-                app:animate_completion="false"
-                app:border_radius="@dimen/cornerRadius"
-                app:inner_color="?attr/colorSurface"
-                app:outer_color="?attr/colorPrimaryDark"
-                app:slider_icon_color="?attr/colorOnSurface"
-                app:slider_locked="false"
-                app:text_color="?colorSurface" />
+                app:layout_constraintStart_toStartOf="@id/photoCardView"
+                app:layout_constraintTop_toBottomOf="@id/photoCardView" />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/small_gap"
+                android:textAppearance="?textAppearanceTitleLarge"
+                android:textColor="?colorSurface"
+                app:layout_constraintBottom_toTopOf="@id/employeeNumber"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintStart_toEndOf="@+id/photoCardView"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/employeeNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?textAppearanceBodyMedium"
+                android:textColor="?colorSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/photoCardView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/name"
+                app:layout_constraintTop_toBottomOf="@+id/name"
+                app:layout_constraintVertical_bias="0.3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
 
-</LinearLayout>
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardPreventCornerOverlap="false"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Haazir.CardView.TopRounded"
+            app:strokeWidth="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:padding="@dimen/medium_gap">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="@dimen/cornerRadius"
+                    app:cardElevation="@dimen/cardview_default_elevation"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="spread"
+                    app:strokeWidth="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/medium_gap">
+
+                        <LinearLayout
+                            android:id="@+id/dateLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toTopOf="@id/divider"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:id="@+id/date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Today's Overview"
+                                android:textAppearance="?textAppearanceTitleLarge" />
+                        </LinearLayout>
+
+                        <com.google.android.material.divider.MaterialDivider
+                            android:id="@+id/divider"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/medium_gap"
+                            app:dividerColor="?dividerColor"
+                            app:dividerInsetEnd="16dp"
+                            app:dividerInsetStart="16dp"
+                            app:layout_constraintBottom_toTopOf="@id/barrier"
+                            app:layout_constraintTop_toBottomOf="@id/dateLayout" />
+
+                        <androidx.constraintlayout.widget.Barrier
+                            android:id="@+id/barrier"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:barrierDirection="top"
+                            app:constraint_referenced_ids="enterTime, workDuration, exitTime" />
+
+
+                        <TextView
+                            android:id="@+id/enterTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:drawableTop="@drawable/ic_checkin_24"
+                            android:drawablePadding="8dp"
+                            android:drawableTint="?colorOnSurface"
+                            android:text="--:--"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            app:flow_horizontalStyle="spread"
+                            app:layout_constraintBottom_toTopOf="@id/enterTimeDesc"
+                            app:layout_constraintEnd_toStartOf="@+id/workDuration"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/divider" />
+
+                        <TextView
+                            android:id="@+id/workDuration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableTop="@drawable/ic_timer_24"
+                            android:drawablePadding="8dp"
+                            android:drawableTint="?colorOnSurface"
+                            android:text="--:--"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            app:layout_constraintBottom_toTopOf="@id/workDurationDesc"
+                            app:layout_constraintEnd_toStartOf="@id/exitTime"
+                            app:layout_constraintStart_toEndOf="@id/enterTime"
+                            app:layout_constraintTop_toTopOf="@id/divider" />
+
+                        <TextView
+                            android:id="@+id/exitTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:drawableTop="@drawable/ic_checkout_24"
+                            android:drawablePadding="8dp"
+                            android:drawableTint="?colorOnSurface"
+                            android:text="--:--"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            app:layout_constraintBottom_toTopOf="@id/exitTimeDesc"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/workDuration"
+                            app:layout_constraintTop_toBottomOf="@id/divider" />
+
+
+                        <TextView
+                            android:id="@+id/enterTimeDesc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Check-in"
+                            android:textAppearance="?textAppearanceLabelMedium"
+                            app:layout_constraintEnd_toEndOf="@+id/enterTime"
+                            app:layout_constraintStart_toStartOf="@id/enterTime"
+                            app:layout_constraintTop_toBottomOf="@id/enterTime" />
+
+                        <TextView
+                            android:id="@+id/exitTimeDesc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Check-out"
+                            android:textAppearance="?textAppearanceLabelMedium"
+                            app:layout_constraintEnd_toEndOf="@+id/exitTime"
+                            app:layout_constraintStart_toStartOf="@id/exitTime"
+                            app:layout_constraintTop_toBottomOf="@id/exitTime" />
+
+                        <TextView
+                            android:id="@+id/workDurationDesc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Work Time"
+                            android:textAppearance="?textAppearanceLabelMedium"
+                            app:layout_constraintEnd_toEndOf="@id/workDuration"
+                            app:layout_constraintStart_toStartOf="@id/workDuration"
+                            app:layout_constraintTop_toBottomOf="@id/workDuration" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.ncorti.slidetoact.SlideToActView
+                    android:id="@+id/slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="@dimen/medium_gap"
+                    android:elevation="@dimen/cardview_default_elevation"
+                    app:animate_completion="false"
+                    app:border_radius="@dimen/cornerRadius"
+                    app:inner_color="?attr/colorSurface"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cardView"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:outer_color="?attr/colorPrimaryDark"
+                    app:slider_icon_color="?attr/colorOnSurface"
+                    app:slider_locked="false"
+                    app:text_color="?colorSurface" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
+
