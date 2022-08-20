@@ -3,6 +3,7 @@ package com.teamcastor.haazir.ui
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.teamcastor.haazir.ui.login.LoginFragment
 import com.teamcastor.haazir.ui.register.RegisterFragment
 
 
@@ -15,12 +16,22 @@ class ViewPagerAdapter(activity: AppCompatActivity, private val fragmentList: Mu
     // Without overriding getItemId and containsItem, fragment will simply
     // be reused instead of calling createFragment
     override fun getItemId(position: Int): Long {
-        return fragmentList[position].second.hashCode().toLong()
+        return if (fragmentList[position].second is LoginFragment
+            || fragmentList[position].second is RegisterFragment) {
+            super.getItemId(position)
+        } else {
+            fragmentList[position].second.hashCode().toLong()
+        }
     }
 
     override fun containsItem(itemId: Long): Boolean {
-        return fragmentList.find { it.second.hashCode().toLong() == itemId } != null
+        return if (itemId.toInt() in 0 .. 1) {
+            super.containsItem(itemId)
+        } else {
+            fragmentList.find { it.second.hashCode().toLong() == itemId } != null
+        }
     }
+
 
     fun replaceRegisterFragment(gotVector: Boolean) {
         if (gotVector) {
