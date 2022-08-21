@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?colorPrimary"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,12 +16,15 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/leavetabLayout"
             android:layout_width="match_parent"
-            android:background="?colorSurfaceVariant"
+            android:background="?colorPrimary"
             android:layout_height="70dp"
-            app:tabIndicatorColor="?colorPrimary"
+            app:tabIndicatorColor="?colorSurfaceVariant"
             app:tabIndicatorHeight="5dp"
+            app:tabIndicatorFullWidth="false"
             app:tabIndicatorAnimationMode="linear"
-            app:tabSelectedTextColor="?colorPrimary"
+            app:tabSelectedTextColor="?colorSurfaceVariant"
+            app:tabTextColor="@color/white"
+            app:tabTextAppearance="@style/MineCustomTabText"
             app:layout_constraintStart_toStartOf="@+id/fra"
             app:layout_constraintEnd_toEndOf="@+id/fra"
             app:layout_constraintTop_toTopOf="parent">
@@ -49,4 +53,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/leavetabLayout" />
         </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </LinearLayout>
+<!--    app:layout_constraintTop_toBottomOf="@+id/leavetabLayout"-->
