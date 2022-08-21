@@ -66,7 +66,7 @@
 
     <activity
         android:id="@+id/LoginActivity"
-        android:name="com.teamcastor.haazir.ui.LoginActivity"/>
+        android:name="com.teamcastor.haazir.ui.LoginActivity" />
     <fragment
         android:id="@+id/PostAttendanceFragment"
         android:name="com.teamcastor.haazir.PostAttendanceFragment"

@@ -10,7 +10,9 @@ import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -19,13 +21,20 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenCreated
+import androidx.lifecycle.whenResumed
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.dialog.MaterialDialogs
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
 import com.teamcastor.haazir.*
+import com.teamcastor.haazir.R
 import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.FragmentRegisterCamBinding
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 
 class RegisterCamFragment : Fragment() {
@@ -37,12 +46,36 @@ class RegisterCamFragment : Fragment() {
     private var camera: Camera? = null
     private lateinit var cameraProvider: ProcessCameraProvider
     private val appViewModel: AppViewModel by activityViewModels()
-
+    private var isDialogVisibile = false
 
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         ctx = context
+    }
+
+    private fun showFullScreenDialog(bitmap: Bitmap, vector: FloatArray)
+    {
+        val view = layoutInflater.inflate(R.layout.fragment_image_preview_dialog, null)
+        val imageView = view.findViewById<ImageView>(R.id.previewImage)
+        imageView.setImageBitmap(bitmap)
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Preview Image")
+            .setView(view)
+            .setPositiveButton("Proceed") { _, _ ->
+                appViewModel.addVector(vector)
+            }
+            .setNegativeButton("Retry") { dialog, _ ->
+                onResume()
+                dialog.dismiss()
+                isDialogVisibile = false
+            }
+            .setOnCancelListener {
+                onResume()
+                isDialogVisibile = false
+            }
+            .show()
+
     }
 
     @SuppressLint("UnsafeOptInUsageError")
@@ -128,14 +161,23 @@ class RegisterCamFragment : Fragment() {
                                     if (rect.left < 0 || rect.top < 0 || rect.left + rect.width() > (rotatedBitmap.width) ||
                                         rect.top + rect.height() > rotatedBitmap.height
                                     ) {
-                                        binding.helpText.text =
-                                            "Detected face is outside camera bounds.\n" +
-                                                    "Please bring it in the center of the preview"
-                                        Log.i("AttendanceFragment", "Face is not in the frame")
+                                        whenCreated {
+                                            if (binding != null) {
+                                                binding.helpText.text =
+                                                    "Detected face is outside camera bounds.\n" +
+                                                            "Please bring it in the center of the preview"
+                                                Log.i(
+                                                    "AttendanceFragment",
+                                                    "Face is not in the frame"
+                                                )
+                                            }
+                                        }
 
                                     } else {
-                                        binding.helpText.text = "Face Detected. Processing"
-                                        binding.processingBar.visibility = View.VISIBLE
+                                        whenCreated {
+                                            binding.helpText.text = "Face Detected. Processing"
+                                            binding.processingBar.visibility = View.VISIBLE
+                                        }
                                         val faceBitmap =
                                             Utils.cropFace(rect, rotatedBitmap, 128)
                                         val fasl = AntiSpoofing.laplacian(faceBitmap)
@@ -152,9 +194,12 @@ class RegisterCamFragment : Fragment() {
                                         if (isSharp && isNotSpoof) {
                                             val faceBitmap2 =
                                                 Utils.getResizedBitmap(faceBitmap, 112, 112)
-                                            val vector = async { runRecognition(faceBitmap2) }
-                                            appViewModel.addVector(vector.await())
-                                            lifecycleScope.cancel()
+                                            val vector = runRecognition(faceBitmap2)
+                                            if (!isDialogVisibile) {
+                                                isDialogVisibile = true
+                                                showFullScreenDialog(rotatedBitmap, vector)
+                                                onPause()
+                                            }
                                         }
                                     }
                                 }
