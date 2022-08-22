@@ -88,8 +88,8 @@ class AttendanceFragment : Fragment() {
             }
 
             val faceDetectOps = FaceDetectorOptions.Builder()
-                .setMinFaceSize(0.2F)
-                .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+                .setMinFaceSize(0.33F)
+                .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
                 .build()
 
             val faceDetector = FaceDetection.getClient(faceDetectOps)
@@ -144,7 +144,7 @@ class AttendanceFragment : Fragment() {
                                             binding.helpText.text = "Face Detected. Processing"
                                             binding.processingBar.visibility = View.VISIBLE
                                             val faceBitmap =
-                                                Utils.cropFace(rect, rotatedBitmap, 128)
+                                                Utils.cropFace(rect, rotatedBitmap, 128, 128)
                                             val fasl = AntiSpoofing.laplacian(faceBitmap)
                                             if (fasl > AntiSpoofing.LAPLACE_FINAL_THRESHOLD) {
                                                 isSharp = true

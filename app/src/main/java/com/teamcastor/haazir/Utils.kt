@@ -138,16 +138,15 @@ class Utils {
             // RESIZE THE BIT MAP
             matrix.postScale(scaleWidth, scaleHeight)
             // "RECREATE" THE NEW BITMAP
-            // Disable the filter as it smooths out the image
             return Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false
+                bm, 0, 0, width, height, matrix, true
             )
         }
 
-        fun cropFace(rect: Rect, img: Bitmap, width: Int): Bitmap {
+        fun cropFace(rect: Rect, img: Bitmap, width: Int = rect.width(), height: Int = rect.height()): Bitmap {
             val croppedImage =
                 Bitmap.createBitmap(img, rect.left, rect.top, rect.width(), rect.height())
-            return getResizedBitmap(croppedImage, width, width)
+            return getResizedBitmap(croppedImage, width, height)
         }
 
         fun saveImage(bitmap: Bitmap?) {

@@ -39,7 +39,7 @@ class AntiSpoofing(context: Context) {
     companion object {
         const val PROBABILITY_THRESHOLD = 0.5
         const val LAPLACE_THRESHOLD = 50
-        const val LAPLACE_FINAL_THRESHOLD = 750
+        const val LAPLACE_FINAL_THRESHOLD = 325
         val MEAN = floatArrayOf(151.2405f,119.5950f,107.8395f)
         val SCALE = floatArrayOf(63.0105f,56.4570f,55.0035f)
 

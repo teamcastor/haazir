@@ -66,9 +66,9 @@ class RegisterCamFragment : Fragment() {
                 appViewModel.addVector(vector)
             }
             .setNegativeButton("Retry") { dialog, _ ->
-                onResume()
                 dialog.dismiss()
                 isDialogVisibile = false
+                onResume()
             }
             .setOnCancelListener {
                 onResume()
@@ -113,8 +113,8 @@ class RegisterCamFragment : Fragment() {
             }
 
             val faceDetectOps = FaceDetectorOptions.Builder()
-                .setMinFaceSize(0.2F)
-                .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+                .setMinFaceSize(0.33F)
+                .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
                 .build()
 
             val faceDetector = FaceDetection.getClient(faceDetectOps)
@@ -179,7 +179,7 @@ class RegisterCamFragment : Fragment() {
                                             binding.processingBar.visibility = View.VISIBLE
                                         }
                                         val faceBitmap =
-                                            Utils.cropFace(rect, rotatedBitmap, 128)
+                                            Utils.cropFace(rect, rotatedBitmap, 128, 128)
                                         val fasl = AntiSpoofing.laplacian(faceBitmap)
                                         if (fasl > AntiSpoofing.LAPLACE_FINAL_THRESHOLD) {
                                             isSharp = true
@@ -196,8 +196,10 @@ class RegisterCamFragment : Fragment() {
                                                 Utils.getResizedBitmap(faceBitmap, 112, 112)
                                             val vector = runRecognition(faceBitmap2)
                                             if (!isDialogVisibile) {
+                                                val previewBitmap =
+                                                    Utils.cropFace(rect, rotatedBitmap)
                                                 isDialogVisibile = true
-                                                showFullScreenDialog(rotatedBitmap, vector)
+                                                showFullScreenDialog(previewBitmap, vector)
                                                 onPause()
                                             }
                                         }
@@ -279,7 +281,9 @@ class RegisterCamFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        startCamera()
+        if (!isDialogVisibile) {
+            startCamera()
+        }
     }
 
     override fun onDestroy() {
