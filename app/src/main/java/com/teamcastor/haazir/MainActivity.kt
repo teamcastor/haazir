@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
@@ -23,7 +24,10 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -42,6 +46,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var geofencingClient: GeofencingClient
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    lateinit var settingsClient: SettingsClient
+
+    lateinit var locationRequest: LocationRequest
 
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
@@ -67,6 +75,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        createLocationRequest()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -296,6 +306,37 @@ class MainActivity : AppCompatActivity() {
             }
         }
         navController.graph = navGraph
+    }
+
+    private fun createLocationRequest() {
+
+        locationRequest = LocationRequest().apply {
+            interval = 10000
+            fastestInterval = 5000
+            priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
+        }
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        settingsClient = LocationServices.getSettingsClient(this)
+
+        val task: Task<LocationSettingsResponse> = settingsClient.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener { locationSettingsResponse ->
+            // ..
+        }
+
+        task.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                // ..
+                try {
+                    // ..
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error.
+                }
+            }
+        }
     }
 
     companion object {

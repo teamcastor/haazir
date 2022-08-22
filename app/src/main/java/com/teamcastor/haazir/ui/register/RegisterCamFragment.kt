@@ -2,6 +2,7 @@ package com.teamcastor.haazir.ui.register
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.os.Bundle
@@ -12,11 +13,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.PackageManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
@@ -35,6 +39,7 @@ import com.teamcastor.haazir.databinding.FragmentRegisterCamBinding
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.util.jar.Manifest
 
 
 class RegisterCamFragment : Fragment() {
@@ -71,8 +76,8 @@ class RegisterCamFragment : Fragment() {
                 onResume()
             }
             .setOnCancelListener {
-                onResume()
                 isDialogVisibile = false
+                onResume()
             }
             .show()
 
@@ -80,6 +85,11 @@ class RegisterCamFragment : Fragment() {
 
     @SuppressLint("UnsafeOptInUsageError")
     private fun startCamera() {
+//        if (ActivityCompat.checkSelfPermission(requireContext(),
+//                android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.CAMERA), 1)
+//        }
+
         val cameraProviderFuture = ProcessCameraProvider.getInstance(ctx)
         cameraProviderFuture.addListener({
             // Used to bind the lifecycle of cameras to the lifecycle owner
@@ -271,6 +281,13 @@ class RegisterCamFragment : Fragment() {
         graphicOverlay = binding.graphicOverlay
         resultView = binding.resultInfo
 
+//        ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.CAMERA), 1)
+
+        if (ActivityCompat.checkSelfPermission(requireContext(),
+                android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.CAMERA), 1)
+        }
+
         return binding.root
     }
 
@@ -281,6 +298,19 @@ class RegisterCamFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+//        val permissionLauncher = registerForActivityResult(
+//            ActivityResultContracts.RequestPermission()) {
+//            isGranted ->
+//            if (isGranted) {
+//
+//            } else {
+//                println("kise kamm da ni paaji")
+//            }
+//        }
+//
+//        permissionLauncher.launch(android.Manifest.permission.CAMERA)
+
+
         if (!isDialogVisibile) {
             startCamera()
         }
