@@ -50,4 +50,14 @@
     <style name="App.Widget.Material3.TextInputLayout.FilledBox" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="colorControlActivated">?attr/colorSurface</item>
     </style>
+
+    <style name="Widget.App.Button.OutlinedButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Material3.Button.ElevatedButton</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="elevation">5dp</item>
+        <item name="cornerRadius">@dimen/cornerRadiusLeave</item>
+        <item name="android:textColor">@color/m3_elevated_button_text_color_selector</item>
+        <item name="backgroundTint">@color/m3_elevated_button_color_selector</item>
+        <item name="android:translationZ">5dp</item>
+    </style>
 </resources>

@@ -3,69 +3,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:background="@drawable/frag_round_bg"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MainActivity">
-    <TextView
-        android:id="@+id/select_leave"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=" Select Type: "
-        android:layout_marginTop="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="50dp"
-        android:textSize="30dp"
-        android:background="@drawable/head_back_rounded"
-        android:textColor="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+    tools:context=".MainActivity"
+    android:clipToPadding="false"
+    android:padding="@dimen/small_gap">
+
+
 
     <com.google.android.material.button.MaterialButtonToggleGroup
+        android:paddingHorizontal="@dimen/small_gap"
         android:id="@+id/radio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:singleSelection="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/select_leave"
-        >
-        <Button
-            android:id="@+id/regular"
-            android:layout_width="150sp"
-            android:layout_height="wrap_content"
-            android:text="Regular"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_marginStart="40dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/half_day"
-            app:layout_constraintTop_toBottomOf="@+id/select_leave"
-            android:textSize="20sp" />
-        <Button
-            android:id="@+id/half_day"
-            android:layout_width="150sp"
-            android:layout_height="wrap_content"
-            android:text="Half Day"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:layout_constraintStart_toEndOf="@+id/regular"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textSize="20sp" />
-    </com.google.android.material.button.MaterialButtonToggleGroup>
-
-    <TextView
-        android:id="@+id/leave_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text=" Leave info : "
-        android:textSize="30dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/head_back_rounded"
-        android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/radio"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="50dp"/>
+        android:gravity="center"
+        app:singleSelection="true"
+        app:selectionRequired="true"
+        app:layout_constraintStart_toStartOf="@id/leaveBarrierLeft"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/leaveBarrierRight"
+        android:layout_marginTop="@dimen/large_gap"
+        app:layout_constraintWidth_max="500dp"
+        android:clipToPadding="false">
+        <Button
+            android:id="@+id/regular"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            style="@style/Widget.App.Button.OutlinedButton"
+            android:layout_height="50dp"
+            android:text="Regular"
+            android:textAppearance="?textAppearanceTitleMedium"/>
+        <Button
+            android:id="@+id/half_day"
+            style="@style/Widget.App.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="Half-Day"
+            android:textAppearance="?textAppearanceTitleMedium"/>
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/date"
@@ -73,21 +52,21 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/cornerRadiusLeave"
         app:cardElevation="5dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/leave_info"
+        app:layout_constraintStart_toStartOf="@id/leaveBarrierLeft"
+        app:layout_constraintTop_toBottomOf="@id/radio"
+        app:layout_constraintEnd_toEndOf="@id/leaveBarrierRight"
+        android:layout_marginTop="48dp"
         app:strokeWidth="0dp">
         <TextView
             android:id="@+id/datehalf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=" Pick Date  "
-            android:textSize="20dp"
-            android:padding="10dp"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="20dp"
             android:drawableStart="@drawable/ic_baseline_calendar_today_24"
-            android:layout_marginStart="5dp" />
+            android:layout_marginStart="5dp"
+            android:textAppearance="?textAppearanceTitleMedium"/>
     </com.google.android.material.card.MaterialCardView>
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/from"
@@ -95,19 +74,20 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/cornerRadiusLeave"
         app:cardElevation="5dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/leave_info"
+        android:layout_marginTop="48dp"
+        app:layout_constraintStart_toStartOf="@id/radio"
+        app:layout_constraintTop_toBottomOf="@id/radio"
+        android:layout_marginEnd="@dimen/large_gap"
+        android:layout_marginStart="@dimen/small_gap"
         app:strokeWidth="0dp">
         <TextView
             android:id="@+id/fromdatetext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=" Start Date  "
-            android:textSize="20dp"
-            android:padding="10dp"
+            android:text=" Start Date "
+            android:textAppearance="?textAppearanceTitleMedium"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="20dp"
             android:drawableStart="@drawable/ic_baseline_calendar_today_24"
             android:layout_marginStart="5dp" />
     </com.google.android.material.card.MaterialCardView>
@@ -117,43 +97,42 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/cornerRadiusLeave"
         app:cardElevation="5dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/date"
-        app:layout_constraintTop_toBottomOf="@+id/leave_info"
-        app:strokeWidth="0dp">
+        app:layout_constraintTop_toBottomOf="@id/radio"
+        app:layout_constraintEnd_toEndOf="@id/radio"
+        app:strokeWidth="0dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="@dimen/small_gap">
         <TextView
             android:id="@+id/tilldatetext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=" End Date    "
-            android:textSize="20dp"
-            android:padding="10dp"
-            android:drawableStart="@drawable/ic_baseline_calendar_today_24"
-            android:layout_marginStart="5dp" />
+            android:text=" End Date "
+            android:textAppearance="?textAppearanceTitleMedium"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="20dp"
+            android:drawableStart="@drawable/ic_baseline_calendar_today_24"/>
     </com.google.android.material.card.MaterialCardView>
 
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/reason"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/cornerRadiusLeave"
         app:cardElevation="5dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date"
-        app:strokeWidth="0dp">
+        app:layout_constraintStart_toStartOf="@id/leaveBarrierLeft"
+        app:layout_constraintEnd_toEndOf="@id/leaveBarrierRight"
+        app:layout_constraintTop_toBottomOf="@id/till"
+        android:layout_marginTop="48dp"
+        app:layout_constraintWidth_max="500dp"
+        app:strokeWidth="0dp"
+        android:layout_marginHorizontal="@dimen/small_gap">
         <EditText
             android:id="@+id/reasontext"
             android:layout_width="match_parent"
-            android:layout_height="100sp"
+            android:layout_height="150sp"
             android:hint="Reason.."
-            android:textSize="20dp"
+            android:padding="@dimen/small_gap"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:background="@null"
@@ -165,12 +144,27 @@
         android:id="@+id/apply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/large_gap"
         app:layout_constraintTop_toBottomOf="@+id/reason"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="Apply"
-        android:textSize="20dp"
-        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="@id/leaveBarrierLeft"
+        app:layout_constraintEnd_toEndOf="@id/leaveBarrierRight"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Apply Leave"
         />
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/leaveBarrierLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:layout_constraintStart_toStartOf="parent"
+        app:constraint_referenced_ids="reason, from, radio"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/leaveBarrierRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:constraint_referenced_ids="reason, from, radio"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

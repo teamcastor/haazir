@@ -75,6 +75,7 @@ class ApplyLeaveFragment : Fragment() {
         datehalf = binding.datehalf
         from = binding.from
         fromdate = binding.fromdatetext
+        val radio = binding.radio
         till = binding.till
         tilldate = binding.tilldatetext
         half = binding.halfDay
@@ -103,6 +104,8 @@ class ApplyLeaveFragment : Fragment() {
 //        reasontext!!.filters = arrayOf<InputFilter>(LengthFilter(30))
 //
 //
+        radio.check(R.id.regular)
+        date!!.visibility = View.INVISIBLE
         half!!.setOnClickListener{
             temp = 1
             from?.visibility = View.INVISIBLE
@@ -123,7 +126,8 @@ class ApplyLeaveFragment : Fragment() {
 
         }
 
-        apply!!.setOnClickListener(){
+
+        apply!!.setOnClickListener {
             val i=0
             while (i!=1){
                 if(temp == 2){
