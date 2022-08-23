@@ -111,8 +111,6 @@ class MainActivity : AppCompatActivity() {
         if (checkPermissions() && checkBLPermission()) {
             if (isLocationEnabled())
                 getLocation()
-            else
-                LoginActivity().createLocationRequest()
             addGeofence()
         }
     }

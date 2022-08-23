@@ -10,6 +10,7 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import com.google.android.material.tabs.TabLayoutMediator
+import com.teamcastor.haazir.HomeFragment
 import com.teamcastor.haazir.MainActivity
 import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.ActivityLoginBinding
@@ -21,8 +22,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var viewPager: ViewPager2
     private val appViewModel: AppViewModel by viewModels()
-
-    private val REQUEST_CHECK_SETTINGS = 0x1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,39 +57,6 @@ class LoginActivity : AppCompatActivity() {
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
-            }
-        }
-
-        createLocationRequest()
-    }
-
-    fun createLocationRequest() {
-
-        val locationRequest = LocationRequest.create().apply {
-            interval = 10000
-            fastestInterval = 5000
-            priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
-        }
-
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
-
-        val client: SettingsClient = LocationServices.getSettingsClient(this)
-        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
-
-        task.addOnSuccessListener { locationSettingsResponse ->
-            // ..
-        }
-
-        task.addOnFailureListener { exception ->
-            if (exception is ResolvableApiException) {
-                // ..
-                try {
-                    // ..
-                    exception.startResolutionForResult(this@LoginActivity, REQUEST_CHECK_SETTINGS)
-                } catch (sendEx: IntentSender.SendIntentException) {
-                    // Ignore the error.
-                }
             }
         }
     }
