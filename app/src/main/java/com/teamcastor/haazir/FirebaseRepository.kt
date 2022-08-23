@@ -8,6 +8,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.teamcastor.haazir.data.Attendance
+import com.teamcastor.haazir.data.Leave
 import com.teamcastor.haazir.data.User
 import com.teamcastor.haazir.data.model.AppViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -110,29 +111,6 @@ class FirebaseRepository(
             Log.w("markattendance", "error", e)
         }
     }
-//    fun applyLeave(type: String, daycount: String, from: String, till: String,halfdate: String, reason: String) {
-//        try {
-//            Firebase.auth.uid?.let { path ->
-//                let {
-//                    db.child("leave").child(path)
-//                        .child(type)
-//                        .child(daycount)
-//                        .child(from)
-//                        .child(till)
-//                        .child(halfdate)
-//                        .child(reason)
-//                        .setValue(1)
-//                        .addOnFailureListener {
-//                            Log.w("ma", "failed", it)
-//                        }
-//                    print("Database updated !!")
-//                }
-//            }
-//        } catch (e: Exception) {
-//            Log.w("applyleave", "error", e)
-//        }
-//    }
-
 
         val attendanceHistory: Flow<Map<String, Attendance>?> = callbackFlow {
             val attendanceHistoryPath =
@@ -155,6 +133,28 @@ class FirebaseRepository(
                 }
             }
         }
+
+    val leaveHistory: Flow<Map<String, Leave>?> = callbackFlow {
+        val leaveHistoryPath =
+            Firebase.auth.uid?.let { firebaseDb.child("leave").child(it) }
+        val listener =
+            leaveHistoryPath?.orderByKey()
+                ?.addValueEventListener(
+                    object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            trySend(dataSnapshot.getValue<Map<String, Leave>?>())
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            Log.w("", "loadPost:onCancelled", databaseError.toException())
+                        }
+                    })
+        awaitClose {
+            if (listener != null) {
+                leaveHistoryPath.removeEventListener(listener)
+            }
+        }
+    }
 
 
 //    val isConnected: Flow<Boolean> = callbackFlow {

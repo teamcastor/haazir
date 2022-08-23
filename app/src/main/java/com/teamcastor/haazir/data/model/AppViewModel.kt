@@ -4,8 +4,6 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.*
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -65,6 +63,7 @@ class AppViewModel(
 
     val attendanceHistory = firebaseRepository.attendanceHistory.asLiveData()
 
+    val leaveHistory = firebaseRepository.leaveHistory.asLiveData()
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
@@ -211,21 +210,20 @@ class AppViewModel(
             Log.w(TAG, "createUserWithEmail:exception", e)
         }
     }
-    fun applyLeave(leave: Leave, count: Int) {
-        try {
-            // We have to make sure no other account exists with this Emp Number
 
-                        val uid = Firebase.auth.currentUser?.uid
-                        if (uid != null) {
-                            db.child("leave").child(uid).child(count.toString()).setValue(leave)
-                                .addOnCompleteListener { t ->
-                                    if (t.isSuccessful) {
-                                        Log.w(TAG, count.toString())
-                                        Log.w(TAG, "Leave data pushed !!!!!!!!!!!!!!!!!")
-                                    } else
-                                        Log.w(TAG, "EERROORR!!!!!!!!!")
-                                }
-                        }
+    fun applyLeave(leave: Leave) {
+        try {
+            val uid = Firebase.auth.currentUser?.uid
+            if (uid != null) {
+                db.child("leave").child(uid).child(System.currentTimeMillis().toString())
+                    .setValue(leave)
+                    .addOnCompleteListener { t ->
+                        if (t.isSuccessful) {
+                            Log.w(TAG, "Leave data pushed !!!!!!!!!!!!!!!!!")
+                        } else
+                            Log.w(TAG, "EERROORR!!!!!!!!!")
+                    }
+            }
 
         } catch (e: Throwable) {
             Log.w(TAG, "createUserWithEmail:exception", e)

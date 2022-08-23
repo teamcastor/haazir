@@ -73,8 +73,15 @@ fun Long.toMonth(): String {
     val month = Date(this)
     return dateFormat.format(month)
 }
+
 fun Long.toDate(): String {
     val dateFormat = SimpleDateFormat("d", Locale.getDefault())
+    val date = Date(this)
+    return dateFormat.format(date)
+}
+
+fun Long.toHumanDate(): String {
+    val dateFormat = SimpleDateFormat("MMM d", Locale.getDefault())
     val date = Date(this)
     return dateFormat.format(date)
 }
