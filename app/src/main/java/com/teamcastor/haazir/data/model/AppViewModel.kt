@@ -2,6 +2,7 @@ package com.teamcastor.haazir.data.model
 
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.*
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.auth.ktx.auth
@@ -22,6 +23,7 @@ import com.teamcastor.haazir.ui.login.LoginFormState
 import com.teamcastor.haazir.ui.login.LoginResult
 import com.teamcastor.haazir.ui.register.RegisterFormState
 import com.teamcastor.haazir.ui.register.RegisterFragment
+import kotlin.coroutines.coroutineContext
 import androidx.core.util.Pair as xPair
 
 
@@ -227,6 +229,30 @@ class AppViewModel(
 
         } catch (e: Throwable) {
             Log.w(TAG, "createUserWithEmail:exception", e)
+        }
+    }
+
+    fun forgotPassword(empNum: String) {
+        try {
+            db.child("pairsUE").child(empNum).addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            val email = dataSnapshot.value.toString()
+                            Firebase.auth.sendPasswordResetEmail(email)
+                            _loginResult.value = LoginResult(error = R.string.email_sent)
+                        } else {
+                            _loginResult.value = LoginResult(error = R.string.email_sending_failed)
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(TAG, "forgotPassword:onCancelled")
+                    }
+                })
+        } catch (e: Exception) {
+//            Log.w(TAG, "Could not initiate email lookup", e)
+            _loginResult.value = LoginResult(error = R.string.email_sending_failed)
         }
     }
 

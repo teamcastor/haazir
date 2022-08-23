@@ -11,7 +11,6 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -26,7 +25,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -35,6 +33,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.ActivityMainBinding
+import com.teamcastor.haazir.ui.LoginActivity
 import kotlin.system.exitProcess
 
 
@@ -46,10 +45,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var geofencingClient: GeofencingClient
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
-    lateinit var settingsClient: SettingsClient
-
-    lateinit var locationRequest: LocationRequest
 
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
@@ -75,8 +70,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        createLocationRequest()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -118,6 +111,8 @@ class MainActivity : AppCompatActivity() {
         if (checkPermissions() && checkBLPermission()) {
             if (isLocationEnabled())
                 getLocation()
+            else
+                LoginActivity().createLocationRequest()
             addGeofence()
         }
     }
@@ -306,37 +301,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         navController.graph = navGraph
-    }
-
-    private fun createLocationRequest() {
-
-        locationRequest = LocationRequest().apply {
-            interval = 10000
-            fastestInterval = 5000
-            priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
-        }
-
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
-
-        settingsClient = LocationServices.getSettingsClient(this)
-
-        val task: Task<LocationSettingsResponse> = settingsClient.checkLocationSettings(builder.build())
-
-        task.addOnSuccessListener { locationSettingsResponse ->
-            // ..
-        }
-
-        task.addOnFailureListener { exception ->
-            if (exception is ResolvableApiException) {
-                // ..
-                try {
-                    // ..
-                } catch (sendEx: IntentSender.SendIntentException) {
-                    // Ignore the error.
-                }
-            }
-        }
     }
 
     companion object {

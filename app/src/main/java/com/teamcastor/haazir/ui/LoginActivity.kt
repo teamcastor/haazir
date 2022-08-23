@@ -1,12 +1,14 @@
 package com.teamcastor.haazir.ui
 
 import android.content.Intent
+import android.content.IntentSender
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
+import com.google.android.gms.tasks.Task
 import com.google.android.material.tabs.TabLayoutMediator
 import com.teamcastor.haazir.MainActivity
 import com.teamcastor.haazir.data.model.AppViewModel
@@ -19,6 +21,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var viewPager: ViewPager2
     private val appViewModel: AppViewModel by viewModels()
+
+    private val REQUEST_CHECK_SETTINGS = 0x1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +61,40 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        createLocationRequest()
     }
+
+    fun createLocationRequest() {
+
+        val locationRequest = LocationRequest.create().apply {
+            interval = 10000
+            fastestInterval = 5000
+            priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
+        }
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        val client: SettingsClient = LocationServices.getSettingsClient(this)
+        val task: Task<LocationSettingsResponse> = client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener { locationSettingsResponse ->
+            // ..
+        }
+
+        task.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                // ..
+                try {
+                    // ..
+                    exception.startResolutionForResult(this@LoginActivity, REQUEST_CHECK_SETTINGS)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error.
+                }
+            }
+        }
+    }
+
     override fun onBackPressed() {
         if (viewPager.currentItem == 0) {
             // If the user is currently looking at the first fragment, allow the system to handle the

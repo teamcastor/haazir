@@ -3,13 +3,17 @@ package com.teamcastor.haazir.ui.login
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.teamcastor.haazir.R
 import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.FragmentLoginBinding
@@ -28,6 +32,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         val passwordEditText = binding.password
         val loadingProgressBar = binding.loading
         val loginButton = binding.login
+        val forgotPassword = binding.fp
 
         appViewModel.loginFormState.observe(
             viewLifecycleOwner,
@@ -49,6 +54,15 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 }
 
             })
+
+        forgotPassword.setOnClickListener {
+            if (empNumberEditText.text.toString().equals("")) {
+                Toast.makeText(requireContext(), "Enter Employee Number", Toast.LENGTH_SHORT).show()
+            } else {
+                appViewModel.forgotPassword(empNumberEditText.text.toString())
+                empNumberEditText.text!!.clear()
+            }
+        }
 
         appViewModel.loginResult.observe(viewLifecycleOwner,
             Observer { loginResult ->
