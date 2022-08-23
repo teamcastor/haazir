@@ -1,26 +1,24 @@
 package com.teamcastor.haazir
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.text.*
-import android.text.InputFilter.LengthFilter
+import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.teamcastor.haazir.data.Leave
 import com.teamcastor.haazir.data.model.AppViewModel
 import com.teamcastor.haazir.databinding.FragmentApplyLeaveBinding
-import java.util.*
 
 
 class ApplyLeaveFragment : Fragment() {
@@ -185,7 +183,7 @@ class ApplyLeaveFragment : Fragment() {
                         reason = reason_text,
                     )
                     appViewModel.applyLeave(leave,count)
-                    count++;
+                    count++
 //                    editor.putInt("count",count)
 //                    editor.apply()
                     break
@@ -195,30 +193,4 @@ class ApplyLeaveFragment : Fragment() {
         }
         return binding.root
     }
-//    inner class MinMaxFilter() : InputFilter {
-//        private var intMin: Int = 0
-//        private var intMax: Int = 0
-//
-//        // Initialized
-//        constructor(minValue: Int, maxValue: Int) : this() {
-//            this.intMin = minValue
-//            this.intMax = maxValue
-//        }
-//
-//        override fun filter(source: CharSequence, start: Int, end: Int, dest: Spanned, dStart: Int, dEnd: Int): CharSequence? {
-//            try {
-//                val input = Integer.parseInt(dest.toString() + source.toString())
-//                if (isInRange(intMin, intMax, input)) {
-//                    return null
-//                }
-//            } catch (e: NumberFormatException) {
-//                e.printStackTrace()
-//            }
-//            return ""
-//        }
-//        private fun isInRange(a: Int, b: Int, c: Int): Boolean {
-//            return if (b > a) c in a..b else c in b..a
-//        }
-//    }
-
 }
