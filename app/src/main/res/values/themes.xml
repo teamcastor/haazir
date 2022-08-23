@@ -33,18 +33,7 @@
         <!-- Color used by toolbar icons/text -->
         <item name="colorControlNormal">?attr/colorSurface</item>
     </style>
-    <style name="Style.MonthYearPickerDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
-        <item name="android:backgroundTint">?colorSurface</item>
-        <item name="headerBackgroundColor">?colorSurfaceVariant</item>
-        <item name="headerTextColor">?colorOnSurfaceVariant</item>
-        <item name="headerTextColorSelected">?colorOnSurface</item>
-        <item name="monthBackgroundColorSelected">?colorPrimary</item>
-        <item name="monthTextColor">?textColorAlertDialogListItem</item>
-        <item name="monthTextColorDisabled">?colorSurfaceVariant</item>
-        <item name="monthTextColorSelected">?colorSurface</item>
-        <item name="yearTextColor">?textColorAlertDialogListItem</item>
-        <item name="yearTextColorSelected">?colorPrimary</item>
-    </style>
+
     <style name="App.Widget.Material3.TextInputLayout.FilledBox" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="colorControlActivated">?attr/colorSurface</item>
     </style>

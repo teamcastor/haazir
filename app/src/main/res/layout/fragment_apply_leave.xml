@@ -149,6 +149,7 @@
         app:layout_constraintStart_toStartOf="@id/leaveBarrierLeft"
         app:layout_constraintEnd_toEndOf="@id/leaveBarrierRight"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:textAppearance="?android:textAppearanceInverse"
         android:text="Apply Leave"
         />
     <androidx.constraintlayout.widget.Barrier
