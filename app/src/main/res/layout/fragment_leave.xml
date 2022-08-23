@@ -18,9 +18,10 @@
             android:layout_height="70dp"
             app:tabIndicatorColor="?colorSurfaceVariant"
             app:tabIndicatorHeight="5dp"
-            app:tabSelectedTextColor="?colorSurfaceVariant"
-            app:tabTextColor="@color/white"
+            app:tabSelectedTextColor="?colorSurface"
+            app:tabTextColor="?colorSurfaceVariant"
             app:tabTextAppearance="?textAppearanceTitleMedium"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
