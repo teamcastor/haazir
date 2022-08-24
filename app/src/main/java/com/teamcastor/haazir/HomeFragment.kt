@@ -50,6 +50,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             with(binding) {
                 if (it.event == "in")
                     slider.text = getString(R.string.slider_check_in)
+
                 else
                     slider.text = getString(R.string.slider_check_out)
                 if (it.isLocked)

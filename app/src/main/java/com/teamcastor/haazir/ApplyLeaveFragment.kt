@@ -18,7 +18,6 @@ class ApplyLeaveFragment : Fragment(R.layout.fragment_apply_leave) {
 
     private val appViewModel: AppViewModel by activityViewModels()
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

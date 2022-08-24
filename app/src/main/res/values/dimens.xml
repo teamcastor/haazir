@@ -6,6 +6,7 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="cornerRadius">36dp</dimen>
     <dimen name="cornerRadiusLeave">16dp</dimen>
+    <dimen name="cornerRadiusStatus">8dp</dimen>
     <dimen name="medium_gap">24dp</dimen>
     <dimen name="large_gap">32dp</dimen>
     <dimen name="small_gap">16dp</dimen>

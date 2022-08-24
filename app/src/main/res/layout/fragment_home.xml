@@ -244,6 +244,7 @@
                     android:elevation="@dimen/cardview_default_elevation"
                     app:animate_completion="false"
                     app:border_radius="@dimen/cornerRadius"
+                    android:textAlignment="textEnd"
                     app:inner_color="?attr/colorSurface"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cardView"
@@ -252,6 +253,24 @@
                     app:slider_icon_color="?attr/colorOnSurface"
                     app:slider_locked="false"
                     app:text_color="?colorSurface" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/permissiondenied"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="@dimen/cornerRadius"
+                    app:cardElevation="3dp"
+                    app:layout_constraintBottom_toBottomOf="parent">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="75dp"
+                        android:gravity="center"
+                        android:textSize="20dp"
+                        android:textStyle="italic"
+                        android:background="?colorPrimary"
+                        android:textColor="?colorSurface"
+                        android:text="Permission denied"/>
+                </com.google.android.material.card.MaterialCardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>

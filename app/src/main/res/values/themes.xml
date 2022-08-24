@@ -28,6 +28,13 @@
         <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
+    <style name="ShapeAppearanceOverlay.Haazir.StatusCardView.TopRounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/cornerRadiusStatus</item>
+        <item name="cornerSizeTopLeft">@dimen/cornerRadiusStatus</item>
+        <item name="cornerSizeBottomRight">8dp</item>
+        <item name="cornerSizeBottomLeft">8dp</item>
+    </style>
 
     <style name="Theme.Haazir.AppBarOverlay" parent="ThemeOverlay.Material3">
         <!-- Color used by toolbar icons/text -->
