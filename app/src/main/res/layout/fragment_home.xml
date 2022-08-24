@@ -41,7 +41,7 @@
                     android:id="@+id/filePhoto"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    android:src="@drawable/file_photo" />
+                    android:src="@drawable/ic_baseline_person_24" />
             </com.google.android.material.card.MaterialCardView>
 
             <TextView

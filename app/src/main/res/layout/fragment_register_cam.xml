@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/AttendanceFragment"
     android:orientation="vertical"
+    android:background="@drawable/ic_register_background"
     tools:context="com.teamcastor.haazir.AttendanceFragment">
 
     <FrameLayout
