@@ -188,7 +188,7 @@ class MainActivity : AppCompatActivity() {
             // Set the request ID of the geofence. This is a string to identify this
             // geofence. Something to note is that system won't add a geofence if
             // a previous one with same Id exists, even if lat and long changes.
-            .setRequestId("jmit")
+            .setRequestId("ptc")
 
             // Set the circular region of this geofence.
             .setCircularRegion(
@@ -302,12 +302,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        // Noida Institute of Technology
-//        const val LATITUDE = 28.463036
-//        const val LONGITUDE = 77.490994
+//         Noida Institute of Technology
+        const val LATITUDE = 28.462838
+        const val LONGITUDE = 77.490354
         // JMIT
-        const val LATITUDE = 30.036659738247568
-        const val LONGITUDE = 77.16009847819805
+//        const val LATITUDE = 30.036659738247568
+//        const val LONGITUDE = 77.16009847819805
 
         private val REQUIRED_PERMISSIONS =
             mutableListOf(
