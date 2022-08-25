@@ -111,7 +111,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val locationRequest = LocationRequest.create().apply {
             interval = 10000
             fastestInterval = 5000
-            priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
+            priority = Priority.PRIORITY_HIGH_ACCURACY
         }
 
         val builder = LocationSettingsRequest.Builder()

@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         // PRIORITY_HIGH_ACCURACY takes upto 15s to return location, so not using that
-        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
             .addOnSuccessListener { location: Location? ->
                 if (location != null) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
