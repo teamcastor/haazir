@@ -49,7 +49,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nextFocusDown="@+id/number"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:inputType="textPassword"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,10 +87,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:visibility="gone"
+                android:indeterminate="true"
+                android:indeterminateTintMode="src_atop"
+                android:indeterminateTint="?colorPrimary"
                 app:layout_constraintBottom_toTopOf="@id/empNumberLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginBottom="@dimen/small_gap"/>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/top"
