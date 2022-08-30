@@ -105,11 +105,9 @@ class AttendanceFragment : Fragment() {
                         lifecycleScope.launch {
                             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                                 graphicOverlay.clear()
-                                if (faces.size == 1) {
-
-                                    val face = faces.first()
-                                    graphicOverlay.setImageSourceInfo(image.height, image.width, true)
-
+                                if (faces.isNotEmpty()) {
+                                 for (face in faces) {
+                                     graphicOverlay.setImageSourceInfo(image.height, image.width, true)
                                     val bitmap = Bitmap.createBitmap(
                                         image.width,
                                         image.height,
@@ -192,14 +190,10 @@ class AttendanceFragment : Fragment() {
                                         }
                                     }
                                 }
+                                }
                                 else {
                                     binding.processingBar.visibility = View.INVISIBLE
-                                    if (faces.isEmpty()) {
-                                        binding.helpText.text = "No face detected"
-                                    }
-                                    else {
-                                        binding.helpText.text = "Detected ${faces.size} faces. Raavan?"
-                                    }
+                                    binding.helpText.text = "No face detected"
                                 }
                             }
                         }

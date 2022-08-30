@@ -1,6 +1,7 @@
 package com.teamcastor.haazir
+
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
 import android.util.Log
 import com.teamcastor.haazir.ml.AntiSpoofing
 import org.tensorflow.lite.DataType
@@ -13,10 +14,19 @@ class AntiSpoofing(context: Context) {
     private val options = Model.Options.Builder().setNumThreads(2).build()
     private val model = AntiSpoofing.newInstance(context, options)
 
-    fun antiSpoofing(bitmap: Bitmap): Boolean{
+    fun antiSpoofing(bitmap: Bitmap): Boolean {
         val current = System.currentTimeMillis()
-        val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
-        inputFeature0.loadBuffer(Utils.convertBitmapToByteBuffer(bitmap, (128*128*3*4), 128, MEAN, SCALE))
+        val inputFeature0 =
+            TensorBuffer.createFixedSize(intArrayOf(1, 128, 128, 3), DataType.FLOAT32)
+        inputFeature0.loadBuffer(
+            Utils.convertBitmapToByteBuffer(
+                bitmap,
+                (128 * 128 * 3 * 4),
+                128,
+                MEAN,
+                SCALE
+            )
+        )
         val outputs = model.process(inputFeature0)
         val outputFeature0 = outputs.outputFeature0AsTensorBuffer
         val end = System.currentTimeMillis()
@@ -24,12 +34,12 @@ class AntiSpoofing(context: Context) {
         return checkThreshold(outputFeature0.floatArray)
     }
 
-    private fun checkThreshold(out1: FloatArray): Boolean{
+    private fun checkThreshold(out1: FloatArray): Boolean {
         val realP = out1[0]
         val spoofP = out1[1]
-        Log.w("AntiSpoofing","Real probability: $realP")
+        Log.w("AntiSpoofing", "Real probability: $realP")
         Log.w("AntiSpoofing", "Spoof probability: $spoofP")
-        return (realP > PROBABILITY_THRESHOLD && spoofP < PROBABILITY_THRESHOLD)
+        return (realP > 0.9 && spoofP < 0.1)
     }
 
     fun close() {
@@ -39,9 +49,9 @@ class AntiSpoofing(context: Context) {
     companion object {
         const val PROBABILITY_THRESHOLD = 0.5
         const val LAPLACE_THRESHOLD = 50
-        const val LAPLACE_FINAL_THRESHOLD = 325
-        val MEAN = floatArrayOf(151.2405f,119.5950f,107.8395f)
-        val SCALE = floatArrayOf(63.0105f,56.4570f,55.0035f)
+        const val LAPLACE_FINAL_THRESHOLD = 1000
+        val MEAN = floatArrayOf(151.2405f, 119.5950f, 107.8395f)
+        val SCALE = floatArrayOf(63.0105f, 56.4570f, 55.0035f)
 
         fun laplacian(bitmap: Bitmap): Int {
             val laplace = arrayOf(intArrayOf(0, 1, 0), intArrayOf(1, -4, 1), intArrayOf(0, 1, 0))
@@ -92,6 +102,4 @@ class AntiSpoofing(context: Context) {
             return result
         }
     }
-
-
 }

@@ -35,7 +35,7 @@ class FaceRecognition(context: Context) {
     companion object {
         // These are very generous thresholds
         const val COSINE_THRESHOLD = 0.65
-        const val EUCLIDEAN_THRESHOLD = 0.89
+        const val EUCLIDEAN_THRESHOLD = 0.80
 
         // Compute the cosine of the angle between x1 and x2.
         fun cosineSimilarity( x1 : FloatArray , x2 : FloatArray ) : Float {
