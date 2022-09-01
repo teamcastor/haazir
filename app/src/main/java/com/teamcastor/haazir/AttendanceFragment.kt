@@ -88,8 +88,7 @@ class AttendanceFragment : Fragment() {
             }
 
             val faceDetectOps = FaceDetectorOptions.Builder()
-                .setMinFaceSize(0.33F)
-                .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
+                .setMinFaceSize(0.2F)
                 .build()
 
             val faceDetector = FaceDetection.getClient(faceDetectOps)
@@ -106,7 +105,7 @@ class AttendanceFragment : Fragment() {
                             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                                 graphicOverlay.clear()
                                 if (faces.isNotEmpty()) {
-                                 for (face in faces) {
+                                    val face = faces.first()
                                      graphicOverlay.setImageSourceInfo(image.height, image.width, true)
                                     val bitmap = Bitmap.createBitmap(
                                         image.width,
@@ -188,7 +187,6 @@ class AttendanceFragment : Fragment() {
                                                 appViewModel.markAttendance()
                                             }
                                         }
-                                    }
                                 }
                                 }
                                 else {

@@ -1,30 +1,22 @@
 package com.teamcastor.haazir
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageFormat
 import android.graphics.Matrix
 import android.graphics.Rect
-import android.graphics.drawable.BitmapDrawable
 import android.media.Image
+import android.media.ThumbnailUtils
 import android.os.Environment
 import android.renderscript.*
 import android.util.Log
 import android.view.View
-import android.view.View.*
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.view.animation.AnimationUtils
-import android.view.animation.AnimationUtils.loadInterpolator
-import androidx.core.animation.doOnEnd
-import androidx.core.view.drawToBitmap
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.Integer.min
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -146,7 +138,14 @@ class Utils {
         fun cropFace(rect: Rect, img: Bitmap, width: Int = rect.width(), height: Int = rect.height()): Bitmap {
             val croppedImage =
                 Bitmap.createBitmap(img, rect.left, rect.top, rect.width(), rect.height())
-            return getResizedBitmap(croppedImage, width, height)
+            val dimension = min(rect.width(), rect.height())
+            val bitmap = ThumbnailUtils.extractThumbnail(
+                croppedImage,
+                dimension,
+                dimension,
+                ThumbnailUtils.OPTIONS_RECYCLE_INPUT
+            )
+            return getResizedBitmap(bitmap, width, height)
         }
 
         fun saveImage(bitmap: Bitmap?) {
