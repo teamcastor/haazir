@@ -7,8 +7,15 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.graphics.Rect
 import android.os.Build
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.EditText
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.google.android.gms.location.Geofence
 import java.text.SimpleDateFormat
 import java.util.*
@@ -108,3 +115,43 @@ fun Bitmap.rotate(degrees: Float): Bitmap =
         Matrix().apply { postRotate(degrees) },
         true
     )
+fun EditText.attachLiveData(owner: LifecycleOwner, liveData: MutableLiveData<String?>) {
+    watch { liveData.value = text.toString() }
+    liveData.observe(owner, Observer { value ->
+        if (value == text.toString()) {
+            return@Observer
+        }
+        setText(value)
+    })
+}
+
+private fun EditText.watch(afterTextChanged: Editable.() -> Unit) {
+    addTextChangedListener(object : TextWatcher {
+        override fun afterTextChanged(s: Editable) {
+            s.afterTextChanged()
+        }
+
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) = Unit
+
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = Unit
+    })
+}
+
+fun Rect.scale(factor: Float) {
+    val oldWidth = width()
+    val oldHeight = height()
+    val rectCenterX = left + oldWidth / 2
+    val rectCenterY = top + oldHeight / 2
+    val newWidth = oldWidth * factor
+    val newHeight = oldHeight * factor
+    left = (rectCenterX - newWidth / 2).toInt()
+    right = (rectCenterX + newWidth / 2).toInt()
+    top = (rectCenterY - newHeight / 2).toInt()
+    bottom = (rectCenterY + newHeight / 2).toInt()
+}
+
+fun Bitmap.flipH(): Bitmap {
+    val matrix = Matrix()
+    matrix.postScale(-1f, 1f, this.width / 2f, this.height / 2f)
+    return Bitmap.createBitmap(this, 0, 0, this.width, this.height, matrix, true)
+}

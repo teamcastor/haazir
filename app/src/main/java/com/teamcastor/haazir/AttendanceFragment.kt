@@ -128,13 +128,16 @@ class AttendanceFragment : Fragment() {
                                     // The coordinates of this are according to ImageAnalysis imageProxy
                                     // GraphicOverlay will transform them to preview size
                                     val rect = Rect(face.boundingBox)
+                                    // 20% padding
+                                    rect.scale(1.20F)
                                     // Confirm the face is in the view fram
                                     if (rotatedBitmap.width != 0 && rotatedBitmap.height != 0) {
                                         if (rect.left < 0 || rect.top < 0 || rect.left + rect.width() > (rotatedBitmap.width) ||
                                             rect.top + rect.height() > rotatedBitmap.height
                                         ) {
-                                            binding.helpText.text = "Detected face is outside camera bounds.\n" +
-                                                    "Please bring it in the center of the preview"
+                                            binding.helpText.text =
+                                                "Detected face is outside camera bounds.\n" +
+                                                        "Please bring it in the center of the preview"
                                             Log.i("AttendanceFragment", "Face is not in the frame")
 
                                         } else {

@@ -153,6 +153,8 @@ class RegisterCamFragment : Fragment() {
                                 // The coordinates of this are according to ImageAnalysis imageProxy
                                 // GraphicOverlay will transform them to preview size
                                 val rect = Rect(face.boundingBox)
+                                // pad 20%
+                                rect.scale(1.2F)
                                 // Confirm the face is in the view fram
                                 if (rotatedBitmap.width != 0 && rotatedBitmap.height != 0) {
                                     if (rect.left < 0 || rect.top < 0 || rect.left + rect.width() > (rotatedBitmap.width) ||
@@ -195,8 +197,9 @@ class RegisterCamFragment : Fragment() {
                                             if (!isDialogVisibile) {
                                                 val previewBitmap =
                                                     Utils.cropFace(rect, rotatedBitmap)
+                                                val previewBitmapFlipped = previewBitmap.flipH()
                                                 isDialogVisibile = true
-                                                showFullScreenDialog(previewBitmap, vector)
+                                                showFullScreenDialog(previewBitmapFlipped, vector)
                                                 onPause()
                                             }
                                         }
